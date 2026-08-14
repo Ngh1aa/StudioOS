@@ -31,3 +31,10 @@
 - [x] Thiết kế Settings với workspace profile, notifications và preferences.
 - [x] Nối navigation, responsive shell và placeholder actions có feedback.
 - [x] Kiểm thử, commit và deploy các trang mới.
+
+## Fixed sidebar follow-up
+
+- [x] Cố định sidebar theo viewport ở desktop.
+- [x] Tách vùng cuộn riêng cho nội dung bên phải.
+- [x] Bảo toàn mobile drawer và mobile scrim behavior.
+- [ ] Kiểm thử scroll, responsive layout và deploy bản sửa.

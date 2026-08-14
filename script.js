@@ -96,7 +96,7 @@ function renderPage(name) {
   renderIcons();
   if (name === "Projects") { currentProjectFilter = "All"; renderProjectsPage(); bindProjectsPage(); }
   bindPageActions(name);
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  document.querySelector(".studio-main")?.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 function bindProjectsPage() {
@@ -171,7 +171,7 @@ function openSidebar() { document.querySelector("#sidebar").classList.add("sideb
 
 document.addEventListener("DOMContentLoaded", () => {
   const overviewMarkup = document.querySelector("#pageView").innerHTML;
-  const showOverview = () => { const view = document.querySelector("#pageView"); view.innerHTML = overviewMarkup; renderIcons(); renderProjects(); renderTasks(); bindOverviewActions(); window.scrollTo({ top: 0, behavior: "smooth" }); };
+  const showOverview = () => { const view = document.querySelector("#pageView"); view.innerHTML = overviewMarkup; renderIcons(); renderProjects(); renderTasks(); bindOverviewActions(); document.querySelector(".studio-main")?.scrollTo({ top: 0, behavior: "smooth" }); };
   const bindOverviewActions = () => {
     document.querySelector("#searchInput").value = "";
     document.querySelector("#searchInput").oninput = (event) => { renderProjects(event.target.value); renderTasks(event.target.value); };
