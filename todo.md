@@ -76,5 +76,5 @@
 - [x] Audit logo, favicon, project covers và mọi asset reference hiện tại.
 - [x] Tạo logo mark và bộ project imagery mới theo Quiet Precision.
 - [x] Tích hợp asset mới vào sidebar, favicon, project cards và review dialog.
-- [ ] Kiểm tra asset paths, contrast, responsive rendering và production load.
-- [ ] Commit và deploy bộ nhận diện hình ảnh mới lên GitHub Pages.
+- [x] Kiểm tra asset paths, contrast, responsive rendering và production load.
+- [x] Commit và deploy bộ nhận diện hình ảnh mới lên GitHub Pages.

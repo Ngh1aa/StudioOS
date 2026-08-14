@@ -23,3 +23,7 @@ Create one transparent logo mark with a dark rail / copper / linen geometry, plu
 The local fallback set is now available under `assets/` as 1024×1024 transparent logo PNG plus four 1600×1067 landscape cover PNGs. The logo has a clear charcoal open-frame silhouette with a copper point and reads cleanly against the existing copper brand container. The architecture cover preserves the editorial linen, construction-grid and copper-registration language while leaving enough calm space for the card overlay.
 
 The material cover uses distinct linen, sage, blue-teal and copper swatches with clear overlap and depth. The motion cover uses a strong charcoal diagonal and three restrained arcs to make the set feel related without repeating the same composition.
+
+## Production check
+
+GitHub Actions run `31771176078` completed successfully for commit `b601eef`. Production navigation returned the StudioOS Overview content and date correctly. A subsequent browser visual refresh hit a browser-extension timeout, so asset availability was additionally checked with direct HTTP requests after the deploy.
