@@ -38,3 +38,12 @@
 - [x] Tách vùng cuộn riêng cho nội dung bên phải.
 - [x] Bảo toàn mobile drawer và mobile scrim behavior.
 - [ ] Kiểm thử scroll, responsive layout và deploy bản sửa.
+
+## Tasks motion follow-up
+
+- [x] Thêm motion tokens cho hover, press, page transition, drawer và dialog.
+- [x] Tạo trang Tasks với filter, task rows, priority và completion states.
+- [x] Tích hợp Toast thông báo hoàn thành task.
+- [x] Tích hợp Undo action cho task vừa hoàn thành.
+- [x] Thêm reduced-motion fallback và kiểm thử responsive.
+- [ ] Commit và deploy bản Tasks mới.

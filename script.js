@@ -39,15 +39,19 @@ const projects = [
 ];
 
 let tasks = [
-  { id:1, label:"Review Lumen House feedback", project:"Lumen House", due:"Due today", done:false },
-  { id:2, label:"Share final type specimens", project:"Common Ground", due:"Due today", done:false },
-  { id:3, label:"Move launch checklist to review", project:"Northstar / Q3", due:"Due tomorrow", done:false },
-  { id:4, label:"Add notes from client sync", project:"Field Notes", due:"Due 21 Aug", done:true },
+  { id:1, label:"Review Lumen House feedback", project:"Lumen House", due:"Due today", priority:"High", done:false },
+  { id:2, label:"Share final type specimens", project:"Common Ground", due:"Due today", priority:"Medium", done:false },
+  { id:3, label:"Move launch checklist to review", project:"Northstar / Q3", due:"Due tomorrow", priority:"Medium", done:false },
+  { id:4, label:"Add notes from client sync", project:"Field Notes", due:"Due 21 Aug", priority:"Low", done:true },
 ];
 
 let showAllProjects = false;
 let activeReviewProject = null;
 let currentProjectFilter = "All";
+let currentTaskFilter = "All";
+let lastTaskAction = null;
+let lastTaskActionTimer = null;
+let pageTransitionTimer = null;
 
 function pageHeader(kicker, title, description, action = "") {
   return `<section class="view-heading"><div><div class="section-kicker">${kicker}</div><h1>${title}<span>.</span></h1><p class="view-description">${description}</p></div>${action}</section>`;
@@ -64,7 +68,14 @@ function renderProjectsPage(query = "", filter = currentProjectFilter) {
 }
 
 function projectsPage() {
-  return `<div class="page-shell-page"><div class="page-intro-row">${pageHeader("04 / Portfolio", "Projects", "A clear view of every brief, milestone and next decision.", `<button class="primary-button" id="pageNewProjectButton" type="button"><span data-icon="plus"></span> New project</button>`)}</div><section class="page-toolbar"><label class="toolbar-search"><span data-icon="search"></span><span class="sr-only">Search projects</span><input id="projectFilterInput" type="search" placeholder="Search projects" /></label><div class="filter-chips" role="group" aria-label="Project filters"><button class="filter-chip active" type="button" data-project-filter="All">All <em>04</em></button><button class="filter-chip" type="button" data-project-filter="In review">In review <em>01</em></button><button class="filter-chip" type="button" data-project-filter="On track">On track <em>02</em></button><button class="filter-chip" type="button" data-project-filter="Not started">Not started <em>01</em></button></div><button class="ghost-button" type="button" data-action="sort-projects">Sort <span data-icon="sliders"></span></button></section><section class="metric-strip"><div><small>Total value</small><strong>04</strong><span>active projects</span></div><div><small>Moving well</small><strong>03</strong><span>on schedule</span></div><div><small>Needs attention</small><strong>01</strong><span>awaiting your eye</span></div><div class="metric-strip-note"><span data-icon="sparkles"></span><p><strong>Good work gets room to breathe.</strong><small>One calm view for the whole studio.</small></p></div></section><section class="page-section-heading"><div><div class="section-kicker">All work / ${currentProjectFilter}</div><h2>Project index</h2></div><span class="page-count">${projects.length} results</span></section><div class="project-grid projects-page-grid" id="projectsPageGrid"></div></div>`;
+  return `<div class="page-shell-page"><div class="page-intro-row"><div class="page-intro-row">${pageHeader("04 / Portfolio", "Projects", "A clear view of every brief, milestone and next decision.", `<button class="primary-button" id="pageNewProjectButton" type="button"><span data-icon="plus"></span> New project</button>`)}</div><section class="page-toolbar"><label class="toolbar-search"><span data-icon="search"></span><span class="sr-only">Search projects</span><input id="projectFilterInput" type="search" placeholder="Search projects" /></label><div class="filter-chips" role="group" aria-label="Project filters"><button class="filter-chip active" type="button" data-project-filter="All">All <em>04</em></button><button class="filter-chip" type="button" data-project-filter="In review">In review <em>01</em></button><button class="filter-chip" type="button" data-project-filter="On track">On track <em>02</em></button><button class="filter-chip" type="button" data-project-filter="Not started">Not started <em>01</em></button></div><button class="ghost-button" type="button" data-action="sort-projects">Sort <span data-icon="sliders"></span></button></section><section class="metric-strip"><div><small>Total value</small><strong>04</strong><span>active projects</span></div><div><small>Moving well</small><strong>03</strong><span>on schedule</span></div><div><small>Needs attention</small><strong>01</strong><span>awaiting your eye</span></div><div class="metric-strip-note"><span data-icon="sparkles"></span><p><strong>Good work gets room to breathe.</strong><small>One calm view for the whole studio.</small></p></div></section><section class="page-section-heading"><div><div class="section-kicker">All work / ${currentProjectFilter}</div><h2>Project index</h2></div><span class="page-count">${projects.length} results</span></section><div class="project-grid projects-page-grid" id="projectsPageGrid"></div></div>`;
+}
+
+function tasksPage() {
+  const completed = tasks.filter((task) => task.done).length;
+  const open = tasks.length - completed;
+  const dueToday = tasks.filter((task) => !task.done && task.due.toLowerCase().includes("today")).length;
+  return `<div class="page-shell-page tasks-page"><div class="page-intro-row">${pageHeader("05 / Focus", "Tasks", "A calm queue for the work that needs your next decision.", `<button class="primary-button" id="tasksAddButton" type="button"><span data-icon="plus"></span> Add task</button>`)}</div><section class="metric-strip tasks-metric-strip"><div><small>Open tasks</small><strong>${open.toString().padStart(2, "0")}</strong><span>ready for attention</span></div><div><small>Completed</small><strong>${completed.toString().padStart(2, "0")}</strong><span>in this workspace</span></div><div><small>Due today</small><strong>${dueToday.toString().padStart(2, "0")}</strong><span>needs a decision</span></div><div class="metric-strip-note"><span data-icon="sparkles"></span><p><strong>One thing at a time.</strong><small>Small progress is still progress.</small></p></div></section><section class="tasks-layout"><article class="panel-surface tasks-panel"><div class="page-section-heading tasks-heading"><div><div class="section-kicker">Queue / Current view</div><h2>Work in focus</h2></div><span class="page-count" id="tasksResultCount">${tasks.length} tasks</span></div><div class="tasks-toolbar"><label class="toolbar-search"><span data-icon="search"></span><span class="sr-only">Search tasks</span><input id="tasksSearchInput" type="search" placeholder="Search tasks" /></label><div class="filter-chips" role="group" aria-label="Task filters"><button class="filter-chip active" type="button" data-task-filter="All">All <em>${tasks.length.toString().padStart(2, "0")}</em></button><button class="filter-chip" type="button" data-task-filter="Open">Open <em>${open.toString().padStart(2, "0")}</em></button><button class="filter-chip" type="button" data-task-filter="Complete">Complete <em>${completed.toString().padStart(2, "0")}</em></button></div></div><div class="tasks-page-list" id="tasksPageList"></div></article><aside class="tasks-side-column"><article class="panel-surface task-focus-card"><div class="section-heading-row compact-heading"><div><div class="section-kicker">Today / Suggested</div><h2>Protect the next hour</h2></div><span class="focus-mark">01</span></div><p>Start with the review that unblocks the most people.</p><div class="focus-callout"><span class="signal-icon signal-icon-copper" data-icon="message"></span><span><strong>Review Lumen House feedback</strong><small>High priority · Due today</small></span></div><button class="link-button" type="button" data-action="focus-timer">Start a focused session ${icon("arrow-up-right")}</button></article><article class="panel-surface task-principles"><div class="section-kicker">Motion / Feedback</div><h2>Quietly informative.</h2><p>Every completion keeps the queue, progress and your next decision in sync.</p><div class="principle-line"><i></i><span>Complete a task, then keep moving.</span></div><div class="principle-line"><i></i><span>Undo is always close when you need it.</span></div></article></aside></section></div>`;
 }
 
 function calendarPage() {
@@ -90,13 +101,26 @@ function settingsPage() {
 }
 
 function renderPage(name) {
+  const render = () => {
+    const view = document.querySelector("#pageView");
+    const templates = { Projects: projectsPage, Calendar: calendarPage, Tasks: tasksPage, Team: teamPage, Notes: notesPage, Insights: insightsPage, Settings: settingsPage };
+    view.innerHTML = templates[name] ? templates[name]() : "";
+    renderIcons();
+    if (name === "Projects") { currentProjectFilter = "All"; renderProjectsPage(); bindProjectsPage(); }
+    if (name === "Tasks") { currentTaskFilter = "All"; renderTasksPage(); bindTasksPage(); }
+    bindPageActions(name);
+    document.querySelector(".studio-main")?.scrollTo({ top: 0, behavior: reduced ? "auto" : "smooth" });
+    view.classList.remove("is-leaving");
+    void view.offsetWidth;
+    view.classList.add("is-entering");
+  };
   const view = document.querySelector("#pageView");
-  const templates = { Projects: projectsPage, Calendar: calendarPage, Team: teamPage, Notes: notesPage, Insights: insightsPage, Settings: settingsPage };
-  view.innerHTML = templates[name] ? templates[name]() : "";
-  renderIcons();
-  if (name === "Projects") { currentProjectFilter = "All"; renderProjectsPage(); bindProjectsPage(); }
-  bindPageActions(name);
-  document.querySelector(".studio-main")?.scrollTo({ top: 0, behavior: "smooth" });
+  const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+  clearTimeout(pageTransitionTimer);
+  if (reduced) { render(); return; }
+  view.classList.remove("is-entering");
+  view.classList.add("is-leaving");
+  pageTransitionTimer = window.setTimeout(render, 140);
 }
 
 function bindProjectsPage() {
@@ -105,6 +129,48 @@ function bindProjectsPage() {
   document.querySelectorAll("[data-project-filter]").forEach((button) => button.addEventListener("click", () => { currentProjectFilter = button.dataset.projectFilter; document.querySelectorAll("[data-project-filter]").forEach((item) => item.classList.toggle("active", item === button)); renderProjectsPage(document.querySelector("#projectFilterInput").value, currentProjectFilter); }));
   document.querySelector("#pageNewProjectButton")?.addEventListener("click", () => openDialog("createDialog"));
   document.querySelector("#projectsPageGrid")?.addEventListener("click", (event) => { const review = event.target.closest(".js-review"); const more = event.target.closest(".js-more"); const card = event.target.closest(".project-card"); const project = projects.find((item) => card?.querySelector("h3")?.textContent === item.name); if (review && project) openReview(project); if (more && project) toast(`More actions for ${project.name} are coming soon.`); });
+}
+
+function taskPageRow(task) {
+  const priority = (task.priority || "Medium").toLowerCase();
+  return `<article class="task-page-row ${task.done ? "task-done" : ""}" data-task-id="${task.id}"><button class="task-check ${task.done ? "checked" : ""}" type="button" data-task-complete aria-label="${task.done ? "Mark" : "Complete"} ${task.label}">${task.done ? icon("check") : ""}</button><span class="task-page-copy"><strong>${task.label}</strong><small>${task.project}</small></span><span class="task-priority priority-${priority}">${task.priority || "Medium"}</span><span class="task-page-due ${task.due.includes("today") ? "task-due-urgent" : ""}">${task.due}</span><button class="icon-button task-more" type="button" data-action="task-options" aria-label="More options for ${task.label}">${icon("more")}</button></article>`;
+}
+
+function renderTasksPage(query = "", filter = currentTaskFilter) {
+  const list = document.querySelector("#tasksPageList");
+  if (!list) return;
+  const normalized = query.trim().toLowerCase();
+  const visible = tasks.filter((task) => {
+    const matchesQuery = !normalized || `${task.label} ${task.project}`.toLowerCase().includes(normalized);
+    const matchesFilter = filter === "All" || (filter === "Open" ? !task.done : task.done);
+    return matchesQuery && matchesFilter;
+  });
+  list.innerHTML = visible.length ? visible.map(taskPageRow).join("") : `<div class="empty-search page-empty">${icon("search")}<strong>No tasks in this view</strong><span>Try another filter or search term.</span></div>`;
+  const resultCount = document.querySelector("#tasksResultCount");
+  if (resultCount) resultCount.textContent = `${visible.length} task${visible.length === 1 ? "" : "s"}`;
+  renderIcons();
+}
+
+function bindTasksPage() {
+  const input = document.querySelector("#tasksSearchInput");
+  const rerender = () => renderTasksPage(input?.value || "", currentTaskFilter);
+  input?.addEventListener("input", rerender);
+  document.querySelectorAll("[data-task-filter]").forEach((button) => button.addEventListener("click", () => {
+    currentTaskFilter = button.dataset.taskFilter;
+    document.querySelectorAll("[data-task-filter]").forEach((item) => item.classList.toggle("active", item === button));
+    rerender();
+  }));
+  document.querySelector("#tasksAddButton")?.addEventListener("click", () => addTaskToWorkspace());
+  document.querySelector("#tasksPageList")?.addEventListener("click", (event) => {
+    const completeButton = event.target.closest("[data-task-complete]");
+    const moreButton = event.target.closest("[data-action='task-options']");
+    const row = event.target.closest("[data-task-id]");
+    if (!row) return;
+    const task = tasks.find((item) => String(item.id) === row.dataset.taskId);
+    if (!task) return;
+    if (completeButton) toggleTask(task);
+    if (moreButton) toast(`More actions for ${task.label} are coming soon.`);
+  });
 }
 
 function bindPageActions(name) {
@@ -146,12 +212,45 @@ function renderTasks(query = "") {
   document.querySelector("#taskProgressBar").style.width = `${(completed / tasks.length) * 100}%`;
 }
 
-function toast(message, type = "") {
+function refreshTaskViews() {
+  const activePage = document.querySelector("#activeBreadcrumb")?.textContent;
+  if (activePage === "Tasks") renderTasksPage(document.querySelector("#tasksSearchInput")?.value || "", currentTaskFilter);
+  else if (activePage === "Overview") renderTasks(document.querySelector("#searchInput")?.value || "");
+}
+
+function toggleTask(task) {
+  if (task.done) {
+    task.done = false;
+    refreshTaskViews();
+    toast("Task moved back to your open queue.");
+    return;
+  }
+  task.done = true;
+  refreshTaskViews();
+  toast("Task marked complete.", "", { label: "Undo", action: () => { task.done = false; refreshTaskViews(); toast("Task restored to your open queue."); } });
+}
+
+function addTaskToWorkspace() {
+  tasks.push({ id: Date.now(), label: "Define final QA checklist", project: "Workspace", due: "Due this week", priority: "Medium", done: false });
+  refreshTaskViews();
+  toast("Task added to your focus list.");
+}
+
+function toast(message, type = "", actionConfig = null) {
   const node = document.createElement("div");
   node.className = `toast ${type}`;
-  node.textContent = message;
+  node.innerHTML = `<span class="toast-copy">${message}</span>${actionConfig ? `<button class="toast-action" type="button">${actionConfig.label}</button>` : ""}`;
   document.querySelector("#toastRegion").append(node);
-  window.setTimeout(() => { node.style.opacity = "0"; node.style.transform = "translateY(8px)"; window.setTimeout(() => node.remove(), 180); }, 3000);
+  actionConfig && node.querySelector(".toast-action")?.addEventListener("click", () => { actionConfig.action(); dismissToast(node); });
+  window.setTimeout(() => dismissToast(node), actionConfig ? 5200 : 3000);
+}
+
+function dismissToast(node) {
+  if (!node || node.dataset.dismissed === "true") return;
+  node.dataset.dismissed = "true";
+  node.style.opacity = "0";
+  node.style.transform = "translateY(8px)";
+  window.setTimeout(() => node.remove(), 180);
 }
 
 function openDialog(id) { document.querySelector(`#${id}`).hidden = false; document.body.style.overflow = "hidden"; const first = document.querySelector(`#${id} input`); if (first) window.setTimeout(() => first.focus(), 20); }
@@ -177,9 +276,9 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelector("#searchInput").oninput = (event) => { renderProjects(event.target.value); renderTasks(event.target.value); };
     document.querySelector("#showAllButton")?.addEventListener("click", () => { showAllProjects = !showAllProjects; renderProjects(document.querySelector("#searchInput").value); });
     document.querySelector("#newProjectButton")?.addEventListener("click", () => openDialog("createDialog"));
-    document.querySelector("#addTaskButton")?.addEventListener("click", () => { tasks.push({ id:Date.now(), label:"Define final QA checklist", project:"Workspace", due:"Due this week", done:false }); renderTasks(document.querySelector("#searchInput").value); toast("Task added to your focus list."); });
+    document.querySelector("#addTaskButton")?.addEventListener("click", () => addTaskToWorkspace());
     document.querySelector("#projectGrid")?.addEventListener("click", (event) => { const review = event.target.closest(".js-review"); const more = event.target.closest(".js-more"); const card = event.target.closest(".project-card"); if (!card) return; const project = projects.find((item) => card.querySelector("h3")?.textContent === item.name); if (review && project) openReview(project); if (more && project) toast(`More actions for ${project.name} are coming soon.`); });
-    document.querySelector("#taskList")?.addEventListener("click", (event) => { const row = event.target.closest("[data-task-id]"); if (!row) return; const task = tasks.find((item) => String(item.id) === row.dataset.taskId); if (task) task.done = !task.done; renderTasks(document.querySelector("#searchInput").value); });
+    document.querySelector("#taskList")?.addEventListener("click", (event) => { const row = event.target.closest("[data-task-id]"); if (!row) return; const task = tasks.find((item) => String(item.id) === row.dataset.taskId); if (task) toggleTask(task); });
   };
   renderIcons(); renderProjects(); renderTasks(); bindOverviewActions();
   document.querySelectorAll("[data-nav]").forEach((button) => button.addEventListener("click", () => { document.querySelectorAll("[data-nav]").forEach((item) => item.classList.toggle("active", item === button)); document.querySelector("#activeBreadcrumb").textContent = button.dataset.nav; closeSidebar(); if (button.dataset.nav === "Overview") showOverview(); else renderPage(button.dataset.nav); }));
