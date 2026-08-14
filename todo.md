@@ -70,3 +70,11 @@
 - [x] Kiểm thử semantic markup, focus states, keyboard flow, reduced motion và responsive shell.
 - [x] Kiểm thử navigation, search, filters, dialogs, toast/undo và placeholder actions.
 - [x] Sửa lỗi phát hiện được, chạy regression và xác nhận production sau deploy.
+
+## Brand imagery refresh follow-up
+
+- [x] Audit logo, favicon, project covers và mọi asset reference hiện tại.
+- [x] Tạo logo mark và bộ project imagery mới theo Quiet Precision.
+- [x] Tích hợp asset mới vào sidebar, favicon, project cards và review dialog.
+- [ ] Kiểm tra asset paths, contrast, responsive rendering và production load.
+- [ ] Commit và deploy bộ nhận diện hình ảnh mới lên GitHub Pages.
