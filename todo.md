@@ -105,3 +105,10 @@
 
 - [x] Gỡ thẻ giới thiệu “Small teams, clear work.” khỏi giao diện.
 - [x] Kiểm thử, commit và deploy thay đổi UI cleanup.
+
+## Performance and SEO follow-up
+
+- [x] Audit baseline asset weight, request hints, loading behavior và cache strategy.
+- [x] Tối ưu các tài nguyên tĩnh và JavaScript không làm thay đổi trải nghiệm chính.
+- [x] Bổ sung và kiểm tra các metadata SEO cơ bản, canonical, robots và sitemap.
+- [x] Kiểm tra production, commit và deploy các tối ưu performance/SEO.
