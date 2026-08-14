@@ -60,5 +60,5 @@
 - [x] Audit toàn bộ icon hiện tại và loại bỏ icon mix giữa nhiều style.
 - [x] Chuẩn hóa một icon registry SVG dùng chung cho navigation, cards, controls và feedback states.
 - [x] Thiết lập quy tắc stroke, kích thước, viewBox, màu semantic và accessibility label.
-- [ ] Kiểm thử icon trên Overview, Projects, Calendar, Tasks, Team, Notes, Insights và Settings.
-- [ ] Commit và deploy icon system mới lên GitHub Pages.
+- [x] Kiểm thử icon trên Overview, Projects, Calendar, Tasks, Team, Notes, Insights và Settings.
+- [x] Commit và deploy icon system mới lên GitHub Pages.
