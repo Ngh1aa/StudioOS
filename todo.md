@@ -118,3 +118,9 @@
 - [x] Phân tích pattern UI/UX từ micheledu.com và lưu các insight có thể học.
 - [x] Chọn các cải tiến phù hợp với Quiet Precision, không sao chép nguyên mẫu.
 - [x] Triển khai, kiểm tra accessibility/responsive và deploy các cải tiến StudioOS.
+
+## Monochrome highlight and typography follow-up
+
+- [ ] Chuyển highlight project active sang màu trắng theo reference.
+- [ ] Dùng Inter cho text nội dung và serif cho tiêu đề trong toàn bộ StudioOS.
+- [ ] Đặt cỡ chữ content tối thiểu trong khoảng 12–16px, regenerate assets và deploy.

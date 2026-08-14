@@ -1,7 +1,7 @@
 /*
   StudioOS / Quiet Precision
-  Design philosophy: an editorial workspace with a dark studio rail, warm linen canvas,
-  precise sans-serif UI text, and an expressive serif reserved for moments of orientation.
+  Design philosophy: an editorial workspace with a dark studio rail, quiet monochrome surfaces,
+  Inter for readable UI content, and an expressive serif for titles and moments of orientation.
   Every surface should make the next action obvious without flattening the creative mood.
 */
 
@@ -43,13 +43,13 @@
   --icon-stroke-width: 1.7;
   /* Quiet Precision typography system: editorial display, measured UI, readable data. */
   --font-display: "Instrument Serif", Georgia, serif;
-  --font-ui: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --type-2xs: 10px;
-  --type-xs: 11px;
-  --type-sm: 13px;
-  --type-md: 15px;
-  --type-lg: 17px;
-  --type-xl: 21px;
+  --font-ui: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --type-2xs: 12px;
+  --type-xs: 13px;
+  --type-sm: 14px;
+  --type-md: 16px;
+  --type-lg: 18px;
+  --type-xl: 22px;
   --type-display-sm: 31px;
   --type-display-md: 36px;
   --type-display-lg: clamp(50px, 5.3vw, 74px);
@@ -707,4 +707,43 @@ body { background: var(--canvas); }
 @media (max-width: 680px) {
   .project-taxonomy { flex-wrap: nowrap; margin-top: -8px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: thin; }
   .taxonomy-chip { flex-shrink: 0; }
+}
+
+/* White selection + editorial typography refresh: active states feel like paper tabs, while content never falls below 12px. */
+h1, h2, h3, h4, h5, h6 { font-family: var(--font-display); }
+.brand-name { font-family: var(--font-display); font-size: 21px; letter-spacing: -.04em; }
+.brand-caption, .workspace-copy small, .nav-section-label, .breadcrumbs, .top-search input, .top-search kbd { font-size: 12px; }
+.workspace-copy > span { font-size: 14px; }
+.side-nav-item { font-size: 14px; }
+.side-nav-item.active { background: #ffffff; color: #111111; box-shadow: 0 12px 28px rgba(255,255,255,.08); }
+.side-nav-item.active svg, .side-nav-item.active em { color: #111111; }
+.side-nav-item.active::before { background: #ffffff; }
+.welcome-copy, .view-description, .project-card-body p, .dialog-description { font-size: 14px; }
+.project-title-row h3 { font-family: var(--font-display); font-size: 20px; }
+.project-title-row p, .status-pill, .progress-meta, .due-date, .text-button, .link-button { font-size: 12px; }
+.filter-chip, .taxonomy-chip, .taxonomy-label, .page-count, .view-switch, .agenda-date, .agenda-time, .agenda-item strong, .agenda-item small { font-size: 12px; }
+.filter-chip.active { background: #ffffff; color: #111111; box-shadow: var(--shadow-sm); }
+.filter-chip.active em, .taxonomy-chip.active em { color: #4a4a4a; }
+.taxonomy-chip.active { border-color: #111111; background: #ffffff; color: #111111; }
+.metric-strip small, .metric-strip span, .metric-strip-note small { font-size: 12px; }
+.metric-strip-note { background: #111111 !important; }
+.metric-strip-note > span { background: #ffffff; color: #111111; }
+.metric-strip-note strong { font-size: 14px; }
+.view-switch.active, .notes-nav-item.active, .settings-nav-item.active { background: #ffffff; color: #111111; box-shadow: var(--shadow-sm); }
+.today-date { background: #ffffff !important; color: #111111 !important; box-shadow: var(--shadow-sm); }
+.task-copy strong, .task-copy small, .task-due, .activity-item p, .activity-item small, .activity-item time, .add-task-button { font-size: 13px; }
+.activity-item p { font-size: 14px; }
+.dialog-eyebrow, .dialog-form label, .dialog-form input, .dialog-form select, .cancel-button, .review-secondary { font-size: 13px; }
+.notification-popover button strong, .notification-popover button small, .toast { font-size: 13px; }
+.member-card h3, .note-card h3, .settings-card h2 { font-family: var(--font-display); }
+.member-card > p, .member-focus small, .member-load span, .member-focus strong, .member-load b, .member-card footer, .notes-nav-item, .notes-tags > small, .notes-tags button, .note-card p, .note-card footer, .settings-card-heading p, .settings-lead, .settings-form-grid label, .settings-form-grid input, .settings-form-grid textarea, .settings-toggle strong, .settings-toggle small { font-size: 12px; }
+.note-card h3, .settings-card h2 { font-size: 22px; }
+.settings-mark { background: #111111; color: #ffffff; }
+.primary-button, .ghost-button { font-family: var(--font-ui); }
+
+@media (max-width: 680px) {
+  .side-nav-item { font-size: 14px; }
+  .project-title-row h3 { font-size: 20px; }
+  .project-title-row p, .status-pill, .progress-meta, .due-date, .text-button { font-size: 12px; }
+  .task-copy strong, .task-copy small, .task-due, .activity-item p, .activity-item small, .activity-item time { font-size: 12px; }
 }
