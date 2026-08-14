@@ -100,3 +100,8 @@
 - [x] Thêm drag handle, grabbed/dragging/drop indicator và keyboard reorder fallback.
 - [x] Kiểm thử reorder với search/filter, completion, Undo, responsive và reduced motion.
 - [x] Commit và deploy tính năng drag-and-drop lên GitHub Pages.
+
+## UI cleanup follow-up
+
+- [x] Gỡ thẻ giới thiệu “Small teams, clear work.” khỏi giao diện.
+- [x] Kiểm thử, commit và deploy thay đổi UI cleanup.

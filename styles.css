@@ -165,12 +165,6 @@ svg, .studio-icon { width: 17px; height: 17px; display: block; flex: 0 0 auto; f
 .side-nav-item.active em { color: #f8cdc0; }
 
 .sidebar-bottom { position: relative; z-index: 1; display: grid; gap: 21px; margin-top: auto; }
-.sidebar-note { display: flex; gap: 9px; padding: 13px 11px; border: 1px solid rgba(255,255,255,.1); border-radius: 11px; background: rgba(255,255,255,.06); }
-.sidebar-note > span:last-child { display: grid; gap: 4px; }
-.note-icon { width: 25px; height: 25px; display: grid; place-items: center; flex-shrink: 0; border-radius: 8px; background: rgba(209,111,80,.22); color: #f0a48c; }
-.sidebar-note strong, .sidebar-note small { display: block; }
-.sidebar-note strong { color: #e7e8df; font-size: 10px; }
-.sidebar-note small { color: #9da59b; font-size: 9px; line-height: 1.45; }
 .sidebar-profile { display: flex; align-items: center; gap: 9px; padding: 0 5px; }
 .profile-avatar { width: 30px; height: 30px; display: grid; place-items: center; border: 2px solid rgba(255,255,255,.12); border-radius: 50%; background: #d9b7a8; color: #66443a; font-size: 8px; font-weight: 800; }
 .sidebar-profile > span:nth-child(2) { display: grid; gap: 2px; }
