@@ -53,4 +53,4 @@
 - [x] Audit semantic color roles và contrast hiện tại.
 - [x] Chốt palette mới cho canvas, surface, ink, copper, sage, blue và danger.
 - [x] Áp dụng tokens vào component states và data visualization.
-- [ ] Kiểm tra contrast, hover/focus/disabled states và deploy.
+- [x] Kiểm tra contrast, hover/focus/disabled states và deploy.
