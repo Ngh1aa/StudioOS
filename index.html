@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f7f5f0" />
+    <meta name="description" content="StudioOS — a considered workspace for small creative teams." />
+    <link rel="icon" href="./assets/studioos-mark.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css" />
+    <title>StudioOS — A considered workspace</title>
+  </head>
+  <body>
+    <div class="studio-shell">
+      <aside class="studio-sidebar" id="sidebar">
+        <div class="sidebar-brand">
+          <div class="brand-mark-wrap"><img src="./assets/studioos-mark.png" alt="StudioOS mark" /></div>
+          <div class="brand-lockup"><span class="brand-name">StudioOS</span><span class="brand-caption">Creative workspace</span></div>
+          <button class="sidebar-close only-mobile" id="closeSidebar" type="button" aria-label="Close navigation"><span data-icon="x"></span></button>
+        </div>
+
+        <button class="workspace-switcher" type="button" data-action="workspace">
+          <span class="workspace-avatar">S</span>
+          <span class="workspace-copy"><span>Studio North</span><small>Personal workspace</small></span>
+          <span data-icon="chevron-down"></span>
+        </button>
+
+        <nav class="side-nav" aria-label="Primary navigation">
+          <span class="nav-section-label">Workspace</span>
+          <button class="side-nav-item active" type="button" data-nav="Overview"><span data-icon="dashboard"></span><span>Overview</span></button>
+          <button class="side-nav-item" type="button" data-nav="Projects"><span data-icon="folder"></span><span>Projects</span><em>04</em></button>
+          <button class="side-nav-item" type="button" data-nav="Calendar"><span data-icon="calendar"></span><span>Calendar</span></button>
+          <button class="side-nav-item" type="button" data-nav="Team"><span data-icon="users"></span><span>Team</span></button>
+          <button class="side-nav-item" type="button" data-nav="Notes"><span data-icon="inbox"></span><span>Notes</span><em>06</em></button>
+          <span class="nav-section-label nav-section-spaced">Manage</span>
+          <button class="side-nav-item" type="button" data-nav="Insights"><span data-icon="chart"></span><span>Insights</span></button>
+          <button class="side-nav-item" type="button" data-nav="Settings"><span data-icon="settings"></span><span>Settings</span></button>
+        </nav>
+
+        <div class="sidebar-bottom">
+          <div class="sidebar-note"><span class="note-icon" data-icon="sparkles"></span><span><strong>Small teams, clear work.</strong><small>Good work gets room to breathe.</small></span></div>
+          <div class="sidebar-profile"><span class="profile-avatar">AT</span><span><strong>Alex Tran</strong><small>Product designer</small></span><span class="profile-more" data-icon="more"></span></div>
+        </div>
+      </aside>
+
+      <button class="mobile-scrim" id="mobileScrim" type="button" aria-label="Close navigation"></button>
+
+      <main class="studio-main">
+        <header class="topbar">
+          <button class="mobile-menu-button only-mobile" id="openSidebar" type="button" aria-label="Open navigation"><span data-icon="menu"></span></button>
+          <div class="breadcrumbs"><span>Studio North</span><span data-icon="chevron-right"></span><strong id="activeBreadcrumb">Overview</strong></div>
+          <div class="topbar-actions">
+            <label class="top-search"><span data-icon="search"></span><span class="sr-only">Search workspace</span><input id="searchInput" type="search" placeholder="Search workspace" autocomplete="off" /><kbd><span data-icon="command"></span> K</kbd></label>
+            <button class="icon-button notification-button" id="notificationButton" type="button" aria-label="Open notifications" aria-expanded="false"><span data-icon="bell"></span><i class="notification-dot"></i></button>
+            <button class="help-button" type="button" data-action="help" aria-label="Open help center"><span data-icon="help"></span></button>
+            <div class="notification-popover" id="notificationPopover" hidden>
+              <div class="popover-heading"><strong>Notifications</strong><span>02 unread</span></div>
+              <button type="button" data-action="review-notification"><span class="notification-icon copper" data-icon="message"></span><span><strong>Maya left feedback</strong><small>Lumen House · 12 min ago</small></span></button>
+              <button type="button" data-action="calendar-notification"><span class="notification-icon sage" data-icon="calendar"></span><span><strong>Two deadlines this week</strong><small>Northstar / Q3 · 1 hr ago</small></span></button>
+            </div>
+          </div>
+        </header>
+
+        <div class="page-content">
+          <section class="welcome-row">
+            <div><div class="eyebrow"><span class="eyebrow-rule"></span> Tuesday, 14 August 2026</div><h1>Good morning, Alex<span>.</span></h1><p class="welcome-copy">Three projects are moving. One needs your eye.</p></div>
+            <button class="primary-button" id="newProjectButton" type="button"><span data-icon="plus"></span> New project</button>
+          </section>
+
+          <section class="signal-row" aria-label="Workspace signals">
+            <div class="signal-card"><span class="signal-icon signal-icon-copper" data-icon="folder"></span><span><small>Active projects</small><strong id="activeProjectCount">04</strong></span><em>+1 this month</em></div>
+            <div class="signal-card"><span class="signal-icon signal-icon-sage" data-icon="clock"></span><span><small>Due this week</small><strong>04</strong></span><em class="signal-muted">All on track</em></div>
+            <div class="signal-card"><span class="signal-icon signal-icon-ink" data-icon="message"></span><span><small>Awaiting review</small><strong>02</strong></span><em class="signal-muted">1 needs you</em></div>
+            <button class="signal-card signal-card-add" type="button" data-action="invite"><span class="add-person-icon" data-icon="users"></span><span><small>Grow the team</small><strong>Invite a collaborator</strong></span><span data-icon="arrow-up-right"></span></button>
+          </section>
+
+          <section class="section-block">
+            <div class="section-heading-row"><div><div class="section-kicker">01 / In motion</div><h2>Your projects</h2></div><button class="link-button" id="showAllButton" type="button">View all projects <span data-icon="arrow-up-right"></span></button></div>
+            <div class="project-grid" id="projectGrid"></div>
+          </section>
+
+          <section class="lower-grid">
+            <div class="panel-surface">
+              <div class="section-heading-row compact-heading"><div><div class="section-kicker">02 / Focus</div><h2>Today’s attention</h2></div><button class="icon-button subtle-icon" type="button" data-action="focus-options" aria-label="Focus list options"><span data-icon="sliders"></span></button></div>
+              <div class="focus-summary"><span><strong id="taskProgressText">1/4</strong><small>tasks complete</small></span><span class="mini-progress"><i id="taskProgressBar"></i></span><small class="focus-percent" id="taskProgressPercent">25%</small></div>
+              <div class="task-list" id="taskList"></div>
+              <button class="add-task-button" id="addTaskButton" type="button"><span data-icon="circle-plus"></span> Add a task</button>
+            </div>
+
+            <div class="panel-surface">
+              <div class="section-heading-row compact-heading"><div><div class="section-kicker">03 / Pulse</div><h2>Recent activity</h2></div><button class="icon-button subtle-icon" type="button" data-action="activity-options" aria-label="Activity options"><span data-icon="more"></span></button></div>
+              <div class="activity-list">
+                <div class="activity-item"><span class="activity-avatar avatar-copper">MC</span><span><p><strong>Maya Chen</strong> commented on <strong>Lumen House</strong></p><small>“The type rhythm feels right. One last pass on the mobile lockup.”</small><time>12 min ago <i>·</i> Review</time></span></div>
+                <div class="activity-item"><span class="activity-avatar avatar-sage">NW</span><span><p><strong>Noah Williams</strong> moved <strong>Share final type specimens</strong></p><small>Common Ground · Ready for review</small><time>1 hr ago <i>·</i> Update</time></span></div>
+                <div class="activity-item"><span class="activity-avatar avatar-ink">AT</span><span><p>You created <strong>Northstar / Q3</strong></p><small>Campaign launch · 8 tasks added</small><time>Yesterday <i>·</i> Project</time></span></div>
+              </div>
+              <button class="link-button activity-link" type="button" data-action="activity">See full activity <span data-icon="arrow-up-right"></span></button>
+            </div>
+          </section>
+
+          <footer class="workspace-footer"><span><b>◒</b> StudioOS / A considered workspace for small teams.</span><span>Last synced just now <i class="sync-dot"></i></span></footer>
+        </div>
+      </main>
+    </div>
+
+    <div class="dialog-layer" id="createDialog" hidden>
+      <div class="dialog-card" role="dialog" aria-modal="true" aria-labelledby="createDialogTitle">
+        <button class="dialog-close" type="button" data-close-dialog="createDialog" aria-label="Close dialog"><span data-icon="x"></span></button>
+        <div class="dialog-eyebrow"><span data-icon="circle-plus"></span> New project</div>
+        <h2 id="createDialogTitle">Give the work a place to begin.</h2>
+        <p class="dialog-description">Set up a clear starting point. You can add milestones, tasks and collaborators next.</p>
+        <form id="createProjectForm" class="dialog-form"><label>Project name<input id="projectNameInput" name="projectName" type="text" placeholder="e.g. Lumen House" required /></label><label>Project type<select id="projectTypeInput" name="projectType"><option>Brand system</option><option>Digital experience</option><option>Campaign launch</option><option>Research sprint</option></select></label><div class="dialog-actions"><button class="cancel-button" type="button" data-close-dialog="createDialog">Cancel</button><button class="primary-button" type="submit">Create project <span data-icon="arrow-up-right"></span></button></div></form>
+      </div>
+    </div>
+
+    <div class="dialog-layer" id="reviewDialog" hidden>
+      <div class="dialog-card review-dialog" role="dialog" aria-modal="true" aria-labelledby="reviewDialogTitle">
+        <button class="dialog-close" type="button" data-close-dialog="reviewDialog" aria-label="Close dialog"><span data-icon="x"></span></button>
+        <div class="dialog-eyebrow"><span data-icon="file-check"></span> Review queue</div>
+        <h2 id="reviewDialogTitle"></h2>
+        <p class="dialog-description" id="reviewDialogDescription"></p>
+        <div class="review-preview"><img id="reviewImage" src="" alt="" /><span><small class="review-label">Latest note</small><p>“The direction is landing well. Please check the final spacing on the mobile handoff before approval.”</p><small class="review-author"><b>MC</b> Maya Chen · 12 min ago</small></span></div>
+        <div class="review-actions"><button class="review-secondary" type="button" data-action="comment"><span data-icon="message"></span> Add comment</button><button class="primary-button" id="markReviewedButton" type="button"><span data-icon="check-circle"></span> Mark reviewed</button></div>
+        <div class="review-meta"><span data-icon="paperclip">04 files</span><span data-icon="users">03 collaborators</span><span data-icon="lock">Client-safe link</span></div>
+      </div>
+    </div>
+
+    <div class="toast-region" id="toastRegion" aria-live="polite"></div>
+    <noscript><div class="noscript-message">StudioOS needs JavaScript enabled to show the workspace interactions.</div></noscript>
+    <script src="./script.js" defer></script>
+  </body>
+</html>
+

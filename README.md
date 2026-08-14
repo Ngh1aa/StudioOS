@@ -8,25 +8,21 @@ The interface follows **Quiet Precision**: a warm ivory canvas, graphite typogra
 
 ## Stack
 
-The frontend uses React 19, TypeScript, Vite, Tailwind CSS 4, shadcn/ui primitives and Lucide icons. The interface is client-only for this first slice and keeps the data in local React state so the interaction model can be reviewed before adding persistence.
+The frontend is intentionally framework-free: semantic HTML, one stylesheet and one JavaScript file. The interface keeps its data in local JavaScript state so the interaction model can be reviewed before adding persistence. Generated project imagery and the brand mark live in `assets/`.
 
 ## Run locally
 
-```bash
-pnpm install
-pnpm dev
-```
-
-The production build is generated with:
+Because this is a static site, you can open `index.html` directly or serve the folder with any static server:
 
 ```bash
-pnpm run check
-pnpm run build
+python3 -m http.server 4173
 ```
+
+Then open `http://localhost:4173` in a browser.
 
 ## GitHub Pages
 
-The included workflow builds the app and publishes `dist/public` to GitHub Pages. The Vite base path switches to `/StudioOS/` inside GitHub Actions, while local development continues to use `/`.
+The included workflow copies `index.html`, `styles.css`, `script.js` and `assets/` into a small static artifact, then publishes it to GitHub Pages. No Node.js, package installation or bundler is needed in CI.
 
 ## Current interactions
 
