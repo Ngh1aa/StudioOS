@@ -4,6 +4,7 @@ const icons = {
   menu: '<path d="M4 6h16M4 12h16M4 18h16"/>',
   x: '<path d="m6 6 12 12M18 6 6 18"/>',
   "chevron-down": '<path d="m6 9 6 6 6-6"/>',
+  "chevron-left": '<path d="m15 6-6 6 6 6"/>',
   "chevron-right": '<path d="m9 6 6 6-6 6"/>',
   dashboard: '<rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/>',
   folder: '<path d="M3.5 6.5h6l2 2h9v9.5a2 2 0 0 1-2 2h-15z"/><path d="M3.5 6.5v-1a2 2 0 0 1 2-2h4l2 2h7a2 2 0 0 1 2 2v1"/>',
@@ -182,7 +183,7 @@ function bindPageActions(name) {
   document.querySelectorAll("[data-settings-tab]").forEach((button) => button.addEventListener("click", () => { document.querySelectorAll("[data-settings-tab]").forEach((item) => item.classList.toggle("active", item === button)); toast(`${button.dataset.settingsTab} settings selected.`); }));
 }
 
-function icon(name) { return `<svg aria-hidden="true" viewBox="0 0 24 24">${icons[name] || ""}</svg>`; }
+function icon(name) { return `<svg class="studio-icon" aria-hidden="true" focusable="false" role="presentation" viewBox="0 0 24 24">${icons[name] || ""}</svg>`; }
 function renderIcons() { document.querySelectorAll("[data-icon]").forEach((node) => { const name = node.dataset.icon; node.innerHTML = icon(name); }); }
 
 function avatarStack(members) { return `<span class="avatar-stack" aria-label="${members.length} project members">${members.map((member, index) => `<span class="avatar avatar-${index}">${member}</span>`).join("")}</span>`; }

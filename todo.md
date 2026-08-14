@@ -54,3 +54,11 @@
 - [x] Chốt palette mới cho canvas, surface, ink, copper, sage, blue và danger.
 - [x] Áp dụng tokens vào component states và data visualization.
 - [x] Kiểm tra contrast, hover/focus/disabled states và deploy.
+
+## Shared icon system follow-up
+
+- [x] Audit toàn bộ icon hiện tại và loại bỏ icon mix giữa nhiều style.
+- [x] Chuẩn hóa một icon registry SVG dùng chung cho navigation, cards, controls và feedback states.
+- [x] Thiết lập quy tắc stroke, kích thước, viewBox, màu semantic và accessibility label.
+- [ ] Kiểm thử icon trên Overview, Projects, Calendar, Tasks, Team, Notes, Insights và Settings.
+- [ ] Commit và deploy icon system mới lên GitHub Pages.
