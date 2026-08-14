@@ -15,6 +15,7 @@ const icons = {
   settings: '<path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="m19.4 15 .1.1a2 2 0 0 1-2.8 2.8l-.1-.1a2 2 0 0 0-3.4 1.4v.2a2 2 0 0 1-4 0v-.2a2 2 0 0 0-3.4-1.4l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1A2 2 0 0 0 1.6 11h-.2a2 2 0 0 1 0-4h.2A2 2 0 0 0 3 3.6l-.1-.1A2 2 0 1 1 5.7.7l.1.1A2 2 0 0 0 9.2 0h.2a2 2 0 0 1 4 0h.2a2 2 0 0 0 3.4.8l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a2 2 0 0 0 1.4 3.4h.2a2 2 0 0 1 0 4h-.2a2 2 0 0 0-1.4 3.4Z" transform="scale(.8) translate(3 3)"/>',
   sparkles: '<path d="m12 3 1.2 4.3L17 9l-3.8 1.7L12 15l-1.2-4.3L7 9l3.8-1.7zM19 14l.6 2.1L22 17l-2.4.9L19 20l-.6-2.1L16 17l2.4-.9zM5 15l.5 1.7L7 17.3l-1.5.6L5 19.5l-.5-1.6-1.5-.6 1.5-.6z"/>',
   more: '<circle cx="5" cy="12" r="1" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1" fill="currentColor" stroke="none"/><circle cx="19" cy="12" r="1" fill="currentColor" stroke="none"/>',
+  grip: '<path d="M8 5h.01M8 12h.01M8 19h.01M16 5h.01M16 12h.01M16 19h.01"/>',
   search: '<circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/>',
   command: '<path d="M18 7.5V6a2 2 0 0 0-2-2h-1.5M6 7.5V6a2 2 0 0 1 2-2h1.5M18 16.5V18a2 2 0 0 1-2 2h-1.5M6 16.5V18a2 2 0 0 0 2 2h1.5"/><rect x="8" y="8" width="8" height="8" rx="1"/>',
   bell: '<path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/>',
@@ -46,10 +47,36 @@ let tasks = [
   { id:4, label:"Add notes from client sync", project:"Field Notes", due:"Due 21 Aug", priority:"Low", done:true },
 ];
 
+const TASK_ORDER_STORAGE_KEY = "studioos-task-order";
+
+function restoreTaskOrder() {
+  try {
+    const storedOrder = JSON.parse(localStorage.getItem(TASK_ORDER_STORAGE_KEY) || "[]");
+    if (!Array.isArray(storedOrder) || !storedOrder.length) return;
+    const orderedIds = new Set(storedOrder.map(Number));
+    const taskMap = new Map(tasks.map((task) => [task.id, task]));
+    const restored = storedOrder.map(Number).map((id) => taskMap.get(id)).filter(Boolean);
+    tasks = [...restored, ...tasks.filter((task) => !orderedIds.has(task.id))];
+  } catch (error) {
+    localStorage.removeItem(TASK_ORDER_STORAGE_KEY);
+  }
+}
+
+function persistTaskOrder() {
+  try {
+    localStorage.setItem(TASK_ORDER_STORAGE_KEY, JSON.stringify(tasks.map((task) => task.id)));
+  } catch (error) {
+    // Reordering still works for the current session when storage is unavailable.
+  }
+}
+
+restoreTaskOrder();
+
 let showAllProjects = false;
 let activeReviewProject = null;
 let currentProjectFilter = "All";
 let currentTaskFilter = "All";
+let activeDraggedTaskId = null;
 let lastTaskAction = null;
 let lastTaskActionTimer = null;
 let pageTransitionTimer = null;
@@ -135,7 +162,7 @@ function bindProjectsPage() {
 
 function taskPageRow(task, index) {
   const priority = (task.priority || "Medium").toLowerCase();
-  return `<article class="task-page-row ${task.done ? "task-done" : ""}" data-task-id="${task.id}"><button class="task-check ${task.done ? "checked" : ""}" type="button" data-task-complete aria-label="${task.done ? "Mark" : "Complete"} ${task.label}">${task.done ? icon("check") : ""}</button><span class="task-row-index" aria-hidden="true">${String(index + 1).padStart(2, "0")}</span><span class="task-page-copy"><strong>${task.label}</strong><small><i class="task-project-marker" aria-hidden="true"></i>${task.project}</small></span><span class="task-priority priority-${priority}"><i aria-hidden="true"></i>${task.priority || "Medium"}</span><span class="task-page-due ${task.due.includes("today") ? "task-due-urgent" : ""}">${task.due}</span><button class="icon-button task-more" type="button" data-action="task-options" aria-label="More options for ${task.label}">${icon("more")}</button></article>`;
+  return `<article class="task-page-row ${task.done ? "task-done" : ""}" data-task-id="${task.id}" draggable="true" aria-grabbed="false"><button class="task-drag-handle" type="button" data-task-drag-handle aria-label="Reorder ${task.label}. Use Arrow Up or Arrow Down." aria-keyshortcuts="ArrowUp ArrowDown" title="Drag to reorder or use Arrow Up / Arrow Down">${icon("grip")}</button><button class="task-check ${task.done ? "checked" : ""}" type="button" data-task-complete aria-label="${task.done ? "Mark" : "Complete"} ${task.label}">${task.done ? icon("check") : ""}</button><span class="task-row-index" aria-hidden="true">${String(index + 1).padStart(2, "0")}</span><span class="task-page-copy"><strong>${task.label}</strong><small><i class="task-project-marker" aria-hidden="true"></i>${task.project}</small></span><span class="task-priority priority-${priority}"><i aria-hidden="true"></i>${task.priority || "Medium"}</span><span class="task-page-due ${task.due.includes("today") ? "task-due-urgent" : ""}">${task.due}</span><button class="icon-button task-more" type="button" data-action="task-options" aria-label="More options for ${task.label}">${icon("more")}</button></article>`;
 }
 
 function renderTasksPage(query = "", filter = currentTaskFilter) {
@@ -155,7 +182,31 @@ function renderTasksPage(query = "", filter = currentTaskFilter) {
 
 function bindTasksPage() {
   const input = document.querySelector("#tasksSearchInput");
+  const list = document.querySelector("#tasksPageList");
   const rerender = () => renderTasksPage(input?.value || "", currentTaskFilter);
+  const clearDragState = () => {
+    list?.querySelectorAll(".task-page-row").forEach((row) => {
+      row.classList.remove("is-dragging", "drop-before", "drop-after");
+      row.setAttribute("aria-grabbed", "false");
+    });
+    if (list) list.removeAttribute("data-dragging");
+    activeDraggedTaskId = null;
+  };
+  const moveTask = (taskId, targetId, after = false) => {
+    if (String(taskId) === String(targetId)) return false;
+    const sourceIndex = tasks.findIndex((task) => String(task.id) === String(taskId));
+    if (sourceIndex < 0) return false;
+    const [movedTask] = tasks.splice(sourceIndex, 1);
+    const targetIndex = tasks.findIndex((task) => String(task.id) === String(targetId));
+    if (targetIndex < 0) {
+      tasks.splice(sourceIndex, 0, movedTask);
+      return false;
+    }
+    tasks.splice(targetIndex + (after ? 1 : 0), 0, movedTask);
+    persistTaskOrder();
+    return true;
+  };
+  const focusTaskHandle = (taskId) => document.querySelector(`[data-task-id="${taskId}"] [data-task-drag-handle]`)?.focus();
   input?.addEventListener("input", rerender);
   document.querySelectorAll("[data-task-filter]").forEach((button) => button.addEventListener("click", () => {
     currentTaskFilter = button.dataset.taskFilter;
@@ -163,7 +214,7 @@ function bindTasksPage() {
     rerender();
   }));
   document.querySelector("#tasksAddButton")?.addEventListener("click", () => addTaskToWorkspace());
-  document.querySelector("#tasksPageList")?.addEventListener("click", (event) => {
+  list?.addEventListener("click", (event) => {
     const completeButton = event.target.closest("[data-task-complete]");
     const moreButton = event.target.closest("[data-action='task-options']");
     const row = event.target.closest("[data-task-id]");
@@ -172,6 +223,59 @@ function bindTasksPage() {
     if (!task) return;
     if (completeButton) toggleTask(task);
     if (moreButton) toast(`More actions for ${task.label} are coming soon.`);
+  });
+  list?.addEventListener("dragstart", (event) => {
+    const handle = event.target.closest("[data-task-drag-handle]");
+    const row = event.target.closest("[data-task-id]");
+    if (!handle || !row) {
+      event.preventDefault();
+      return;
+    }
+    activeDraggedTaskId = row.dataset.taskId;
+    row.classList.add("is-dragging");
+    row.setAttribute("aria-grabbed", "true");
+    list.dataset.dragging = "true";
+    event.dataTransfer.effectAllowed = "move";
+    event.dataTransfer.setData("text/plain", activeDraggedTaskId);
+  });
+  list?.addEventListener("dragover", (event) => {
+    if (!activeDraggedTaskId) return;
+    const row = event.target.closest("[data-task-id]");
+    if (!row || row.dataset.taskId === activeDraggedTaskId) return;
+    event.preventDefault();
+    event.dataTransfer.dropEffect = "move";
+    list.querySelectorAll(".task-page-row").forEach((item) => item.classList.remove("drop-before", "drop-after"));
+    const after = event.clientY > row.getBoundingClientRect().top + row.getBoundingClientRect().height / 2;
+    row.classList.add(after ? "drop-after" : "drop-before");
+  });
+  list?.addEventListener("drop", (event) => {
+    if (!activeDraggedTaskId) return;
+    const row = event.target.closest("[data-task-id]");
+    if (!row || row.dataset.taskId === activeDraggedTaskId) return;
+    event.preventDefault();
+    const after = row.classList.contains("drop-after");
+    const moved = moveTask(activeDraggedTaskId, row.dataset.taskId, after);
+    clearDragState();
+    if (moved) {
+      rerender();
+      toast("Task order updated.");
+    }
+  });
+  list?.addEventListener("dragend", clearDragState);
+  list?.addEventListener("keydown", (event) => {
+    const handle = event.target.closest("[data-task-drag-handle]");
+    if (!handle || !["ArrowUp", "ArrowDown"].includes(event.key)) return;
+    event.preventDefault();
+    const row = handle.closest("[data-task-id]");
+    const rows = [...list.querySelectorAll("[data-task-id]")];
+    const currentIndex = rows.indexOf(row);
+    const targetRow = rows[currentIndex + (event.key === "ArrowUp" ? -1 : 1)];
+    if (!row || !targetRow) return toast(event.key === "ArrowUp" ? "This task is already first." : "This task is already last.");
+    const moved = moveTask(row.dataset.taskId, targetRow.dataset.taskId, event.key === "ArrowDown");
+    if (!moved) return;
+    rerender();
+    focusTaskHandle(row.dataset.taskId);
+    toast(event.key === "ArrowUp" ? "Task moved up." : "Task moved down.");
   });
 }
 
@@ -260,6 +364,7 @@ function toggleTask(task) {
 
 function addTaskToWorkspace() {
   tasks.push({ id: Date.now(), label: "Define final QA checklist", project: "Workspace", due: "Due this week", priority: "Medium", done: false });
+  persistTaskOrder();
   refreshTaskViews();
   toast("Task added to your focus list.");
 }
