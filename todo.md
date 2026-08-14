@@ -9,8 +9,8 @@
 
 ## GitHub Pages follow-up
 
-- [ ] Enable Pages in repository settings using GitHub Actions.
-- [ ] Re-run the deploy workflow after Pages is enabled.
+- [x] Enable Pages in repository settings using GitHub Actions.
+- [x] Re-run the deploy workflow after Pages is enabled.
 - [x] Verify the published StudioOS URL.
 
 ## UI redesign follow-up
@@ -23,11 +23,11 @@
 
 ## Remaining screens follow-up
 
-- [ ] Thiết kế Projects với search, filter, status summary và project list.
-- [ ] Thiết kế Calendar với timeline tuần, deadlines và task detail.
-- [ ] Thiết kế Team với member directory, workload và invite state.
-- [ ] Thiết kế Notes với searchable notes, tags và note editor state.
-- [ ] Thiết kế Insights với project health, workload và chart language.
-- [ ] Thiết kế Settings với workspace profile, notifications và preferences.
-- [ ] Nối navigation, responsive shell và placeholder actions có feedback.
-- [ ] Kiểm thử, commit và deploy các trang mới.
+- [x] Thiết kế Projects với search, filter, status summary và project list.
+- [x] Thiết kế Calendar với timeline tuần, deadlines và task detail.
+- [x] Thiết kế Team với member directory, workload và invite state.
+- [x] Thiết kế Notes với searchable notes, tags và note editor state.
+- [x] Thiết kế Insights với project health, workload và chart language.
+- [x] Thiết kế Settings với workspace profile, notifications và preferences.
+- [x] Nối navigation, responsive shell và placeholder actions có feedback.
+- [x] Kiểm thử, commit và deploy các trang mới.

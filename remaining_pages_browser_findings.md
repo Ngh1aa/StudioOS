@@ -17,3 +17,11 @@ The exact versioned production script contains `projectsPage`, `renderPage` and 
 Commit `dbf3858` resolves both discovered scope references in `projectsPage()` (`filtered.length` and `filter`). GitHub Actions run `31764130361` completed successfully for both build and deploy. Production route behavior must be checked again with a fresh URL query.
 
 Production verification after `dbf3858` still changes the breadcrumb to `Projects` while leaving the Overview content mounted. The remaining exception is inside `projectsPage()` or a helper evaluated by its template; browser DOM confirms the navigation listener runs before the template assignment.
+
+After commit `c2009d4`, which updates `index.html` to load `script.js?v=dbf3858`, production verification succeeds: clicking Projects now renders the full page with `Search projects`, filter chips, metrics, `Project index`, 4 results and all project cards. GitHub Actions run `31764312510` completed successfully for build and deploy.
+
+Additional production checks succeed: Team renders the studio directory, member capacity cards and invite action; Calendar renders the August 2026 weekly timeline, milestones, view toggle and Next Up list. Navigation and page shell remain consistent across both routes.
+
+Notes renders searchable notes, note groups, tags and open-note actions. Insights renders the studio health score, KPI cards, capacity chart language and attention signals. Both routes loaded without visible runtime failure on production.
+
+Settings renders the workspace profile form, preference controls and tab navigation. Clicking Notifications updates the active tab and shows the expected toast feedback without disrupting the page shell.
