@@ -37,7 +37,7 @@
 - [x] Cố định sidebar theo viewport ở desktop.
 - [x] Tách vùng cuộn riêng cho nội dung bên phải.
 - [x] Bảo toàn mobile drawer và mobile scrim behavior.
-- [ ] Kiểm thử scroll, responsive layout và deploy bản sửa.
+- [x] Kiểm thử scroll, responsive layout và deploy bản sửa.
 
 ## Tasks motion follow-up
 
@@ -46,4 +46,11 @@
 - [x] Tích hợp Toast thông báo hoàn thành task.
 - [x] Tích hợp Undo action cho task vừa hoàn thành.
 - [x] Thêm reduced-motion fallback và kiểm thử responsive.
-- [ ] Commit và deploy bản Tasks mới.
+- [x] Commit và deploy bản Tasks mới.
+
+## Color palette follow-up
+
+- [x] Audit semantic color roles và contrast hiện tại.
+- [x] Chốt palette mới cho canvas, surface, ink, copper, sage, blue và danger.
+- [x] Áp dụng tokens vào component states và data visualization.
+- [ ] Kiểm tra contrast, hover/focus/disabled states và deploy.
