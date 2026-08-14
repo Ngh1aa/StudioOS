@@ -68,5 +68,5 @@
 - [x] Audit source syntax, missing selectors, duplicate handlers và unresolved icon keys.
 - [x] Audit asset paths, external font loading và GitHub Actions static output.
 - [x] Kiểm thử semantic markup, focus states, keyboard flow, reduced motion và responsive shell.
-- [ ] Kiểm thử navigation, search, filters, dialogs, toast/undo và placeholder actions.
-- [ ] Sửa lỗi phát hiện được, chạy regression và xác nhận production sau deploy.
+- [x] Kiểm thử navigation, search, filters, dialogs, toast/undo và placeholder actions.
+- [x] Sửa lỗi phát hiện được, chạy regression và xác nhận production sau deploy.
