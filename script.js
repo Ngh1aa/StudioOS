@@ -80,7 +80,7 @@ function tasksPage() {
 }
 
 function calendarPage() {
-  return `<div class="page-shell-page">${pageHeader("05 / Rhythm", "Calendar", "A gentle pulse for the work that needs to happen next.", `<div class="calendar-actions"><button class="ghost-button" type="button" data-action="calendar-prev"><span data-icon="chevron-left"></span></button><button class="ghost-button" type="button" data-action="calendar-next"><span data-icon="chevron-right"></span></button><button class="primary-button" type="button" data-action="calendar-add"><span data-icon="plus"></span> Add milestone</button></div>`)}<section class="calendar-layout"><div class="calendar-main panel-surface"><div class="calendar-toolbar"><div><strong>August 2026</strong><span>Week 33 · 10–16 August</span></div><div class="calendar-view-switch"><button class="view-switch active" type="button">Week</button><button class="view-switch" type="button" data-action="calendar-month">Month</button></div></div><div class="week-grid"><div class="week-label"></div><div><small>MON</small><strong>10</strong></div><div><small>TUE</small><strong class="today-date">11</strong></div><div><small>WED</small><strong>12</strong></div><div><small>THU</small><strong>13</strong></div><div><small>FRI</small><strong>14</strong></div><div><small>SAT</small><strong>15</strong></div><div><small>SUN</small><strong>16</strong></div><span class="week-line line-1"></span><span class="week-line line-2"></span><span class="week-line line-3"></span><span class="week-line line-4"></span><span class="calendar-event event-copper event-one"><b>09:30</b> Review Lumen House</span><span class="calendar-event event-sage event-two"><b>13:00</b> Type specimens handoff</span><span class="calendar-event event-ink event-three"><b>15:30</b> Northstar launch sync</span><span class="calendar-event event-copper event-four"><b>11:00</b> Client feedback window</span></div></div><aside class="calendar-agenda panel-surface"><div class="section-heading-row compact-heading"><div><div class="section-kicker">Next up</div><h2>Today</h2></div><span class="agenda-date">14 Aug</span></div><div class="agenda-list"><button class="agenda-item" type="button" data-action="calendar-event"><span class="agenda-time">09:30</span><span><strong>Review Lumen House</strong><small>Brand system · Maya Chen</small></span><i class="agenda-dot copper"></i></button><button class="agenda-item" type="button" data-action="calendar-event"><span class="agenda-time">13:00</span><span><strong>Share type specimens</strong><small>Common Ground · Noah Williams</small></span><i class="agenda-dot sage"></i></button><button class="agenda-item" type="button" data-action="calendar-event"><span class="agenda-time">15:30</span><span><strong>Launch sync</strong><small>Northstar / Q3 · Jules Tran</small></span><i class="agenda-dot ink"></i></button></div><button class="link-button activity-link" type="button" data-action="calendar-full">Open full calendar <span data-icon="arrow-up-right"></span></button></aside></section></div>`;
+  return `<div class="page-shell-page">${pageHeader("05 / Rhythm", "Calendar", "A gentle pulse for the work that needs to happen next.", `<div class="calendar-actions"><button class="ghost-button" type="button" data-action="calendar-prev"><span data-icon="chevron-left"></span></button><button class="ghost-button" type="button" data-action="calendar-next"><span data-icon="chevron-right"></span></button><button class="primary-button" type="button" data-action="calendar-add"><span data-icon="plus"></span> Add milestone</button></div>`)}<section class="calendar-layout"><div class="calendar-main panel-surface"><div class="calendar-toolbar"><div><strong>August 2026</strong><span>Week 33 · 10–16 August</span></div><div class="calendar-view-switch"><button class="view-switch active" type="button">Week</button><button class="view-switch" type="button" data-action="calendar-month">Month</button></div></div><div class="week-grid"><div class="week-label"></div><div><small>MON</small><strong>10</strong></div><div><small>TUE</small><strong>11</strong></div><div><small>WED</small><strong>12</strong></div><div><small>THU</small><strong>13</strong></div><div><small>FRI</small><strong class="today-date">14</strong></div><div><small>SAT</small><strong>15</strong></div><div><small>SUN</small><strong>16</strong></div><span class="week-line line-1"></span><span class="week-line line-2"></span><span class="week-line line-3"></span><span class="week-line line-4"></span><span class="calendar-event event-copper event-one"><b>09:30</b> Review Lumen House</span><span class="calendar-event event-sage event-two"><b>13:00</b> Type specimens handoff</span><span class="calendar-event event-ink event-three"><b>15:30</b> Northstar launch sync</span><span class="calendar-event event-copper event-four"><b>11:00</b> Client feedback window</span></div></div><aside class="calendar-agenda panel-surface"><div class="section-heading-row compact-heading"><div><div class="section-kicker">Next up</div><h2>Today</h2></div><span class="agenda-date">14 Aug</span></div><div class="agenda-list"><button class="agenda-item" type="button" data-action="calendar-event"><span class="agenda-time">09:30</span><span><strong>Review Lumen House</strong><small>Brand system · Maya Chen</small></span><i class="agenda-dot copper"></i></button><button class="agenda-item" type="button" data-action="calendar-event"><span class="agenda-time">13:00</span><span><strong>Share type specimens</strong><small>Common Ground · Noah Williams</small></span><i class="agenda-dot sage"></i></button><button class="agenda-item" type="button" data-action="calendar-event"><span class="agenda-time">15:30</span><span><strong>Launch sync</strong><small>Northstar / Q3 · Jules Tran</small></span><i class="agenda-dot ink"></i></button></div><button class="link-button activity-link" type="button" data-action="calendar-full">Open full calendar <span data-icon="arrow-up-right"></span></button></aside></section></div>`;
 }
 
 function teamPage() {
@@ -109,6 +109,7 @@ function renderPage(name) {
     renderIcons();
     if (name === "Projects") { currentProjectFilter = "All"; renderProjectsPage(); bindProjectsPage(); }
     if (name === "Tasks") { currentTaskFilter = "All"; renderTasksPage(); bindTasksPage(); }
+    if (name === "Notes") bindNotesPage();
     bindPageActions(name);
     document.querySelector(".studio-main")?.scrollTo({ top: 0, behavior: reduced ? "auto" : "smooth" });
     view.classList.remove("is-leaving");
@@ -174,11 +175,37 @@ function bindTasksPage() {
   });
 }
 
+function bindNotesPage() {
+  const input = document.querySelector("#notesSearchInput");
+  const grid = document.querySelector(".notes-grid");
+  if (!input || !grid) return;
+  input.addEventListener("input", (event) => {
+    const query = event.target.value.trim().toLowerCase();
+    const cards = [...grid.querySelectorAll(".note-card")];
+    let visible = 0;
+    cards.forEach((card) => {
+      const matches = !query || card.textContent.toLowerCase().includes(query);
+      card.hidden = !matches;
+      if (matches) visible += 1;
+    });
+    let empty = document.querySelector("#notesSearchEmpty");
+    if (!empty) {
+      empty = document.createElement("div");
+      empty.id = "notesSearchEmpty";
+      empty.className = "empty-search page-empty";
+      empty.innerHTML = `${icon("search")}<strong>No notes found</strong><span>Try another keyword or clear the search.</span>`;
+      grid.parentElement.append(empty);
+      renderIcons();
+    }
+    empty.hidden = visible > 0 || !query;
+  });
+}
+
 function bindPageActions(name) {
   document.querySelectorAll("#pageView [data-action]").forEach((button) => button.addEventListener("click", () => {
     const action = button.dataset.action;
     const messages = { "sort-projects": "Projects are sorted by the latest activity.", "calendar-prev": "Previous week is coming next.", "calendar-next": "Next week is coming next.", "calendar-add": "Milestone composer is coming soon.", "calendar-month": "Month view is coming next.", "calendar-event": "Event detail is coming soon.", "calendar-full": "Full calendar view is coming next.", "team-filter": "Team filters are coming soon.", "member-options": "Member actions are coming soon.", "member-profile": "Member profiles are coming soon.", "new-note": "Note composer is coming soon.", "notes-filter": "Note filters are ready for the next slice.", "notes-tag": "Tag filtering is coming soon.", "note-options": "Note actions are coming soon.", "open-note": "Note detail is coming soon.", "export-insights": "Your insights summary is being prepared.", "insights-method": "Insights are based on progress, deadlines and review rhythm.", "workload-options": "Time range options are coming soon.", "insight-attention": "Attention detail is coming soon.", "save-settings": "Workspace settings saved.", "invite": "Invite flow is coming soon." };
-    if (action !== "invite" || name !== "Team") toast(messages[action] || "This workspace action is coming soon.");
+    toast(messages[action] || "This workspace action is coming soon.");
   }));
   document.querySelectorAll("[data-settings-tab]").forEach((button) => button.addEventListener("click", () => { document.querySelectorAll("[data-settings-tab]").forEach((item) => item.classList.toggle("active", item === button)); toast(`${button.dataset.settingsTab} settings selected.`); }));
 }
@@ -271,7 +298,7 @@ function openSidebar() { document.querySelector("#sidebar").classList.add("sideb
 
 document.addEventListener("DOMContentLoaded", () => {
   const overviewMarkup = document.querySelector("#pageView").innerHTML;
-  const showOverview = () => { const view = document.querySelector("#pageView"); view.innerHTML = overviewMarkup; renderIcons(); renderProjects(); renderTasks(); bindOverviewActions(); document.querySelector(".studio-main")?.scrollTo({ top: 0, behavior: "smooth" }); };
+  const showOverview = () => { const view = document.querySelector("#pageView"); const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches; view.innerHTML = overviewMarkup; renderIcons(); renderProjects(); renderTasks(); bindOverviewActions(); document.querySelector(".studio-main")?.scrollTo({ top: 0, behavior: reduced ? "auto" : "smooth" }); };
   const bindOverviewActions = () => {
     document.querySelector("#searchInput").value = "";
     document.querySelector("#searchInput").oninput = (event) => { renderProjects(event.target.value); renderTasks(event.target.value); };
@@ -282,7 +309,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelector("#taskList")?.addEventListener("click", (event) => { const row = event.target.closest("[data-task-id]"); if (!row) return; const task = tasks.find((item) => String(item.id) === row.dataset.taskId); if (task) toggleTask(task); });
   };
   renderIcons(); renderProjects(); renderTasks(); bindOverviewActions();
-  document.querySelectorAll("[data-nav]").forEach((button) => button.addEventListener("click", () => { document.querySelectorAll("[data-nav]").forEach((item) => item.classList.toggle("active", item === button)); document.querySelector("#activeBreadcrumb").textContent = button.dataset.nav; closeSidebar(); if (button.dataset.nav === "Overview") showOverview(); else renderPage(button.dataset.nav); }));
+  document.querySelectorAll("[data-nav]").forEach((button) => button.addEventListener("click", () => { document.querySelectorAll("[data-nav]").forEach((item) => { const isActive = item === button; item.classList.toggle("active", isActive); if (isActive) item.setAttribute("aria-current", "page"); else item.removeAttribute("aria-current"); }); document.querySelector("#activeBreadcrumb").textContent = button.dataset.nav; closeSidebar(); if (button.dataset.nav === "Overview") showOverview(); else renderPage(button.dataset.nav); }));
   document.querySelector("#searchInput").addEventListener("input", (event) => { if (document.querySelector("#activeBreadcrumb").textContent === "Overview") { renderProjects(event.target.value); renderTasks(event.target.value); } else if (document.querySelector("#activeBreadcrumb").textContent === "Projects") { const input = document.querySelector("#projectFilterInput"); if (input) { input.value = event.target.value; renderProjectsPage(event.target.value, currentProjectFilter); } } });
   document.querySelector("#createProjectForm").addEventListener("submit", (event) => { event.preventDefault(); const name = document.querySelector("#projectNameInput").value.trim(); if (!name) return toast("Give the project a name before creating it.", "error"); projects.unshift({ id:name.toLowerCase().replace(/[^a-z0-9]+/g, "-"), name, type:document.querySelector("#projectTypeInput").value, status:"Not started", tone:"quiet", progress:0, due:"No date", dueTone:"quiet", owner:"You", members:["YO"], cover:"./assets/studioos-project-motion.png" }); document.querySelector("#createProjectForm").reset(); closeDialog("createDialog"); if (document.querySelector("#activeBreadcrumb").textContent === "Projects") { renderProjectsPage(); bindProjectsPage(); } else { renderProjects(document.querySelector("#searchInput").value); } toast(`${name} is ready for its first task.`); });
   document.querySelector("#markReviewedButton").addEventListener("click", () => { const name = activeReviewProject?.name || "Project"; closeDialog("reviewDialog"); toast(`${name} marked as ready for the next review.`); });

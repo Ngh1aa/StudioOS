@@ -65,7 +65,7 @@ body {
 button, input, select { font: inherit; }
 button { border: 0; }
 button:not(:disabled), [role="button"]:not([aria-disabled="true"]) { cursor: pointer; }
-button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--copper); outline-offset: 3px; }
+button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid var(--copper); outline-offset: 3px; }
 [hidden] { display: none !important; }
 h1, h2, h3, p { margin: 0; }
 svg, .studio-icon { width: 17px; height: 17px; display: block; flex: 0 0 auto; fill: none; stroke: currentColor; stroke-width: var(--icon-stroke-width); stroke-linecap: round; stroke-linejoin: round; overflow: visible; }
@@ -315,7 +315,8 @@ h1 span { color: var(--copper); }
 .activity-item time i { padding: 0 3px; font-style: normal; }
 .activity-link { margin-top: 8px; }
 .workspace-footer { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding-top: 29px; color: #9da49b; font-size: 9px; }
-.workspace-footer b { color: var(--copper); font-size: 14px; font-weight: 400; vertical-align: -1px; }
+.workspace-footer .footer-mark { display: inline-flex; vertical-align: -4px; color: var(--copper); }
+.workspace-footer .footer-mark svg { width: 14px; height: 14px; }
 .workspace-footer i { display: inline-block; width: 5px; height: 5px; margin-left: 4px; border-radius: 50%; background: var(--sage); vertical-align: 1px; }
 
 .dialog-layer { position: fixed; z-index: 100; inset: 0; display: grid; place-items: center; padding: 20px; background: rgba(25,29,26,.48); backdrop-filter: blur(8px); animation: fade-in 180ms ease; }

@@ -62,3 +62,11 @@
 - [x] Thiết lập quy tắc stroke, kích thước, viewBox, màu semantic và accessibility label.
 - [x] Kiểm thử icon trên Overview, Projects, Calendar, Tasks, Team, Notes, Insights và Settings.
 - [x] Commit và deploy icon system mới lên GitHub Pages.
+
+## Full project audit follow-up
+
+- [x] Audit source syntax, missing selectors, duplicate handlers và unresolved icon keys.
+- [x] Audit asset paths, external font loading và GitHub Actions static output.
+- [x] Kiểm thử semantic markup, focus states, keyboard flow, reduced motion và responsive shell.
+- [ ] Kiểm thử navigation, search, filters, dialogs, toast/undo và placeholder actions.
+- [ ] Sửa lỗi phát hiện được, chạy regression và xác nhận production sau deploy.
