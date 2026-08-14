@@ -91,4 +91,4 @@
 - [x] Nâng cấp Tasks theo pattern Linear/SaaSUI cho focus, grouping, filters và feedback.
 - [x] Định nghĩa typography tokens, scale, pairing, weight, line-height và tracking.
 - [x] Áp dụng typography system vào toàn bộ shell, pages, cards, dialogs, tables và data UI.
-- [ ] Kiểm thử responsive, accessibility, reduced motion, regression và deploy.
+- [x] Kiểm thử responsive, accessibility, reduced motion, regression và deploy.
