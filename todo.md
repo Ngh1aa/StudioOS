@@ -84,3 +84,11 @@
 - [x] Nghiên cứu nguồn dashboard/workspace, editorial SaaS, typography và motion phù hợp Quiet Precision.
 - [x] Kiểm tra trực tiếp các website và ghi lại pattern có thể học, không sao chép.
 - [x] Chọn shortlist nguồn tham khảo và mapping vào các khu vực UI StudioOS.
+
+## Tasks and typography system follow-up
+
+- [x] Audit Tasks hierarchy, density, filters, status states và current font usage.
+- [x] Nâng cấp Tasks theo pattern Linear/SaaSUI cho focus, grouping, filters và feedback.
+- [x] Định nghĩa typography tokens, scale, pairing, weight, line-height và tracking.
+- [x] Áp dụng typography system vào toàn bộ shell, pages, cards, dialogs, tables và data UI.
+- [ ] Kiểm thử responsive, accessibility, reduced motion, regression và deploy.
