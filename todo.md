@@ -92,3 +92,11 @@
 - [x] Định nghĩa typography tokens, scale, pairing, weight, line-height và tracking.
 - [x] Áp dụng typography system vào toàn bộ shell, pages, cards, dialogs, tables và data UI.
 - [x] Kiểm thử responsive, accessibility, reduced motion, regression và deploy.
+
+## Task drag-and-drop follow-up
+
+- [x] Audit task order state, render lifecycle và interaction conflicts.
+- [x] Thêm kéo thả để reorder task trong danh sách hiện tại.
+- [x] Thêm drag handle, grabbed/dragging/drop indicator và keyboard reorder fallback.
+- [x] Kiểm thử reorder với search/filter, completion, Undo, responsive và reduced motion.
+- [x] Commit và deploy tính năng drag-and-drop lên GitHub Pages.
