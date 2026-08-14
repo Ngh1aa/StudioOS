@@ -121,6 +121,6 @@
 
 ## Monochrome highlight and typography follow-up
 
-- [ ] Chuyển highlight project active sang màu trắng theo reference.
-- [ ] Dùng Inter cho text nội dung và serif cho tiêu đề trong toàn bộ StudioOS.
-- [ ] Đặt cỡ chữ content tối thiểu trong khoảng 12–16px, regenerate assets và deploy.
+- [x] Chuyển highlight project active sang màu trắng theo reference.
+- [x] Dùng Inter cho text nội dung và serif cho tiêu đề trong toàn bộ StudioOS.
+- [x] Đặt cỡ chữ content tối thiểu trong khoảng 12–16px, regenerate assets và deploy.
