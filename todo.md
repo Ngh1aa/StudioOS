@@ -78,3 +78,9 @@
 - [x] Tích hợp asset mới vào sidebar, favicon, project cards và review dialog.
 - [x] Kiểm tra asset paths, contrast, responsive rendering và production load.
 - [x] Commit và deploy bộ nhận diện hình ảnh mới lên GitHub Pages.
+
+## UI inspiration research follow-up
+
+- [x] Nghiên cứu nguồn dashboard/workspace, editorial SaaS, typography và motion phù hợp Quiet Precision.
+- [x] Kiểm tra trực tiếp các website và ghi lại pattern có thể học, không sao chép.
+- [x] Chọn shortlist nguồn tham khảo và mapping vào các khu vực UI StudioOS.
