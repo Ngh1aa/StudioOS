@@ -77,3 +77,8 @@ Biểu tượng là open square kết hợp một điểm lệch và đường n
 
 Muted copper `#B96E4B`, dùng tiết chế cho primary action, selected marker và những điểm cần người dùng đưa ra quyết định.
 
+## Style Decisions
+
+### Monochrome readability refresh — 2026-08-14
+
+StudioOS chuyển sang hệ trắng–đen với graphite làm màu neo, nền trắng và thang xám cho trạng thái. Typography được tăng nhẹ ở navigation, body copy, task rows và metadata để workspace dễ đọc hơn; màu sắc vẫn giữ vai trò semantic nhưng không còn dùng accent màu để trang trí.
