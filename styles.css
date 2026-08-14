@@ -477,6 +477,14 @@ h1 span { color: var(--copper); }
 .filter-chip em { color: #aab0a8; font-size: 8px; font-style: normal; }
 .filter-chip.active em { color: #f1b19b; }
 .page-toolbar > .ghost-button { margin-left: 3px; }
+.project-taxonomy { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin: -12px 0 28px; padding: 7px 0 0; border-top: 1px solid #e6e9e1; }
+.taxonomy-label { margin-right: 4px; color: #a1a9a0; font-size: 8px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+.taxonomy-chip { min-height: 27px; display: inline-flex; align-items: center; gap: 5px; padding: 0 8px; border: 1px solid transparent; border-radius: 6px; background: transparent; color: #7e8980; font-family: var(--font-ui); font-size: 9px; font-weight: 700; transition: border-color 160ms ease, background 160ms ease, color 160ms ease, transform 160ms ease; }
+.taxonomy-chip:hover { border-color: var(--line-strong); background: var(--paper-raised); color: var(--ink); }
+.taxonomy-chip:active { transform: scale(.97); }
+.taxonomy-chip.active { border-color: rgba(183,94,62,.25); background: var(--copper-soft); color: var(--copper-dark); }
+.taxonomy-chip em { color: #a6aea5; font-size: 8px; font-style: normal; }
+.taxonomy-chip.active em { color: var(--copper-dark); }
 .metric-strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(230px, 1.2fr); gap: 1px; margin-bottom: 51px; overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--line); box-shadow: var(--shadow-sm); }
 .metric-strip > div { min-height: 103px; display: grid; align-content: center; gap: 5px; padding: 18px 20px; background: rgba(255,254,251,.78); }
 .metric-strip small, .metric-strip span { color: #909990; font-size: 9px; }
@@ -642,4 +650,8 @@ h1 span { color: var(--copper); }
   .task-page-due { margin-top: -4px; }
   .task-more { grid-column: 4; grid-row: 1 / span 2; }
   .tasks-side-column { grid-template-columns: 1fr; }
+}
+@media (max-width: 680px) {
+  .project-taxonomy { flex-wrap: nowrap; margin-top: -8px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: thin; }
+  .taxonomy-chip { flex-shrink: 0; }
 }

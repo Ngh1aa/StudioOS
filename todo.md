@@ -112,3 +112,9 @@
 - [x] Tối ưu các tài nguyên tĩnh và JavaScript không làm thay đổi trải nghiệm chính.
 - [x] Bổ sung và kiểm tra các metadata SEO cơ bản, canonical, robots và sitemap.
 - [x] Kiểm tra production, commit và deploy các tối ưu performance/SEO.
+
+## Micheledu reference follow-up
+
+- [x] Phân tích pattern UI/UX từ micheledu.com và lưu các insight có thể học.
+- [x] Chọn các cải tiến phù hợp với Quiet Precision, không sao chép nguyên mẫu.
+- [x] Triển khai, kiểm tra accessibility/responsive và deploy các cải tiến StudioOS.

@@ -34,10 +34,10 @@ const icons = {
 };
 
 const projects = [
-  { id:"lumen-house", name:"Lumen House", type:"Brand system", status:"In review", tone:"review", progress:78, due:"Today", dueTone:"urgent", owner:"Maya Chen", members:["MC","JT","AN"], cover:"./assets/studioos-project-architecture-refresh.webp" },
-  { id:"common-ground", name:"Common Ground", type:"Digital experience", status:"On track", tone:"progress", progress:46, due:"18 Aug", dueTone:"normal", owner:"Noah Williams", members:["NW","LC","OR"], cover:"./assets/studioos-project-material-refresh.webp" },
-  { id:"northstar", name:"Northstar / Q3", type:"Campaign launch", status:"On track", tone:"progress", progress:24, due:"02 Sep", dueTone:"normal", owner:"Jules Tran", members:["JT","MC"], cover:"./assets/studioos-project-motion-refresh.webp" },
-  { id:"field-notes", name:"Field Notes", type:"Research sprint", status:"Not started", tone:"quiet", progress:0, due:"09 Sep", dueTone:"quiet", owner:"Anika Rao", members:["AR","NW"], cover:"./assets/studioos-project-field-notes-refresh.webp" },
+  { id:"lumen-house", name:"Lumen House", type:"Brand system", view:"Brand", status:"In review", tone:"review", progress:78, due:"Today", dueTone:"urgent", owner:"Maya Chen", members:["MC","JT","AN"], cover:"./assets/studioos-project-architecture-refresh.webp" },
+  { id:"common-ground", name:"Common Ground", type:"Digital experience", view:"Digital", status:"On track", tone:"progress", progress:46, due:"18 Aug", dueTone:"normal", owner:"Noah Williams", members:["NW","LC","OR"], cover:"./assets/studioos-project-material-refresh.webp" },
+  { id:"northstar", name:"Northstar / Q3", type:"Campaign launch", view:"Campaign", status:"On track", tone:"progress", progress:24, due:"02 Sep", dueTone:"normal", owner:"Jules Tran", members:["JT","MC"], cover:"./assets/studioos-project-motion-refresh.webp" },
+  { id:"field-notes", name:"Field Notes", type:"Research sprint", view:"Research", status:"Not started", tone:"quiet", progress:0, due:"09 Sep", dueTone:"quiet", owner:"Anika Rao", members:["AR","NW"], cover:"./assets/studioos-project-field-notes-refresh.webp" },
 ];
 
 let tasks = [
@@ -75,6 +75,7 @@ restoreTaskOrder();
 let showAllProjects = false;
 let activeReviewProject = null;
 let currentProjectFilter = "All";
+let currentProjectView = "All";
 let currentTaskFilter = "All";
 let activeDraggedTaskId = null;
 let lastTaskAction = null;
@@ -85,18 +86,21 @@ function pageHeader(kicker, title, description, action = "") {
   return `<section class="view-heading"><div><div class="section-kicker">${kicker}</div><h1>${title}<span>.</span></h1><p class="view-description">${description}</p></div>${action}</section>`;
 }
 
-function renderProjectsPage(query = "", filter = currentProjectFilter) {
+function renderProjectsPage(query = "", filter = currentProjectFilter, view = currentProjectView) {
   const normalized = query.trim().toLowerCase();
   const filtered = projects.filter((project) => {
     const matchesQuery = !normalized || `${project.name} ${project.type} ${project.owner}`.toLowerCase().includes(normalized);
     const matchesFilter = filter === "All" || (filter === "In review" ? project.status === "In review" : filter === "On track" ? project.status === "On track" : project.status === "Not started");
-    return matchesQuery && matchesFilter;
+    const matchesView = view === "All" || project.view === view;
+    return matchesQuery && matchesFilter && matchesView;
   });
   document.querySelector("#projectsPageGrid").innerHTML = filtered.length ? filtered.map(projectCard).join("") : `<div class="empty-search page-empty">${icon("search")}<strong>No projects in this view</strong><span>Try another filter or search term.</span></div>`;
+  const count = document.querySelector("#projectsPageCount");
+  if (count) count.textContent = `${filtered.length} result${filtered.length === 1 ? "" : "s"}`;
 }
 
 function projectsPage() {
-  return `<div class="page-shell-page"><div class="page-intro-row"><div class="page-intro-row">${pageHeader("04 / Portfolio", "Projects", "A clear view of every brief, milestone and next decision.", `<button class="primary-button" id="pageNewProjectButton" type="button"><span data-icon="plus"></span> New project</button>`)}</div><section class="page-toolbar"><label class="toolbar-search"><span data-icon="search"></span><span class="sr-only">Search projects</span><input id="projectFilterInput" type="search" placeholder="Search projects" /></label><div class="filter-chips" role="group" aria-label="Project filters"><button class="filter-chip active" type="button" data-project-filter="All">All <em>04</em></button><button class="filter-chip" type="button" data-project-filter="In review">In review <em>01</em></button><button class="filter-chip" type="button" data-project-filter="On track">On track <em>02</em></button><button class="filter-chip" type="button" data-project-filter="Not started">Not started <em>01</em></button></div><button class="ghost-button" type="button" data-action="sort-projects">Sort <span data-icon="sliders"></span></button></section><section class="metric-strip"><div><small>Total value</small><strong>04</strong><span>active projects</span></div><div><small>Moving well</small><strong>03</strong><span>on schedule</span></div><div><small>Needs attention</small><strong>01</strong><span>awaiting your eye</span></div><div class="metric-strip-note"><span data-icon="sparkles"></span><p><strong>Good work gets room to breathe.</strong><small>One calm view for the whole studio.</small></p></div></section><section class="page-section-heading"><div><div class="section-kicker">All work / ${currentProjectFilter}</div><h2>Project index</h2></div><span class="page-count">${projects.length} results</span></section><div class="project-grid projects-page-grid" id="projectsPageGrid"></div></div>`;
+  return `<div class="page-shell-page"><div class="page-intro-row"><div class="page-intro-row">${pageHeader("04 / Portfolio", "Projects", "A clear view of every brief, milestone and next decision.", `<button class="primary-button" id="pageNewProjectButton" type="button"><span data-icon="plus"></span> New project</button>`)}</div><section class="page-toolbar"><label class="toolbar-search"><span data-icon="search"></span><span class="sr-only">Search projects</span><input id="projectFilterInput" type="search" placeholder="Search projects" /></label><div class="filter-chips" role="group" aria-label="Project status filters"><button class="filter-chip active" type="button" data-project-filter="All">All <em>04</em></button><button class="filter-chip" type="button" data-project-filter="In review">In review <em>01</em></button><button class="filter-chip" type="button" data-project-filter="On track">On track <em>02</em></button><button class="filter-chip" type="button" data-project-filter="Not started">Not started <em>01</em></button></div><button class="ghost-button" type="button" data-action="sort-projects">Sort <span data-icon="sliders"></span></button></section><div class="project-taxonomy" role="group" aria-label="View projects by type"><span class="taxonomy-label">View by</span><button class="taxonomy-chip active" type="button" data-project-view="All">All work <em>04</em></button><button class="taxonomy-chip" type="button" data-project-view="Brand">Brand <em>01</em></button><button class="taxonomy-chip" type="button" data-project-view="Digital">Digital <em>01</em></button><button class="taxonomy-chip" type="button" data-project-view="Campaign">Campaign <em>01</em></button><button class="taxonomy-chip" type="button" data-project-view="Research">Research <em>01</em></button></div><section class="metric-strip"><div><small>Total value</small><strong>04</strong><span>active projects</span></div><div><small>Moving well</small><strong>03</strong><span>on schedule</span></div><div><small>Needs attention</small><strong>01</strong><span>awaiting your eye</span></div><div class="metric-strip-note"><span data-icon="sparkles"></span><p><strong>Good work gets room to breathe.</strong><small>One calm view for the whole studio.</small></p></div></section><section class="page-section-heading"><div><div class="section-kicker">${currentProjectView === "All" ? "All work" : currentProjectView} / ${currentProjectFilter}</div><h2>Project index</h2></div><span class="page-count" id="projectsPageCount">${projects.length} results</span></section><div class="project-grid projects-page-grid" id="projectsPageGrid"></div></div>`;
 }
 
 function tasksPage() {
@@ -134,7 +138,7 @@ function renderPage(name) {
     const templates = { Projects: projectsPage, Calendar: calendarPage, Tasks: tasksPage, Team: teamPage, Notes: notesPage, Insights: insightsPage, Settings: settingsPage };
     view.innerHTML = templates[name] ? templates[name]() : "";
     renderIcons();
-    if (name === "Projects") { currentProjectFilter = "All"; renderProjectsPage(); bindProjectsPage(); }
+    if (name === "Projects") { currentProjectFilter = "All"; currentProjectView = "All"; renderProjectsPage(); bindProjectsPage(); }
     if (name === "Tasks") { currentTaskFilter = "All"; renderTasksPage(); bindTasksPage(); }
     if (name === "Notes") bindNotesPage();
     bindPageActions(name);
@@ -154,8 +158,10 @@ function renderPage(name) {
 
 function bindProjectsPage() {
   const input = document.querySelector("#projectFilterInput");
-  if (input) input.addEventListener("input", (event) => renderProjectsPage(event.target.value, currentProjectFilter));
-  document.querySelectorAll("[data-project-filter]").forEach((button) => button.addEventListener("click", () => { currentProjectFilter = button.dataset.projectFilter; document.querySelectorAll("[data-project-filter]").forEach((item) => item.classList.toggle("active", item === button)); renderProjectsPage(document.querySelector("#projectFilterInput").value, currentProjectFilter); }));
+  const rerender = () => renderProjectsPage(input?.value || "", currentProjectFilter, currentProjectView);
+  if (input) input.addEventListener("input", rerender);
+  document.querySelectorAll("[data-project-filter]").forEach((button) => button.addEventListener("click", () => { currentProjectFilter = button.dataset.projectFilter; document.querySelectorAll("[data-project-filter]").forEach((item) => item.classList.toggle("active", item === button)); rerender(); }));
+  document.querySelectorAll("[data-project-view]").forEach((button) => button.addEventListener("click", () => { currentProjectView = button.dataset.projectView; document.querySelectorAll("[data-project-view]").forEach((item) => item.classList.toggle("active", item === button)); rerender(); const label = document.querySelector(".page-section-heading .section-kicker"); if (label) label.textContent = `${currentProjectView === "All" ? "All work" : currentProjectView} / ${currentProjectFilter}`; }));
   document.querySelector("#pageNewProjectButton")?.addEventListener("click", () => openDialog("createDialog"));
   document.querySelector("#projectsPageGrid")?.addEventListener("click", (event) => { const review = event.target.closest(".js-review"); const more = event.target.closest(".js-more"); const card = event.target.closest(".project-card"); const project = projects.find((item) => card?.querySelector("h3")?.textContent === item.name); if (review && project) openReview(project); if (more && project) toast(`More actions for ${project.name} are coming soon.`); });
 }
