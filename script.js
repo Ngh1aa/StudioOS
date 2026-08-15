@@ -81,6 +81,7 @@ let activeDraggedTaskId = null;
 let lastTaskAction = null;
 let lastTaskActionTimer = null;
 let pageTransitionTimer = null;
+let lastSidebarFocus = null;
 
 function pageHeader(kicker, title, description, action = "") {
   return `<section class="view-heading"><div><div class="section-kicker">${kicker}</div><h1>${title}<span>.</span></h1><p class="view-description">${description}</p></div>${action}</section>`;
@@ -405,8 +406,34 @@ function openReview(project) {
   openDialog("reviewDialog");
 }
 
-function closeSidebar() { document.querySelector("#sidebar").classList.remove("sidebar-open"); document.querySelector("#mobileScrim").style.display = "none"; }
-function openSidebar() { document.querySelector("#sidebar").classList.add("sidebar-open"); document.querySelector("#mobileScrim").style.display = "block"; }
+function syncSidebarState(isOpen, returnFocus = true) {
+  const sidebar = document.querySelector("#sidebar");
+  const scrim = document.querySelector("#mobileScrim");
+  const opener = document.querySelector("#openSidebar");
+  if (!sidebar || !scrim) return;
+  if (isOpen) {
+    lastSidebarFocus = document.activeElement;
+    sidebar.classList.add("sidebar-open");
+    scrim.classList.add("scrim-visible");
+    document.body.classList.add("mobile-nav-open");
+    opener?.setAttribute("aria-expanded", "true");
+    opener?.setAttribute("aria-label", "Close navigation");
+    window.setTimeout(() => document.querySelector("#closeSidebar")?.focus(), 40);
+    return;
+  }
+  sidebar.classList.remove("sidebar-open");
+  scrim.classList.remove("scrim-visible");
+  document.body.classList.remove("mobile-nav-open");
+  opener?.setAttribute("aria-expanded", "false");
+  opener?.setAttribute("aria-label", "Open navigation");
+  const focusTarget = lastSidebarFocus;
+  lastSidebarFocus = null;
+  if (returnFocus && focusTarget && typeof focusTarget.focus === "function" && window.matchMedia("(max-width: 900px)").matches) {
+    window.setTimeout(() => focusTarget.focus(), 40);
+  }
+}
+function closeSidebar(options = {}) { syncSidebarState(false, options.returnFocus !== false); }
+function openSidebar() { syncSidebarState(true); }
 
 document.addEventListener("DOMContentLoaded", () => {
   const overviewMarkup = document.querySelector("#pageView").innerHTML;
@@ -425,12 +452,16 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelector("#searchInput").addEventListener("input", (event) => { if (document.querySelector("#activeBreadcrumb").textContent === "Overview") { renderProjects(event.target.value); renderTasks(event.target.value); } else if (document.querySelector("#activeBreadcrumb").textContent === "Projects") { const input = document.querySelector("#projectFilterInput"); if (input) { input.value = event.target.value; renderProjectsPage(event.target.value, currentProjectFilter); } } });
   document.querySelector("#createProjectForm").addEventListener("submit", (event) => { event.preventDefault(); const name = document.querySelector("#projectNameInput").value.trim(); if (!name) return toast("Give the project a name before creating it.", "error"); projects.unshift({ id:name.toLowerCase().replace(/[^a-z0-9]+/g, "-"), name, type:document.querySelector("#projectTypeInput").value, status:"Not started", tone:"quiet", progress:0, due:"No date", dueTone:"quiet", owner:"You", members:["YO"], cover:"./assets/studioos-project-motion-refresh.webp" }); document.querySelector("#createProjectForm").reset(); closeDialog("createDialog"); if (document.querySelector("#activeBreadcrumb").textContent === "Projects") { renderProjectsPage(); bindProjectsPage(); } else { renderProjects(document.querySelector("#searchInput").value); } toast(`${name} is ready for its first task.`); });
   document.querySelector("#markReviewedButton").addEventListener("click", () => { const name = activeReviewProject?.name || "Project"; closeDialog("reviewDialog"); toast(`${name} marked as ready for the next review.`); });
+  document.querySelector(".top-search")?.addEventListener("click", () => { if (!window.matchMedia("(max-width: 680px)").matches) return; const search = document.querySelector(".top-search"); const input = document.querySelector("#searchInput"); search?.classList.add("search-expanded"); window.requestAnimationFrame(() => input?.focus()); });
+  document.querySelector("#searchInput")?.addEventListener("blur", () => { window.setTimeout(() => { const search = document.querySelector(".top-search"); if (search && !search.contains(document.activeElement)) search.classList.remove("search-expanded"); }, 80); });
+  document.querySelector("#searchInput")?.addEventListener("keydown", (event) => { if (event.key === "Escape") { event.currentTarget.blur(); document.querySelector(".top-search")?.classList.remove("search-expanded"); } });
   document.querySelector("#notificationButton").addEventListener("click", () => { const popover = document.querySelector("#notificationPopover"); popover.hidden = !popover.hidden; document.querySelector("#notificationButton").setAttribute("aria-expanded", String(!popover.hidden)); });
   document.querySelector("[data-action='review-notification']").addEventListener("click", () => { closeNotifications(); openReview(projects[0]); });
   document.querySelector("[data-action='calendar-notification']").addEventListener("click", () => { closeNotifications(); document.querySelector("[data-nav='Calendar']").click(); });
   document.querySelectorAll("[data-close-dialog]").forEach((button) => button.addEventListener("click", () => closeDialog(button.dataset.closeDialog)));
   document.querySelectorAll(".dialog-layer").forEach((layer) => layer.addEventListener("click", (event) => { if (event.target === layer) closeDialog(layer.id); }));
   document.querySelectorAll("[data-action]").forEach((button) => button.addEventListener("click", () => { const action = button.dataset.action; if (["workspace","help","focus-options","activity-options","activity","comment"].includes(action)) toast(action === "help" ? "Need a hand? Help center is coming soon." : action === "comment" ? "Comment composer is coming soon." : "This workspace action is coming soon."); }));
-  document.querySelector("#openSidebar").addEventListener("click", openSidebar); document.querySelector("#closeSidebar").addEventListener("click", closeSidebar); document.querySelector("#mobileScrim").addEventListener("click", closeSidebar);
+  document.querySelector("#openSidebar").addEventListener("click", () => { document.querySelector("#sidebar").classList.contains("sidebar-open") ? closeSidebar() : openSidebar(); }); document.querySelector("#closeSidebar").addEventListener("click", () => closeSidebar()); document.querySelector("#mobileScrim").addEventListener("click", () => closeSidebar());
+  window.addEventListener("resize", () => { if (window.matchMedia("(min-width: 901px)").matches) closeSidebar({ returnFocus: false }); });
   document.addEventListener("keydown", (event) => { if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") { event.preventDefault(); document.querySelector("#searchInput").focus(); } if (event.key === "Escape") { closeNotifications(); document.querySelectorAll(".dialog-layer:not([hidden])").forEach((layer) => closeDialog(layer.id)); closeSidebar(); } });
 });
