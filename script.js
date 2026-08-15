@@ -147,6 +147,7 @@ function renderPage(name) {
     view.classList.remove("is-leaving");
     void view.offsetWidth;
     view.classList.add("is-entering");
+    triggerStudioMotion(view);
   };
   const view = document.querySelector("#pageView");
   const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
@@ -395,6 +396,21 @@ function dismissToast(node) {
   window.setTimeout(() => node.remove(), 180);
 }
 
+function triggerStudioMotion(scope = document.querySelector("#pageView")) {
+  if (!scope) return;
+  const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+  scope.classList.remove("studio-motion-cycle", "studio-motion-reduced");
+  if (reduced) {
+    scope.classList.add("studio-motion-reduced");
+    return;
+  }
+  window.requestAnimationFrame(() => {
+    scope.classList.remove("studio-motion-cycle");
+    void scope.offsetWidth;
+    scope.classList.add("studio-motion-cycle");
+  });
+}
+
 function openDialog(id) { document.querySelector(`#${id}`).hidden = false; document.body.style.overflow = "hidden"; const first = document.querySelector(`#${id} input`); if (first) window.setTimeout(() => first.focus(), 20); }
 function closeDialog(id) { document.querySelector(`#${id}`).hidden = true; document.body.style.overflow = ""; }
 function closeNotifications() { document.querySelector("#notificationPopover").hidden = true; document.querySelector("#notificationButton").setAttribute("aria-expanded", "false"); }
@@ -439,7 +455,7 @@ function openSidebar() { syncSidebarState(true); }
 
 document.addEventListener("DOMContentLoaded", () => {
   const overviewMarkup = document.querySelector("#pageView").innerHTML;
-  const showOverview = () => { const view = document.querySelector("#pageView"); const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches; view.innerHTML = overviewMarkup; renderIcons(); renderProjects(); renderTasks(); bindOverviewActions(); document.querySelector(".studio-main")?.scrollTo({ top: 0, behavior: reduced ? "auto" : "smooth" }); };
+  const showOverview = () => { const view = document.querySelector("#pageView"); const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches; view.innerHTML = overviewMarkup; renderIcons(); renderProjects(); renderTasks(); bindOverviewActions(); triggerStudioMotion(view); document.querySelector(".studio-main")?.scrollTo({ top: 0, behavior: reduced ? "auto" : "smooth" }); };
   const bindOverviewActions = () => {
     document.querySelector("#searchInput").value = "";
     document.querySelector("#searchInput").oninput = (event) => { renderProjects(event.target.value); renderTasks(event.target.value); };
@@ -449,7 +465,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelector("#projectGrid")?.addEventListener("click", (event) => { const review = event.target.closest(".js-review"); const more = event.target.closest(".js-more"); const card = event.target.closest(".project-card"); if (!card) return; const project = projects.find((item) => card.querySelector("h3")?.textContent === item.name); if (review && project) openReview(project); if (more && project) toast(`More actions for ${project.name} are coming soon.`); });
     document.querySelector("#taskList")?.addEventListener("click", (event) => { const row = event.target.closest("[data-task-id]"); if (!row) return; const task = tasks.find((item) => String(item.id) === row.dataset.taskId); if (task) toggleTask(task); });
   };
-  renderIcons(); renderProjects(); renderTasks(); bindOverviewActions();
+  renderIcons(); renderProjects(); renderTasks(); bindOverviewActions(); triggerStudioMotion(document.querySelector("#pageView"));
   document.querySelectorAll("[data-nav]").forEach((button) => button.addEventListener("click", () => { document.querySelectorAll("[data-nav]").forEach((item) => { const isActive = item === button; item.classList.toggle("active", isActive); if (isActive) item.setAttribute("aria-current", "page"); else item.removeAttribute("aria-current"); }); document.querySelector("#activeBreadcrumb").textContent = button.dataset.nav; closeSidebar(); if (button.dataset.nav === "Overview") showOverview(); else renderPage(button.dataset.nav); }));
   document.querySelector("#searchInput").addEventListener("input", (event) => { if (document.querySelector("#activeBreadcrumb").textContent === "Overview") { renderProjects(event.target.value); renderTasks(event.target.value); } else if (document.querySelector("#activeBreadcrumb").textContent === "Projects") { const input = document.querySelector("#projectFilterInput"); if (input) { input.value = event.target.value; renderProjectsPage(event.target.value, currentProjectFilter); } } });
   document.querySelector("#createProjectForm").addEventListener("submit", (event) => { event.preventDefault(); const name = document.querySelector("#projectNameInput").value.trim(); if (!name) return toast("Give the project a name before creating it.", "error"); projects.unshift({ id:name.toLowerCase().replace(/[^a-z0-9]+/g, "-"), name, type:document.querySelector("#projectTypeInput").value, status:"Not started", tone:"quiet", progress:0, due:"No date", dueTone:"quiet", owner:"You", members:["YO"], cover:"./assets/studioos-project-motion-refresh.webp" }); document.querySelector("#createProjectForm").reset(); closeDialog("createDialog"); if (document.querySelector("#activeBreadcrumb").textContent === "Projects") { renderProjectsPage(); bindProjectsPage(); } else { renderProjects(document.querySelector("#searchInput").value); } toast(`${name} is ready for its first task.`); });

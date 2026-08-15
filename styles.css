@@ -1037,3 +1037,129 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-display); }
     scroll-behavior: auto;
   }
 }
+
+
+/* StudioOS motion system: kinetic editorial workspace, transform/opacity only on reveal surfaces. */
+@keyframes studio-text-in {
+  from { opacity: 0; transform: translate3d(0, 18px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+@keyframes studio-image-in {
+  from { opacity: .72; clip-path: inset(0 8% 0 0); transform: scale(1.018); }
+  to { opacity: 1; clip-path: inset(0 0 0 0); transform: scale(1); }
+}
+
+@keyframes studio-rule-in {
+  from { opacity: 0; transform: scaleX(0); transform-origin: left center; }
+  to { opacity: 1; transform: scaleX(1); transform-origin: left center; }
+}
+
+.studio-motion-cycle .welcome-row > div,
+.studio-motion-cycle .welcome-row > .primary-button,
+.studio-motion-cycle .section-heading-row,
+.studio-motion-cycle .page-intro-row,
+.studio-motion-cycle .page-toolbar,
+.studio-motion-cycle .project-taxonomy,
+.studio-motion-cycle .metric-strip,
+.studio-motion-cycle .page-section-heading,
+.studio-motion-cycle .tasks-layout,
+.studio-motion-cycle .calendar-layout,
+.studio-motion-cycle .team-grid,
+.studio-motion-cycle .notes-layout,
+.studio-motion-cycle .insights-layout,
+.studio-motion-cycle .settings-layout,
+.studio-motion-cycle .workspace-footer {
+  animation: studio-text-in 620ms var(--ease-out) both;
+}
+
+.studio-motion-cycle .welcome-row > .primary-button { animation-delay: 150ms; }
+.studio-motion-cycle .section-block .section-heading-row { animation-delay: 90ms; }
+.studio-motion-cycle .lower-grid .panel-surface:first-child { animation-delay: 140ms; }
+.studio-motion-cycle .lower-grid .panel-surface:last-child { animation-delay: 200ms; }
+.studio-motion-cycle .eyebrow-rule { animation: studio-rule-in 500ms var(--ease-out) 40ms both; }
+
+.studio-motion-cycle .project-card,
+.studio-motion-cycle .note-card,
+.studio-motion-cycle .member-card,
+.studio-motion-cycle .insight-stat,
+.studio-motion-cycle .signal-card {
+  animation: studio-text-in 560ms var(--ease-out) both;
+}
+
+.studio-motion-cycle .project-card:nth-child(2),
+.studio-motion-cycle .signal-card:nth-child(2),
+.studio-motion-cycle .insight-stat:nth-child(2) { animation-delay: 55ms; }
+.studio-motion-cycle .project-card:nth-child(3),
+.studio-motion-cycle .signal-card:nth-child(3),
+.studio-motion-cycle .insight-stat:nth-child(3) { animation-delay: 110ms; }
+.studio-motion-cycle .project-card:nth-child(4),
+.studio-motion-cycle .signal-card:nth-child(4),
+.studio-motion-cycle .insight-stat:nth-child(4) { animation-delay: 165ms; }
+.studio-motion-cycle .project-cover img,
+.studio-motion-cycle .note-card img,
+.studio-motion-cycle .member-card img,
+.studio-motion-cycle .review-preview img {
+  animation: studio-image-in 720ms var(--ease-out) both;
+}
+
+@media (max-width: 680px) {
+  .studio-motion-cycle .welcome-row > div,
+  .studio-motion-cycle .welcome-row > .primary-button,
+  .studio-motion-cycle .section-heading-row,
+  .studio-motion-cycle .page-intro-row,
+  .studio-motion-cycle .page-toolbar,
+  .studio-motion-cycle .project-taxonomy,
+  .studio-motion-cycle .metric-strip,
+  .studio-motion-cycle .page-section-heading,
+  .studio-motion-cycle .tasks-layout,
+  .studio-motion-cycle .calendar-layout,
+  .studio-motion-cycle .team-grid,
+  .studio-motion-cycle .notes-layout,
+  .studio-motion-cycle .insights-layout,
+  .studio-motion-cycle .settings-layout,
+  .studio-motion-cycle .workspace-footer,
+  .studio-motion-cycle .project-card,
+  .studio-motion-cycle .note-card,
+  .studio-motion-cycle .member-card,
+  .studio-motion-cycle .insight-stat,
+  .studio-motion-cycle .signal-card {
+    animation-duration: 480ms;
+  }
+  .studio-motion-cycle .project-card:nth-child(n),
+  .studio-motion-cycle .signal-card:nth-child(n),
+  .studio-motion-cycle .insight-stat:nth-child(n) { animation-delay: 0ms; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .studio-motion-cycle .welcome-row > div,
+  .studio-motion-cycle .welcome-row > .primary-button,
+  .studio-motion-cycle .section-heading-row,
+  .studio-motion-cycle .page-intro-row,
+  .studio-motion-cycle .page-toolbar,
+  .studio-motion-cycle .project-taxonomy,
+  .studio-motion-cycle .metric-strip,
+  .studio-motion-cycle .page-section-heading,
+  .studio-motion-cycle .tasks-layout,
+  .studio-motion-cycle .calendar-layout,
+  .studio-motion-cycle .team-grid,
+  .studio-motion-cycle .notes-layout,
+  .studio-motion-cycle .insights-layout,
+  .studio-motion-cycle .settings-layout,
+  .studio-motion-cycle .workspace-footer,
+  .studio-motion-cycle .project-card,
+  .studio-motion-cycle .note-card,
+  .studio-motion-cycle .member-card,
+  .studio-motion-cycle .insight-stat,
+  .studio-motion-cycle .signal-card,
+  .studio-motion-cycle .eyebrow-rule,
+  .studio-motion-cycle .project-cover img,
+  .studio-motion-cycle .note-card img,
+  .studio-motion-cycle .member-card img,
+  .studio-motion-cycle .review-preview img {
+    animation: none !important;
+    clip-path: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
