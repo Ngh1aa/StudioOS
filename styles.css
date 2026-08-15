@@ -839,3 +839,116 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-display); }
   .studio-sidebar, .mobile-scrim, .top-search { transition: none !important; }
   .project-card:active { transform: none; }
 }
+
+
+/* Layout rhythm refinement: one spacing cadence, stable labels, and calm control density. */
+:root {
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --control-sm: 32px;
+  --control-md: 40px;
+}
+
+.primary-button,
+.ghost-button,
+.cancel-button,
+.review-secondary,
+.link-button,
+.text-button,
+.filter-chip,
+.taxonomy-chip,
+.view-switch,
+.notes-nav-item,
+.settings-nav-item,
+.settings-saved,
+.page-count,
+.status-pill,
+.due-date,
+.task-priority,
+.task-page-due {
+  white-space: nowrap;
+}
+
+.primary-button,
+.ghost-button,
+.cancel-button,
+.review-secondary,
+.filter-chip,
+.taxonomy-chip,
+.view-switch {
+  flex-shrink: 0;
+}
+
+.page-intro-row { margin-bottom: var(--space-6); }
+.view-heading { gap: var(--space-5); }
+.page-toolbar { gap: var(--space-3); margin-bottom: var(--space-6); }
+.filter-chips { gap: var(--space-2); }
+.project-taxonomy { gap: var(--space-2); margin-top: 0; margin-bottom: var(--space-6); padding-top: var(--space-2); }
+.signal-row,
+.project-grid,
+.lower-grid,
+.calendar-layout,
+.team-grid,
+.notes-layout,
+.notes-grid,
+.insights-layout,
+.insights-lower,
+.tasks-layout { gap: var(--space-4); }
+.metric-strip { margin-bottom: var(--space-7); }
+.section-block { margin-bottom: var(--space-7); }
+.section-heading-row,
+.page-section-heading { gap: var(--space-4); margin-bottom: var(--space-4); }
+.project-title-row { gap: var(--space-3); margin-bottom: var(--space-4); }
+.dialog-form { gap: var(--space-4); }
+.dialog-actions,
+.review-actions { gap: var(--space-2); }
+.calendar-actions { gap: var(--space-2); flex-wrap: nowrap; }
+.calendar-actions .primary-button { min-width: 120px; }
+
+@media (max-width: 900px) {
+  .page-toolbar { gap: var(--space-2); }
+  .filter-chips { gap: var(--space-2); }
+  .page-toolbar > .ghost-button { margin-left: auto; }
+}
+
+@media (max-width: 680px) {
+  .page-content { padding-top: var(--space-6); }
+  .welcome-row { gap: var(--space-4); margin-bottom: var(--space-6); }
+  .signal-row { gap: var(--space-2); margin-bottom: var(--space-6); }
+  .section-heading-row,
+  .page-section-heading { gap: var(--space-3); margin-bottom: var(--space-3); }
+  .section-heading-row > .link-button { margin-top: 4px; }
+  .project-grid,
+  .lower-grid,
+  .calendar-layout,
+  .team-grid,
+  .notes-grid,
+  .insights-layout,
+  .insights-lower,
+  .tasks-layout { gap: var(--space-3); }
+  .page-intro-row { margin-bottom: var(--space-5); }
+  .page-toolbar { gap: var(--space-2); margin-bottom: var(--space-5); padding: var(--space-2); }
+  .filter-chips { padding-bottom: 2px; }
+  .filter-chip,
+  .taxonomy-chip { min-height: var(--control-sm); padding-right: 10px; padding-left: 10px; }
+  .project-taxonomy { margin-bottom: var(--space-5); }
+  .dialog-actions { flex-wrap: nowrap; }
+  .dialog-actions .cancel-button,
+  .dialog-actions .primary-button { min-width: 0; }
+  .dialog-actions .primary-button { flex: 1 1 auto; }
+  .calendar-actions .primary-button { min-width: 0; flex: 1 1 auto; }
+  .settings-card-heading { gap: var(--space-4); }
+  .settings-saved { flex-shrink: 0; }
+}
+
+@media (max-width: 360px) {
+  .page-content { padding-right: 14px; padding-left: 14px; }
+  .topbar { padding-right: 14px; padding-left: 14px; }
+  .welcome-row .primary-button { width: auto; max-width: 100%; }
+  .dialog-actions .cancel-button { padding-right: 10px; padding-left: 10px; }
+}
