@@ -952,3 +952,88 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-display); }
   .welcome-row .primary-button { width: auto; max-width: 100%; }
   .dialog-actions .cancel-button { padding-right: 10px; padding-left: 10px; }
 }
+
+
+/* Project taxonomy: editorial two-level filter with intentional mobile scrolling. */
+.project-taxonomy {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+}
+.taxonomy-heading {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+.taxonomy-label {
+  flex: 0 0 auto;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.taxonomy-hint {
+  display: none;
+  color: var(--muted);
+  font-size: 11px;
+}
+.taxonomy-scroller,
+.filter-chips {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+  overflow-x: auto;
+  padding: 2px 2px 6px 0;
+  scrollbar-width: thin;
+  scroll-snap-type: x proximity;
+  overscroll-behavior-inline: contain;
+}
+.taxonomy-scroller {
+  flex: 1 1 auto;
+}
+.taxonomy-chip,
+.filter-chips .filter-chip {
+  min-height: 40px;
+  padding-inline: 14px;
+  scroll-snap-align: center;
+}
+.taxonomy-chip:focus-visible,
+.filter-chip:focus-visible {
+  outline: 2px solid var(--copper);
+  outline-offset: 3px;
+}
+.taxonomy-chip[aria-pressed="true"],
+.filter-chip[aria-pressed="true"] {
+  border-color: #111111;
+}
+@media (max-width: 680px) {
+  .project-taxonomy {
+    display: block;
+    margin-top: 0;
+    padding-top: 0;
+    overflow: visible;
+  }
+  .taxonomy-heading {
+    margin-bottom: 8px;
+  }
+  .taxonomy-scroller,
+  .page-toolbar .filter-chips {
+    width: calc(100% + 2px);
+    padding-right: 20px;
+    scrollbar-width: none;
+  }
+  .taxonomy-scroller::-webkit-scrollbar,
+  .filter-chips::-webkit-scrollbar {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .taxonomy-scroller,
+  .page-toolbar .filter-chips {
+    scroll-behavior: auto;
+  }
+}
