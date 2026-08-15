@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">StudioOS mark</title>
+  <desc id="desc">An open workspace frame with an active copper node.</desc>
+  <path d="M28 11H19c-4.42 0-8 3.58-8 8v18c0 4.42 3.58 8 8 8h18c4.42 0 8-3.58 8-8v-9" fill="none" stroke="#202923" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M39 11h-6" fill="none" stroke="#202923" stroke-width="4" stroke-linecap="round"/>
+  <path d="M39 11h5c4.42 0 8 3.58 8 8v5" fill="none" stroke="#202923" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="49" cy="49" r="6" fill="#C8643E"/>
+</svg>
