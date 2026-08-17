@@ -9,7 +9,7 @@
 }
 
 .studio-sidebar {
-  background: #0a0a0a;
+  background: #111111;
 }
 
 .studio-sidebar::before {
@@ -20,7 +20,7 @@
 .primary-button,
 .signal-card-add,
 .toast {
-  background: #0a0a0a !important;
+  background: #111111 !important;
   color: #fff !important;
 }
 
@@ -69,7 +69,7 @@
 }
 
 .page-content::after {
-  background: linear-gradient(#0a0a0a, transparent);
+  background: linear-gradient(#111111, transparent);
 }
 
 .eyebrow,
@@ -94,7 +94,7 @@
 
 .signal-card:hover,
 .project-card:hover {
-  border-color: #0a0a0a;
+  border-color: #111111;
 }
 
 .project-card:hover {
@@ -103,7 +103,7 @@
 
 .project-cover,
 .review-preview {
-  background: #111;
+  background: #111111;
 }
 
 .project-cover img,
@@ -122,7 +122,7 @@
 }
 
 .project-card-body {
-  border-top: 1px solid #0a0a0a;
+  border-top: 1px solid #111111;
 }
 
 .cover-shade {
@@ -142,13 +142,13 @@
 .profile-avatar,
 .workspace-avatar {
   background: #ebebeb;
-  color: #0a0a0a;
+  color: #111111;
 }
 
 .avatar-1,
 .avatar-2 {
   background: #d7d7d7;
-  color: #0a0a0a;
+  color: #111111;
 }
 
 .status-dot,
@@ -157,7 +157,7 @@
 .task-check.checked,
 .sync-dot,
 .notification-dot {
-  background: #0a0a0a;
+  background: #111111;
 }
 
 .status-progress,
@@ -165,11 +165,11 @@
 .focus-percent,
 .task-due-urgent,
 .review-label {
-  color: #0a0a0a;
+  color: #111111;
 }
 
 .status-progress .status-dot {
-  background: #0a0a0a;
+  background: #111111;
 }
 
 .task-row:hover,
@@ -191,7 +191,7 @@
 .top-search:focus-within,
 .dialog-form input:focus,
 .dialog-form select:focus {
-  border-color: #0a0a0a;
+  border-color: #111111;
   box-shadow: 0 0 0 4px rgba(0, 0, 0, .08);
 }
 
@@ -204,8 +204,8 @@
    pink italic accent) stays legible. In monochrome mode page surfaces become
    white, which made this text nearly invisible. */
 .insight-hero {
-  background: #0a0a0a;
-  border-color: #0a0a0a;
+  background: #111111;
+  border-color: #111111;
   color: #fffdf7;
 }
 .insight-hero .section-kicker { color: #9ea99f; }
