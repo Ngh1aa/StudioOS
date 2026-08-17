@@ -5,9 +5,9 @@
 :root { --portfolio-black: #0a0a0a; --portfolio-white: #fff; --portfolio-soft: #f5f5f5; --portfolio-line: #dedede; }
 
 body { background: var(--portfolio-soft); }
-.studio-shell { display: grid; grid-template-columns: 248px minmax(0, 1fr); max-width: 1680px; min-height: 100vh; margin: 0 auto; background: #fff; transition: grid-template-columns 280ms var(--ease-out); }
+.studio-shell { display: grid; grid-template-columns: 248px minmax(0, 1fr); max-width: 1680px; height: 100vh; margin: 0 auto; background: #fff; transition: grid-template-columns 280ms var(--ease-out); }
 .studio-shell:has(.studio-sidebar.collapsed) { grid-template-columns: 72px minmax(0, 1fr); }
-.studio-sidebar { position: sticky; top: 0; display: flex; flex-direction: column; height: 100vh; width: 248px; padding: 10px 18px; overflow-y: auto; background: #fff; color: #111; border-right: 1px solid var(--portfolio-line); box-shadow: none; }
+.studio-sidebar { position: sticky; top: 0; align-self: start; display: flex; flex-direction: column; height: 100vh; min-height: 100vh; width: 248px; padding: 10px 18px; overflow-y: auto; background: #fff; color: #111; border-right: 1px solid var(--portfolio-line); box-shadow: none; }
 .studio-sidebar::before { display: none; }
 .sidebar-brand { justify-content: flex-start; padding: 8px 0 6px; min-height: 58px; }
 .brand-mark-wrap { width: 40px; height: 40px; background: #0a0a0a !important; border-radius: 13px; box-shadow: none; flex-shrink: 0; }
@@ -35,14 +35,17 @@ body { background: var(--portfolio-soft); }
 .sidebar-bottom { display: grid; gap: 6px; margin-top: auto; padding: 4px 0 0; background: #fff; }
 .profile-avatar { display: grid; place-items: center; width: 36px; height: 36px; margin: 0; color: #fff; background: #0a0a0a; border: 3px solid #fff; box-shadow: 0 0 0 1px #0a0a0a; }
 
-.studio-main { width: auto; height: 100vh; min-width: 0; margin-left: 0; background: #fff; }
+.studio-main { width: auto; min-width: 0; margin-left: 0; background: #fff; overflow-y: auto; }
 .mobile-scrim { display: none !important; }
-.sidebar-toggle { width: auto; height: 36px; color: #666; background: #f7f7f7; border-color: #dedede; border-radius: 10px; padding: 0 12px; font-size: 12px; font-weight: 600; letter-spacing: .01em; }
+.sidebar-toggle { position: absolute; top: 12px; right: 12px; z-index: 5; width: 30px; height: 30px; display: grid; place-items: center; color: #999; background: #fff; border: 1px solid #dedede; border-radius: 50%; padding: 0; font-size: 12px; font-weight: 600; }
 .sidebar-toggle:hover { color: #fff; background: #0a0a0a; border-color: #0a0a0a; }
-.sidebar-toggle:active { transform: scale(.97); }
-.sidebar-toggle .studio-icon { color: currentColor; width: 15px; height: 15px; transition: transform 220ms var(--ease-out); }
+.sidebar-toggle:active { transform: scale(.95); }
+.sidebar-toggle .studio-icon { color: currentColor; width: 14px; height: 14px; transition: transform 220ms var(--ease-out); }
+.sidebar-toggle .toggle-label { display: none !important; }
 .sidebar-bottom { gap: 8px; padding-top: 8px; }
 .sidebar-profile { gap: 8px; }
+.studio-sidebar.collapsed .sidebar-toggle { position: absolute; top: 62px; right: 50%; transform: translateX(50%); color: #555; border-color: #d0d0d0; }
+.studio-sidebar.collapsed .sidebar-toggle svg { transform: rotate(180deg); }
 .studio-sidebar.collapsed .brand-lockup,
 .studio-sidebar.collapsed .workspace-switcher,
 .studio-sidebar.collapsed .nav-section-label,
@@ -55,8 +58,7 @@ body { background: var(--portfolio-soft); }
 .studio-sidebar.collapsed .side-nav-item em { display: none; }
 .studio-sidebar.collapsed .sidebar-profile { justify-content: center; padding: 0; }
 .studio-sidebar.collapsed .profile-avatar { margin: 0 auto; }
-.studio-sidebar.collapsed .sidebar-toggle { justify-content: center; width: 44px; height: 40px; margin: 0 auto; padding: 0; }
-.studio-sidebar.collapsed .sidebar-toggle .toggle-label { display: none; }
+.studio-sidebar { transition: width 280ms var(--ease-out); }
 
 .topbar { position: sticky; top: 0; z-index: 15; height: 86px; padding: 0 42px; background: rgba(255,255,255,.94); border-bottom: 1px solid var(--portfolio-line); box-shadow: none; }
 .portfolio-breadcrumbs { gap: 12px; }
