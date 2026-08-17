@@ -6,36 +6,36 @@
 */
 
 :root {
-  --canvas: #f6f6f4;
-  --canvas-deep: #ececea;
+  --canvas: #ffffff;
+  --canvas-deep: #f2f2f2;
   --paper: #ffffff;
   --paper-raised: #ffffff;
-  --ink: #111111;
-  --ink-soft: #363636;
-  --muted: #5f685d;
+  --ink: #0a0a0a;
+  --ink-soft: #292929;
+  --muted: #666666;
   --muted-light: #999999;
-  --line: #dddddd;
-  --line-strong: #bcbcbc;
-  --rail: #111111;
-  --rail-soft: #222222;
-  --rail-muted: #c1c1c1;
-  --rail-line: rgba(255,255,255,.13);
-  --copper: #111111;
+  --line: #dcdcdc;
+  --line-strong: #a6a6a6;
+  --rail: #0a0a0a;
+  --rail-soft: #1b1b1b;
+  --rail-muted: #b7b7b7;
+  --rail-line: rgba(255,255,255,.16);
+  --copper: #0a0a0a;
   --copper-dark: #000000;
-  --copper-soft: #e8e8e8;
-  --sage: #4a4a4a;
-  --sage-dark: #262626;
-  --sage-soft: #e1e1e1;
-  --blue: #666666;
-  --blue-dark: #333333;
-  --blue-soft: #e9e9e9;
-  --amber: #555555;
-  --amber-soft: #e6e6e6;
-  --danger: #333333;
-  --danger-soft: #e9e9e9;
-  --shadow-sm: 0 2px 10px rgba(0, 0, 0, .05);
-  --shadow-md: 0 16px 34px rgba(0, 0, 0, .1);
-  --shadow-lg: 0 25px 70px rgba(0, 0, 0, .24);
+  --copper-soft: #e7e7e7;
+  --sage: #383838;
+  --sage-dark: #151515;
+  --sage-soft: #e3e3e3;
+  --blue: #696969;
+  --blue-dark: #292929;
+  --blue-soft: #ebebeb;
+  --amber: #505050;
+  --amber-soft: #ececec;
+  --danger: #2e2e2e;
+  --danger-soft: #efefef;
+  --shadow-sm: 0 1px 0 rgba(0, 0, 0, .04);
+  --shadow-md: 0 18px 42px rgba(0, 0, 0, .11);
+  --shadow-lg: 0 28px 72px rgba(0, 0, 0, .22);
   --radius-sm: 8px;
   --radius-md: 14px;
   --radius-lg: 20px;
@@ -69,9 +69,7 @@ body {
   min-width: 320px;
   margin: 0;
   overflow: hidden;
-  background:
-    radial-gradient(circle at 78% -18%, rgba(255,255,255,.8), transparent 32rem),
-    var(--canvas);
+  background: var(--canvas);
   color: var(--ink);
   font-family: var(--font-ui);
   font-size: var(--type-md);
@@ -174,7 +172,7 @@ svg, .studio-icon { width: 17px; height: 17px; display: block; flex: 0 0 auto; f
 .profile-more { margin-left: auto; color: #818a80; }
 
 .studio-main { height: 100vh; min-width: 0; min-height: 100vh; flex: 1; margin-left: 260px; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; scroll-behavior: smooth; scrollbar-color: #c6cbc1 transparent; scrollbar-width: thin; }
-.topbar { position: sticky; top: 0; z-index: 25; height: 78px; display: flex; align-items: center; justify-content: space-between; padding: 0 clamp(26px, 4.3vw, 68px); border-bottom: 1px solid rgba(32,37,34,.09); background: rgba(243,240,232,.82); backdrop-filter: blur(16px); }
+.topbar { position: sticky; top: 0; z-index: 25; height: 78px; display: flex; align-items: center; justify-content: space-between; padding: 0 clamp(26px, 4.3vw, 68px); border-bottom: 1px solid var(--line); background: rgba(255,255,255,.92); backdrop-filter: blur(16px); }
 .breadcrumbs { display: flex; align-items: center; gap: 9px; color: #9da19a; font-size: 11px; }
 .breadcrumbs svg { width: 13px; height: 13px; color: #bdc0b9; }
 .breadcrumbs strong { color: var(--ink); font-weight: 700; }

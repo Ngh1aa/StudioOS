@@ -124,3 +124,9 @@
 - [x] Chuyển highlight project active sang màu trắng theo reference.
 - [x] Dùng Inter cho text nội dung và serif cho tiêu đề trong toàn bộ StudioOS.
 - [x] Đặt cỡ chữ content tối thiểu trong khoảng 12–16px, regenerate assets và deploy.
+
+## StudioOS black-and-white implementation follow-up
+
+- [x] Chuyển visual system StudioOS sang monochrome đen–trắng, gồm canvas, surface, navigation và trạng thái tương tác.
+- [x] Điều chỉnh hierarchy, typography và project portfolio để phù hợp hướng monochrome.
+- [x] Kiểm thử toàn bộ static interactions, commit và publish bản cập nhật lên GitHub Pages.
