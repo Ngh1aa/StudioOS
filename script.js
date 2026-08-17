@@ -493,7 +493,12 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!sidebarEl) return;
     sidebarEl.classList.toggle("collapsed", collapsed);
     if (toggleLabel) toggleLabel.textContent = collapsed ? "Expand" : "Collapse";
-    if (sidebarToggleBtn) sidebarToggleBtn.setAttribute("aria-label", collapsed ? "Expand sidebar" : "Collapse sidebar");
+    if (sidebarToggleBtn) {
+      const label = collapsed ? "Expand sidebar" : "Collapse sidebar";
+      sidebarToggleBtn.setAttribute("aria-label", label);
+      sidebarToggleBtn.setAttribute("title", label);
+      sidebarToggleBtn.setAttribute("aria-expanded", String(!collapsed));
+    }
   }
 
   function isDesktop() { return window.innerWidth > 900; }
