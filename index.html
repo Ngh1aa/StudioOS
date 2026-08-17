@@ -27,6 +27,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="./styles.css?v=20260817-monochrome-v1" />
     <link rel="stylesheet" href="./monochrome-overrides.css?v=20260817-monochrome-v1" />
+    <link rel="stylesheet" href="./portfolio-layout.css?v=20260817-portfolio-layout-v1" />
     <link rel="preload" as="image" href="./assets/studioos-project-architecture-refresh.webp" fetchpriority="high" />
     <title>StudioOS — Creative project workspace for small teams</title>
   </head>
@@ -68,7 +69,7 @@
       <main class="studio-main">
         <header class="topbar">
           <button class="mobile-menu-button only-mobile" id="openSidebar" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="sidebar"><span data-icon="menu"></span></button>
-          <div class="breadcrumbs"><span>StudioOS</span><span data-icon="chevron-right"></span><strong id="activeBreadcrumb">Overview</strong></div>
+          <div class="breadcrumbs portfolio-breadcrumbs"><strong class="app-header-title">StudioOS</strong><span class="app-header-divider"></span><span class="app-header-subtitle">Portfolio workspace</span><strong id="activeBreadcrumb" class="sr-only">Overview</strong></div>
           <div class="topbar-actions">
             <label class="top-search"><span data-icon="search"></span><span class="sr-only">Search workspace</span><input id="searchInput" type="search" placeholder="Search workspace" autocomplete="off" /><kbd><span data-icon="command"></span> K</kbd></label>
             <button class="icon-button notification-button" id="notificationButton" type="button" aria-label="Open notifications" aria-expanded="false"><span data-icon="bell"></span><i class="notification-dot"></i></button>
@@ -82,43 +83,44 @@
         </header>
 
         <div class="page-content" id="pageView">
-          <section class="welcome-row">
-            <div><div class="eyebrow"><span class="eyebrow-rule"></span> Friday, 14 August 2026</div><h1>Good morning, Alex<span>.</span></h1><p class="welcome-copy">Three projects are moving. One needs your eye.</p></div>
-            <button class="primary-button" id="newProjectButton" type="button"><span data-icon="plus"></span> New project</button>
-          </section>
+          <div class="portfolio-overview">
+            <section class="portfolio-projects" aria-labelledby="projectsTitle">
+              <header class="portfolio-board-heading">
+                <div><span class="section-kicker">Workspace overview</span><h1 id="projectsTitle">Projects</h1></div>
+                <div class="board-date"><span>August</span><strong>2026</strong></div>
+              </header>
 
-          <section class="signal-row" aria-label="Workspace signals">
-            <div class="signal-card"><span class="signal-icon signal-icon-copper" data-icon="folder"></span><span><small>Active projects</small><strong id="activeProjectCount">04</strong></span><em>+1 this month</em></div>
-            <div class="signal-card"><span class="signal-icon signal-icon-sage" data-icon="clock"></span><span><small>Due this week</small><strong>04</strong></span><em class="signal-muted">All on track</em></div>
-            <div class="signal-card"><span class="signal-icon signal-icon-ink" data-icon="message"></span><span><small>Awaiting review</small><strong>02</strong></span><em class="signal-muted">1 needs you</em></div>
-            <button class="signal-card signal-card-add" type="button" data-action="invite"><span class="add-person-icon" data-icon="users"></span><span><small>Grow the team</small><strong>Invite a collaborator</strong></span><span data-icon="arrow-up-right"></span></button>
-          </section>
+              <section class="portfolio-stats" aria-label="Project summary">
+                <div><strong id="activeProjectCount">04</strong><span>Active</span></div>
+                <i></i>
+                <div><strong>02</strong><span>In review</span></div>
+                <i></i>
+                <div><strong>04</strong><span>Due soon</span></div>
+                <button class="portfolio-view-toggle" id="showAllButton" type="button" aria-label="Show all projects"><span data-icon="dashboard"></span><span class="sr-only">View all projects</span></button>
+              </section>
 
-          <section class="section-block">
-            <div class="section-heading-row"><div><div class="section-kicker">01 / In motion</div><h2>Your projects</h2></div><button class="link-button" id="showAllButton" type="button">View all projects <span data-icon="arrow-up-right"></span></button></div>
-            <div class="project-grid" id="projectGrid"></div>
-          </section>
+              <div class="portfolio-project-grid project-grid" id="projectGrid"></div>
+            </section>
 
-          <section class="lower-grid">
-            <div class="panel-surface">
-              <div class="section-heading-row compact-heading"><div><div class="section-kicker">02 / Focus</div><h2>Today’s attention</h2></div><button class="icon-button subtle-icon" type="button" data-action="focus-options" aria-label="Focus list options"><span data-icon="sliders"></span></button></div>
-              <div class="focus-summary"><span><strong id="taskProgressText">1/4</strong><small>tasks complete</small></span><span class="mini-progress"><i id="taskProgressBar"></i></span><small class="focus-percent" id="taskProgressPercent">25%</small></div>
-              <div class="task-list" id="taskList"></div>
-              <button class="add-task-button" id="addTaskButton" type="button"><span data-icon="circle-plus"></span> Add a task</button>
-            </div>
-
-            <div class="panel-surface">
-              <div class="section-heading-row compact-heading"><div><div class="section-kicker">03 / Pulse</div><h2>Recent activity</h2></div><button class="icon-button subtle-icon" type="button" data-action="activity-options" aria-label="Activity options"><span data-icon="more"></span></button></div>
-              <div class="activity-list">
-                <div class="activity-item"><span class="activity-avatar avatar-copper">MC</span><span><p><strong>Maya Chen</strong> commented on <strong>Lumen House</strong></p><small>“The type rhythm feels right. One last pass on the mobile lockup.”</small><time>12 min ago <i>·</i> Review</time></span></div>
-                <div class="activity-item"><span class="activity-avatar avatar-sage">NW</span><span><p><strong>Noah Williams</strong> moved <strong>Share final type specimens</strong></p><small>Common Ground · Ready for review</small><time>1 hr ago <i>·</i> Update</time></span></div>
-                <div class="activity-item"><span class="activity-avatar avatar-ink">AT</span><span><p>You created <strong>Northstar / Q3</strong></p><small>Campaign launch · 8 tasks added</small><time>Yesterday <i>·</i> Project</time></span></div>
+            <aside class="project-inbox" aria-labelledby="inboxTitle">
+              <header class="inbox-heading"><h2 id="inboxTitle">Project inbox</h2><button class="icon-button subtle-icon" type="button" data-action="activity-options" aria-label="Inbox options"><span data-icon="more"></span></button></header>
+              <p class="inbox-intro">Updates that need a decision, a handoff, or a next step.</p>
+              <div class="inbox-list" aria-label="Project updates">
+                <button class="inbox-item is-priority" type="button" data-action="review-notification"><span class="inbox-avatar">LH</span><span><strong>Lumen House</strong><small>Review request · 2 assets awaiting approval</small><time>Today</time></span><span data-icon="arrow-up-right"></span></button>
+                <button class="inbox-item" type="button" data-action="calendar-notification"><span class="inbox-avatar">CG</span><span><strong>Common Ground</strong><small>Delivery window confirmed · 18 Aug</small><time>18 Aug</time></span><span data-icon="arrow-up-right"></span></button>
+                <button class="inbox-item" type="button" data-action="activity"><span class="inbox-avatar">NQ</span><span><strong>Northstar / Q3</strong><small>Brief updated · campaign scope revised</small><time>02 Sep</time></span><span data-icon="arrow-up-right"></span></button>
+                <button class="inbox-item" type="button" data-action="activity"><span class="inbox-avatar">FN</span><span><strong>Field Notes</strong><small>Research handoff · summary ready</small><time>09 Sep</time></span><span data-icon="arrow-up-right"></span></button>
               </div>
-              <button class="link-button activity-link" type="button" data-action="activity">See full activity <span data-icon="arrow-up-right"></span></button>
-            </div>
-          </section>
 
-          <footer class="workspace-footer"><span><span class="footer-mark" data-icon="sparkles"></span> StudioOS / A considered workspace for small teams.</span><span>Last synced just now <i class="sync-dot"></i></span></footer>
+              <section class="inbox-focus" aria-labelledby="focusTitle">
+                <div class="inbox-focus-heading"><div><span class="section-kicker">Today</span><h3 id="focusTitle">Next actions</h3></div><span><strong id="taskProgressText">1/4</strong><small id="taskProgressPercent">25%</small></span></div>
+                <span class="mini-progress"><i id="taskProgressBar"></i></span>
+                <div class="task-list" id="taskList"></div>
+                <button class="add-task-button" id="addTaskButton" type="button"><span data-icon="circle-plus"></span> Add task</button>
+              </section>
+            </aside>
+          </div>
+          <footer class="workspace-footer portfolio-footer"><span><span class="footer-mark" data-icon="sparkles"></span> StudioOS / Project coordination for creative teams.</span><span>Last synced just now <i class="sync-dot"></i></span></footer>
         </div>
       </main>
     </div>
@@ -147,6 +149,6 @@
 
     <div class="toast-region" id="toastRegion" aria-live="polite"></div>
     <noscript><div class="noscript-message">StudioOS needs JavaScript enabled to show the workspace interactions.</div></noscript>
-    <script src="./script.min.js?v=20260815-perf-lcp" defer></script>
+    <script src="./script.js?v=20260817-portfolio-layout-v1" defer></script>
   </body>
 </html>
