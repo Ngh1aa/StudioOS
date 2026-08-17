@@ -576,3 +576,57 @@ body { background: var(--portfolio-soft); }
 .studio-sidebar .side-nav-item.active:focus-visible svg {
   color: #fff !important;
 }
+
+
+/* Navbar account trigger: move the user identity out of the sidebar and keep it at the far right. */
+.account-menu-button {
+  position: relative;
+  z-index: 2;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid #d8d8d8;
+  border-radius: 50%;
+  background: #f4f4f4;
+  color: #111111;
+  transition: border-color 160ms ease, background 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+.account-menu-button .profile-avatar {
+  width: 32px;
+  height: 32px;
+  border-width: 2px;
+  font-size: 9px;
+}
+.account-menu-button:hover,
+.account-menu-button:focus-visible,
+.account-menu-button[aria-expanded="true"] {
+  border-color: #111111;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(17,17,17,.12);
+}
+.account-menu-button:active { transform: scale(.95); }
+.account-menu-button:focus-visible { outline: 2px solid #111111; outline-offset: 3px; }
+.topbar-actions > .account-popover {
+  top: calc(100% + 12px);
+  right: 0;
+  bottom: auto;
+  left: auto;
+  width: 292px;
+}
+@media (max-width: 900px) {
+  .topbar { grid-template-columns: 38px minmax(0, 1fr) 38px 38px 40px; }
+  .account-menu-button { grid-column: 5; grid-row: 1; align-self: center; justify-self: end; }
+  .topbar-actions > .account-popover { position: fixed; top: 76px; right: 18px; bottom: auto; left: auto; width: min(292px, calc(100vw - 36px)); }
+}
+@media (max-width: 560px) {
+  .topbar { grid-template-columns: 34px minmax(0, 1fr) 34px 34px 36px; }
+  .account-menu-button { width: 34px; height: 34px; min-width: 34px; }
+  .account-menu-button .profile-avatar { width: 28px; height: 28px; font-size: 8px; }
+  .topbar-actions > .account-popover { top: 70px; right: 12px; width: calc(100vw - 24px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .account-menu-button { transition: none; }
+}

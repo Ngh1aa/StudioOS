@@ -25,9 +25,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css?v=20260817-avatar-hover-v1" />
-    <link rel="stylesheet" href="./monochrome-overrides.css?v=20260817-avatar-hover-v1" />
-    <link rel="stylesheet" href="./portfolio-layout.css?v=20260817-avatar-hover-v1" />
+    <link rel="stylesheet" href="./styles.css?v=20260817-navbar-avatar-v1" />
+    <link rel="stylesheet" href="./monochrome-overrides.css?v=20260817-navbar-avatar-v1" />
+    <link rel="stylesheet" href="./portfolio-layout.css?v=20260817-navbar-avatar-v1" />
     <link rel="preload" as="image" href="./assets/studioos-project-architecture-refresh.webp" fetchpriority="high" />
     <title>StudioOS — Creative project workspace for small teams</title>
   </head>
@@ -54,19 +54,6 @@
         </nav>
 
         <div class="sidebar-bottom">
-          <button class="sidebar-profile" id="accountMenuButton" type="button" aria-label="Open account menu for Alex Tran" aria-controls="accountPopover" aria-expanded="false" title="Open account menu"><span class="profile-avatar">AT</span></button>
-          <div class="account-popover" id="accountPopover" role="menu" aria-labelledby="accountMenuButton" hidden>
-            <div class="account-popover-head"><span class="profile-avatar">AT</span><span><strong>Alex Tran</strong><small>alex.tran@studioos.co</small></span><span class="account-status">Online</span></div>
-            <div class="account-workspace"><span class="account-workspace-mark">P</span><span><small>Current workspace</small><strong>Portfolio workspace</strong></span><span class="account-current">Current</span></div>
-            <div class="account-menu-section" role="group" aria-label="Account settings">
-              <button type="button" role="menuitem" data-account-action="profile"><span data-icon="users" aria-hidden="true"></span><span><strong>Profile settings</strong><small>Personal details and preferences</small></span></button>
-              <button type="button" role="menuitem" data-account-action="preferences"><span data-icon="settings" aria-hidden="true"></span><span><strong>Workspace preferences</strong><small>Notifications and display</small></span></button>
-            </div>
-            <div class="account-menu-footer">
-              <button type="button" role="menuitem" data-account-action="sign-out"><span data-icon="lock" aria-hidden="true"></span><span>Sign out</span></button>
-              <span class="account-version">StudioOS · v1.0</span>
-            </div>
-          </div>
           <button class="sidebar-toggle" id="sidebarToggle" type="button" aria-label="Collapse sidebar" aria-controls="sidebar" aria-expanded="true" title="Collapse sidebar"><span data-icon="chevron-left"></span><span class="toggle-label">Collapse sidebar</span></button>
         </div>
       </aside>
@@ -82,6 +69,19 @@
             <label class="top-search"><span data-icon="search"></span><span class="sr-only">Search projects, tasks, and notes</span><input id="searchInput" type="search" placeholder="Search projects, tasks, notes…" aria-label="Search projects, tasks, and notes" autocomplete="off" /><kbd><span data-icon="command"></span> K</kbd></label>
             <button class="icon-button notification-button" id="notificationButton" type="button" aria-label="Open notifications, 2 unread" aria-expanded="false" aria-controls="notificationPopover"><span data-icon="bell"></span><span class="notification-badge" aria-hidden="true">2</span></button>
             <button class="help-button" id="helpButton" type="button" data-action="help" aria-label="Open help and shortcuts" aria-expanded="false" aria-controls="helpPopover" title="Help & shortcuts"><span data-icon="help"></span></button>
+            <button class="account-menu-button" id="accountMenuButton" type="button" aria-label="Open account menu for Alex Tran" aria-controls="accountPopover" aria-expanded="false" title="Open account menu"><span class="profile-avatar">AT</span></button>
+            <div class="account-popover" id="accountPopover" role="menu" aria-labelledby="accountMenuButton" hidden>
+              <div class="account-popover-head"><span class="profile-avatar">AT</span><span><strong>Alex Tran</strong><small>alex.tran@studioos.co</small></span><span class="account-status">Online</span></div>
+              <div class="account-workspace"><span class="account-workspace-mark">P</span><span><small>Current workspace</small><strong>Portfolio workspace</strong></span><span class="account-current">Current</span></div>
+              <div class="account-menu-section" role="group" aria-label="Account settings">
+                <button type="button" role="menuitem" data-account-action="profile"><span data-icon="users" aria-hidden="true"></span><span><strong>Profile settings</strong><small>Personal details and preferences</small></span></button>
+                <button type="button" role="menuitem" data-account-action="preferences"><span data-icon="settings" aria-hidden="true"></span><span><strong>Workspace preferences</strong><small>Notifications and display</small></span></button>
+              </div>
+              <div class="account-menu-footer">
+                <button type="button" role="menuitem" data-account-action="sign-out"><span data-icon="lock" aria-hidden="true"></span><span>Sign out</span></button>
+                <span class="account-version">StudioOS · v1.0</span>
+              </div>
+            </div>
             <div class="notification-popover" id="notificationPopover" hidden>
               <div class="popover-heading"><strong>Notifications</strong><span>02 unread</span></div>
               <button type="button" data-action="review-notification"><span class="notification-icon copper" data-icon="message"></span><span><strong>Maya left feedback</strong><small>Lumen House · 12 min ago</small></span></button>
@@ -162,6 +162,6 @@
 
     <div class="toast-region" id="toastRegion" aria-live="polite"></div>
     <noscript><div class="noscript-message">StudioOS needs JavaScript enabled to show the workspace interactions.</div></noscript>
-    <script src="./script.js?v=20260817-avatar-hover-v1" defer></script>
+    <script src="./script.js?v=20260817-navbar-avatar-v1" defer></script>
   </body>
 </html>
