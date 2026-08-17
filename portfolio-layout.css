@@ -420,3 +420,46 @@ body { background: var(--portfolio-soft); }
   .top-search .studio-icon { width: 16px; height: 16px; flex-shrink: 0; }
   .notification-popover, .help-popover { right: 12px; width: calc(100vw - 24px); }
 }
+
+
+/* Collapsed toggle refinement: a compact, tactile sibling to the 44px avatar tile. */
+@media (min-width: 901px) {
+  .studio-sidebar.collapsed .sidebar-bottom {
+    gap: 10px;
+    padding-top: 8px;
+  }
+  .studio-sidebar.collapsed .sidebar-toggle {
+    width: 40px;
+    height: 40px;
+    min-height: 40px;
+    flex: 0 0 40px;
+    aspect-ratio: 1;
+    margin: 10px auto 0;
+    border: 1.5px solid #a9a9a9;
+    border-radius: 12px;
+    background: #f3f3f3;
+    color: #111111;
+    box-shadow: 0 2px 8px rgba(17,17,17,.12);
+    outline-offset: 3px;
+  }
+  .studio-sidebar.collapsed .sidebar-toggle::before {
+    content: "";
+    position: absolute;
+    top: -7px;
+    right: 6px;
+    left: 6px;
+    height: 1px;
+    background: #d8d8d8;
+  }
+  .studio-sidebar.collapsed .sidebar-toggle:hover,
+  .studio-sidebar.collapsed .sidebar-toggle:focus-visible {
+    border-color: #111111;
+    background: #111111;
+    color: #fff;
+    box-shadow: 0 5px 12px rgba(17,17,17,.18);
+  }
+  .studio-sidebar.collapsed .sidebar-toggle .studio-icon {
+    width: 18px;
+    height: 18px;
+  }
+}
