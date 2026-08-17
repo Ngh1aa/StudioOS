@@ -25,9 +25,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css?v=20260817-sidebar-v3" />
-    <link rel="stylesheet" href="./monochrome-overrides.css?v=20260817-sidebar-v3" />
-    <link rel="stylesheet" href="./portfolio-layout.css?v=20260817-portfolio-layout-v2" />
+    <link rel="stylesheet" href="./styles.css?v=20260817-audit-fixes-v1" />
+    <link rel="stylesheet" href="./monochrome-overrides.css?v=20260817-audit-fixes-v1" />
+    <link rel="stylesheet" href="./portfolio-layout.css?v=20260817-audit-fixes-v1" />
     <link rel="preload" as="image" href="./assets/studioos-project-architecture-refresh.webp" fetchpriority="high" />
     <title>StudioOS — Creative project workspace for small teams</title>
   </head>
@@ -87,7 +87,7 @@
           <div class="portfolio-overview">
             <section class="portfolio-projects" aria-labelledby="projectsTitle">
               <header class="portfolio-board-heading">
-                <div><span class="section-kicker">Workspace overview</span><h1 id="projectsTitle">Projects</h1></div>
+                <div><span class="section-kicker">01 / Workspace</span><h1 id="projectsTitle">Projects</h1></div>
                 <div class="board-date"><span>August</span><strong>2026</strong></div>
               </header>
 
@@ -107,14 +107,14 @@
               <header class="inbox-heading"><h2 id="inboxTitle">Project inbox</h2><button class="icon-button subtle-icon" type="button" data-action="activity-options" aria-label="Inbox options"><span data-icon="more"></span></button></header>
               <p class="inbox-intro">Updates that need a decision, a handoff, or a next step.</p>
               <div class="inbox-list" aria-label="Project updates">
-                <button class="inbox-item is-priority" type="button" data-action="review-notification"><span class="inbox-avatar">LH</span><span><strong>Lumen House</strong><small>Review request · 2 assets awaiting approval</small><time>Today</time></span><span data-icon="arrow-up-right"></span></button>
+                <button class="inbox-item is-priority" type="button" data-action="review-notification"><span class="inbox-avatar">LH</span><span><strong>Lumen House</strong><small>Review request · 2 assets awaiting approval</small><time>Due today</time></span><span data-icon="arrow-up-right"></span></button>
                 <button class="inbox-item" type="button" data-action="calendar-notification"><span class="inbox-avatar">CG</span><span><strong>Common Ground</strong><small>Delivery window confirmed · 18 Aug</small><time>18 Aug</time></span><span data-icon="arrow-up-right"></span></button>
                 <button class="inbox-item" type="button" data-action="activity"><span class="inbox-avatar">NQ</span><span><strong>Northstar / Q3</strong><small>Brief updated · campaign scope revised</small><time>02 Sep</time></span><span data-icon="arrow-up-right"></span></button>
                 <button class="inbox-item" type="button" data-action="activity"><span class="inbox-avatar">FN</span><span><strong>Field Notes</strong><small>Research handoff · summary ready</small><time>09 Sep</time></span><span data-icon="arrow-up-right"></span></button>
               </div>
 
               <section class="inbox-focus" aria-labelledby="focusTitle">
-                <div class="inbox-focus-heading"><div><span class="section-kicker">Today</span><h3 id="focusTitle">Next actions</h3></div><span><strong id="taskProgressText">1/4</strong><small id="taskProgressPercent">25%</small></span></div>
+                <div class="inbox-focus-heading"><div><span class="section-kicker" id="focusKicker">Today</span><h3 id="focusTitle">Next actions</h3></div><span><strong id="taskProgressText">1/4</strong><small id="taskProgressPercent">25%</small></span></div>
                 <span class="mini-progress"><i id="taskProgressBar"></i></span>
                 <div class="task-list" id="taskList"></div>
                 <button class="add-task-button" id="addTaskButton" type="button"><span data-icon="circle-plus"></span> Add task</button>
@@ -150,6 +150,6 @@
 
     <div class="toast-region" id="toastRegion" aria-live="polite"></div>
     <noscript><div class="noscript-message">StudioOS needs JavaScript enabled to show the workspace interactions.</div></noscript>
-    <script src="./script.js?v=20260817-sidebar-toggle-portfolio-layout-v2" defer></script>
+    <script src="./script.js?v=20260817-audit-fixes-v1" defer></script>
   </body>
 </html>

@@ -199,3 +199,23 @@
 .mobile-scrim {
   background: rgba(0, 0, 0, .54);
 }
+
+/* Insights hero: keep the dark surface so the cream editorial headline (and its
+   pink italic accent) stays legible. In monochrome mode page surfaces become
+   white, which made this text nearly invisible. */
+.insight-hero {
+  background: #0a0a0a;
+  border-color: #0a0a0a;
+  color: #fffdf7;
+}
+.insight-hero .section-kicker { color: #9ea99f; }
+.insight-hero h2 { color: #f8f3e9; }
+.insight-hero h2 em { color: #e9a188; }
+.insight-hero .health-badge { color: #c2d0c2; border-color: rgba(255, 255, 255, .13); }
+.insight-hero .health-badge i { background: #a7c29d; }
+.insight-hero .health-score strong { color: #f8f3e9; }
+.insight-hero .health-score span,
+.insight-hero .health-score p { color: #9da89e; }
+.insight-hero .health-bar { background: rgba(255, 255, 255, .12); }
+.insight-hero .insight-footnote { color: #89958b; }
+.insight-hero .insight-footnote .text-button { color: #e8a58d; }
