@@ -130,3 +130,9 @@
 - [x] Chuyển visual system StudioOS sang monochrome đen–trắng, gồm canvas, surface, navigation và trạng thái tương tác.
 - [x] Điều chỉnh hierarchy, typography và project portfolio để phù hợp hướng monochrome.
 - [x] Sửa workflow GitHub Pages, kiểm tra lại static interactions và xác minh bản cập nhật công khai.
+
+## Portfolio layout implementation follow-up
+
+- [x] Thay shell Overview cũ bằng bố cục Portfolio ba vùng: icon rail, project canvas và client inbox.
+- [x] Dựng project cards monochrome theo mẫu, gồm tiến độ, collaborators, deadline và hành động ngữ cảnh.
+- [x] Hoàn thiện responsive behavior, kiểm thử tương tác của Project inbox và xuất bản GitHub Pages sau khi xác nhận Portfolio layout hiển thị đầy đủ.
