@@ -25,9 +25,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css?v=20260817-sidebar-expanded-rhythm-v1" />
-    <link rel="stylesheet" href="./monochrome-overrides.css?v=20260817-sidebar-expanded-rhythm-v1" />
-    <link rel="stylesheet" href="./portfolio-layout.css?v=20260817-sidebar-expanded-rhythm-v1" />
+    <link rel="stylesheet" href="./styles.css?v=20260817-header-nav-v1" />
+    <link rel="stylesheet" href="./monochrome-overrides.css?v=20260817-header-nav-v1" />
+    <link rel="stylesheet" href="./portfolio-layout.css?v=20260817-header-nav-v1" />
     <link rel="preload" as="image" href="./assets/studioos-project-architecture-refresh.webp" fetchpriority="high" />
     <title>StudioOS — Creative project workspace for small teams</title>
   </head>
@@ -64,15 +64,21 @@
       <main class="studio-main">
         <header class="topbar">
           <button class="mobile-menu-button only-mobile" id="openSidebar" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="sidebar"><span data-icon="menu"></span></button>
-          <div class="breadcrumbs portfolio-breadcrumbs"><strong class="app-header-title">StudioOS</strong><span class="app-header-divider"></span><span class="app-header-subtitle">Portfolio workspace</span><strong id="activeBreadcrumb" class="sr-only">Overview</strong></div>
+          <div class="mobile-header-context" id="mobileHeaderContext"><strong class="mobile-context-page">Overview</strong><small>Portfolio workspace</small></div>
+          <div class="breadcrumbs portfolio-breadcrumbs"><strong class="app-header-title">StudioOS</strong><span class="app-header-divider"></span><button class="workspace-context" type="button" data-action="workspace" aria-label="Switch workspace"><span>Portfolio workspace</span><span aria-hidden="true">⌄</span></button><span class="app-header-divider context-divider"></span><span class="header-page-context" id="pageContext">Overview</span><strong id="activeBreadcrumb" class="sr-only">Overview</strong></div>
           <div class="topbar-actions">
-            <label class="top-search"><span data-icon="search"></span><span class="sr-only">Search workspace</span><input id="searchInput" type="search" placeholder="Search workspace" autocomplete="off" /><kbd><span data-icon="command"></span> K</kbd></label>
-            <button class="icon-button notification-button" id="notificationButton" type="button" aria-label="Open notifications" aria-expanded="false"><span data-icon="bell"></span><i class="notification-dot"></i></button>
-            <button class="help-button" type="button" data-action="help" aria-label="Open help center"><span data-icon="help"></span></button>
+            <label class="top-search"><span data-icon="search"></span><span class="sr-only">Search projects, tasks, and notes</span><input id="searchInput" type="search" placeholder="Search projects, tasks, notes…" aria-label="Search projects, tasks, and notes" autocomplete="off" /><kbd><span data-icon="command"></span> K</kbd></label>
+            <button class="icon-button notification-button" id="notificationButton" type="button" aria-label="Open notifications, 2 unread" aria-expanded="false" aria-controls="notificationPopover"><span data-icon="bell"></span><span class="notification-badge" aria-hidden="true">2</span></button>
+            <button class="help-button" id="helpButton" type="button" data-action="help" aria-label="Open help and shortcuts" aria-expanded="false" aria-controls="helpPopover" title="Help & shortcuts"><span data-icon="help"></span></button>
             <div class="notification-popover" id="notificationPopover" hidden>
               <div class="popover-heading"><strong>Notifications</strong><span>02 unread</span></div>
               <button type="button" data-action="review-notification"><span class="notification-icon copper" data-icon="message"></span><span><strong>Maya left feedback</strong><small>Lumen House · 12 min ago</small></span></button>
               <button type="button" data-action="calendar-notification"><span class="notification-icon sage" data-icon="calendar"></span><span><strong>Two deadlines this week</strong><small>Northstar / Q3 · 1 hr ago</small></span></button>
+            </div>
+            <div class="help-popover" id="helpPopover" hidden>
+              <div class="popover-heading"><strong>Help &amp; shortcuts</strong><span>Quick guide</span></div>
+              <div class="shortcut-list"><div><span>Search workspace</span><kbd>⌘ K</kbd></div><div><span>Close panel</span><kbd>Esc</kbd></div><div><span>Open navigation</span><kbd>⌘ /</kbd></div></div>
+              <button class="help-link" id="helpDocsButton" type="button">Open help center <span aria-hidden="true">→</span></button>
             </div>
           </div>
         </header>
@@ -144,6 +150,6 @@
 
     <div class="toast-region" id="toastRegion" aria-live="polite"></div>
     <noscript><div class="noscript-message">StudioOS needs JavaScript enabled to show the workspace interactions.</div></noscript>
-    <script src="./script.js?v=20260817-sidebar-expanded-rhythm-v1" defer></script>
+    <script src="./script.js?v=20260817-header-nav-v1" defer></script>
   </body>
 </html>
