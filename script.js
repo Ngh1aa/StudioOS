@@ -4,7 +4,6 @@ function shortToday(){const d=new Date();return d.getDate()+" "+["Jan","Feb","Ma
 const icons = {
   menu: '<path d="M4 6h16M4 12h16M4 18h16"/>',
   x: '<path d="m6 6 12 12M18 6 6 18"/>',
-  "chevron-down": '<path d="m6 9 6 6 6-6"/>',
   "chevron-left": '<path d="m15 6-6 6 6 6"/>',
   "chevron-right": '<path d="m9 6 6 6-6 6"/>',
   dashboard: '<rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/>',
@@ -32,6 +31,7 @@ const icons = {
   paperclip: '<path d="m8 12 5.5-5.5a3.5 3.5 0 0 1 5 5L11 19a5 5 0 0 1-7-7l7-7"/>',
   lock: '<rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>',
   "check-circle": '<circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/>',
+  "chevron-down": '<path d="m6 9 6 6 6-6"/>',
 };
 
 const projects = [
@@ -58,7 +58,7 @@ function restoreTaskOrder() {
     const taskMap = new Map(tasks.map((task) => [task.id, task]));
     const restored = storedOrder.map(Number).map((id) => taskMap.get(id)).filter(Boolean);
     tasks = [...restored, ...tasks.filter((task) => !orderedIds.has(task.id))];
-  } catch (error) {
+  } catch {
     localStorage.removeItem(TASK_ORDER_STORAGE_KEY);
   }
 }
@@ -66,7 +66,7 @@ function restoreTaskOrder() {
 function persistTaskOrder() {
   try {
     localStorage.setItem(TASK_ORDER_STORAGE_KEY, JSON.stringify(tasks.map((task) => task.id)));
-  } catch (error) {
+  } catch {
     // Reordering still works for the current session when storage is unavailable.
   }
 }
@@ -79,8 +79,6 @@ let currentProjectFilter = "All";
 let currentProjectView = "All";
 let currentTaskFilter = "All";
 let activeDraggedTaskId = null;
-let lastTaskAction = null;
-let lastTaskActionTimer = null;
 let pageTransitionTimer = null;
 let lastSidebarFocus = null;
 
@@ -96,13 +94,15 @@ function renderProjectsPage(query = "", filter = currentProjectFilter, view = cu
     const matchesView = view === "All" || project.view === view;
     return matchesQuery && matchesFilter && matchesView;
   });
-  document.querySelector("#projectsPageGrid").innerHTML = filtered.length ? filtered.map(projectCard).join("") : `<div class="empty-search page-empty">${icon("search")}<strong>No projects in this view</strong><span>Try another filter or search term.</span></div>`;
+  const grid = document.querySelector("#projectsPageGrid");
+  if (!grid) return;
+  grid.innerHTML = filtered.length ? filtered.map(projectCard).join("") : `<div class="empty-search page-empty">${icon("search")}<strong>No projects in this view</strong><span>Try another filter or search term.</span></div>`;
   const count = document.querySelector("#projectsPageCount");
   if (count) count.textContent = `${filtered.length} result${filtered.length === 1 ? "" : "s"}`;
 }
 
 function projectsPage() {
-  return `<div class="page-shell-page"><div class="page-intro-row"><div class="page-intro-row">${pageHeader("02 / Portfolio", "Projects", "A clear view of every brief, milestone and next decision.", `<button class="primary-button" id="pageNewProjectButton" type="button"><span data-icon="plus"></span> New project</button>`)}</div><section class="page-toolbar"><label class="toolbar-search"><span data-icon="search"></span><span class="sr-only">Search projects</span><input id="projectFilterInput" type="search" placeholder="Search projects" /></label><div class="filter-chips" role="group" aria-label="Project status filters"><button class="filter-chip active" type="button" aria-pressed="true" data-project-filter="All">All <em>04</em></button><button class="filter-chip" type="button" aria-pressed="false" data-project-filter="In review">In review <em>01</em></button><button class="filter-chip" type="button" aria-pressed="false" data-project-filter="On track">On track <em>02</em></button><button class="filter-chip" type="button" aria-pressed="false" data-project-filter="Not started">Not started <em>01</em></button></div><button class="ghost-button" type="button" data-action="sort-projects">Sort <span data-icon="sliders"></span></button></section><div class="project-taxonomy"><div class="taxonomy-heading"><span class="taxonomy-label">View by</span><span class="taxonomy-hint" aria-hidden="true">Browse type</span></div><div class="taxonomy-scroller" role="group" aria-label="View projects by type"><button class="taxonomy-chip active" type="button" aria-pressed="true" data-project-view="All">All work <em>04</em></button><button class="taxonomy-chip" type="button" aria-pressed="false" data-project-view="Brand">Brand <em>01</em></button><button class="taxonomy-chip" type="button" aria-pressed="false" data-project-view="Digital">Digital <em>01</em></button><button class="taxonomy-chip" type="button" aria-pressed="false" data-project-view="Campaign">Campaign <em>01</em></button><button class="taxonomy-chip" type="button" aria-pressed="false" data-project-view="Research">Research <em>01</em></button></div></div><section class="metric-strip"><div><small>Total value</small><strong>04</strong><span>active projects</span></div><div><small>Moving well</small><strong>03</strong><span>on schedule</span></div><div><small>Needs attention</small><strong>01</strong><span>awaiting your eye</span></div><div class="metric-strip-note"><span data-icon="sparkles"></span><p><strong>Good work gets room to breathe.</strong><small>One calm view for the whole studio.</small></p></div></section><section class="page-section-heading"><div><div class="section-kicker">${currentProjectView === "All" ? "All work" : currentProjectView} / ${currentProjectFilter}</div><h2>Project index</h2></div><span class="page-count" id="projectsPageCount">${projects.length} results</span></section><div class="project-grid projects-page-grid" id="projectsPageGrid"></div></div>`;
+  return `<div class="page-shell-page"><div class="page-intro-row">${pageHeader("02 / Portfolio", "Projects", "A clear view of every brief, milestone and next decision.", `<button class="primary-button" id="pageNewProjectButton" type="button"><span data-icon="plus"></span> New project</button>`)}</div><section class="page-toolbar"><label class="toolbar-search"><span data-icon="search"></span><span class="sr-only">Search projects</span><input id="projectFilterInput" type="search" placeholder="Search projects" /></label><div class="filter-chips" role="group" aria-label="Project status filters"><button class="filter-chip active" type="button" aria-pressed="true" data-project-filter="All">All <em>04</em></button><button class="filter-chip" type="button" aria-pressed="false" data-project-filter="In review">In review <em>01</em></button><button class="filter-chip" type="button" aria-pressed="false" data-project-filter="On track">On track <em>02</em></button><button class="filter-chip" type="button" aria-pressed="false" data-project-filter="Not started">Not started <em>01</em></button></div><button class="ghost-button" type="button" data-action="sort-projects">Sort <span data-icon="sliders"></span></button></section><div class="project-taxonomy"><div class="taxonomy-heading"><span class="taxonomy-label">View by</span><span class="taxonomy-hint" aria-hidden="true">Browse type</span></div><div class="taxonomy-scroller" role="group" aria-label="View projects by type"><button class="taxonomy-chip active" type="button" aria-pressed="true" data-project-view="All">All work <em>04</em></button><button class="taxonomy-chip" type="button" aria-pressed="false" data-project-view="Brand">Brand <em>01</em></button><button class="taxonomy-chip" type="button" aria-pressed="false" data-project-view="Digital">Digital <em>01</em></button><button class="taxonomy-chip" type="button" aria-pressed="false" data-project-view="Campaign">Campaign <em>01</em></button><button class="taxonomy-chip" type="button" aria-pressed="false" data-project-view="Research">Research <em>01</em></button></div></div><section class="metric-strip"><div><small>Total value</small><strong>04</strong><span>active projects</span></div><div><small>Moving well</small><strong>03</strong><span>on schedule</span></div><div><small>Needs attention</small><strong>01</strong><span>awaiting your eye</span></div><div class="metric-strip-note"><span data-icon="sparkles"></span><p><strong>Good work gets room to breathe.</strong><small>One calm view for the whole studio.</small></p></div></section><section class="page-section-heading"><div><div class="section-kicker">${currentProjectView === "All" ? "All work" : currentProjectView} / ${currentProjectFilter}</div><h2>Project index</h2></div><span class="page-count" id="projectsPageCount">${projects.length} results</span></section><div class="project-grid projects-page-grid" id="projectsPageGrid"></div></div>`;
 }
 
 function tasksPage() {
@@ -143,7 +143,7 @@ function renderPage(name) {
     if (name === "Projects") { currentProjectFilter = "All"; currentProjectView = "All"; renderProjectsPage(); bindProjectsPage(); }
     if (name === "Tasks") { currentTaskFilter = "All"; renderTasksPage(); bindTasksPage(); }
     if (name === "Notes") bindNotesPage();
-    bindPageActions(name);
+    bindPageActions();
     document.querySelector(".studio-main")?.scrollTo({ top: 0, behavior: reduced ? "auto" : "smooth" });
     view.classList.remove("is-leaving");
     void view.offsetWidth;
@@ -315,7 +315,7 @@ function bindNotesPage() {
   });
 }
 
-function bindPageActions(name) {
+function bindPageActions() {
   document.querySelectorAll("#pageView [data-action]").forEach((button) => button.addEventListener("click", () => {
     const action = button.dataset.action;
     const messages = { "sort-projects": "Projects are sorted by the latest activity.", "calendar-prev": "Previous week is coming next.", "calendar-next": "Next week is coming next.", "calendar-add": "Milestone composer is coming soon.", "calendar-month": "Month view is coming next.", "calendar-event": "Event detail is coming soon.", "calendar-full": "Full calendar view is coming next.", "team-filter": "Team filters are coming soon.", "member-options": "Member actions are coming soon.", "member-profile": "Member profiles are coming soon.", "new-note": "Note composer is coming soon.", "notes-filter": "Note filters are ready for the next slice.", "notes-tag": "Tag filtering is coming soon.", "note-options": "Note actions are coming soon.", "open-note": "Note detail is coming soon.", "export-insights": "Your insights summary is being prepared.", "insights-method": "Insights are based on progress, deadlines and review rhythm.", "workload-options": "Time range options are coming soon.", "insight-attention": "Attention detail is coming soon.", "save-settings": "Workspace settings saved.", "invite": "Invite flow is coming soon." };
@@ -400,7 +400,10 @@ function toast(message, type = "", actionConfig = null) {
   node.className = `toast ${type}`;
   node.innerHTML = `<span class="toast-copy">${message}</span>${actionConfig ? `<button class="toast-action" type="button">${actionConfig.label}</button>` : ""}`;
   document.querySelector("#toastRegion").append(node);
-  actionConfig && node.querySelector(".toast-action")?.addEventListener("click", () => { actionConfig.action(); dismissToast(node); });
+  if (actionConfig) {
+    const actionNode = node.querySelector(".toast-action");
+    actionNode?.addEventListener("click", () => { actionConfig.action(); dismissToast(node); });
+  }
   window.setTimeout(() => dismissToast(node), actionConfig ? 5200 : 3000);
 }
 
@@ -497,7 +500,9 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll("[data-close-dialog]").forEach((button) => button.addEventListener("click", () => closeDialog(button.dataset.closeDialog)));
   document.querySelectorAll(".dialog-layer").forEach((layer) => layer.addEventListener("click", (event) => { if (event.target === layer) closeDialog(layer.id); }));
   document.querySelectorAll("[data-action]").forEach((button) => button.addEventListener("click", () => { const action = button.dataset.action; if (["workspace","help","focus-options","activity-options","activity","comment"].includes(action)) toast(action === "help" ? "Need a hand? Help center is coming soon." : action === "comment" ? "Comment composer is coming soon." : "This workspace action is coming soon."); }));
-  document.querySelector("#openSidebar").addEventListener("click", () => { document.querySelector("#sidebar").classList.contains("sidebar-open") ? closeSidebar() : openSidebar(); }); document.querySelector("#closeSidebar").addEventListener("click", () => closeSidebar()); document.querySelector("#mobileScrim").addEventListener("click", () => closeSidebar());
+  document.querySelector("#openSidebar").addEventListener("click", () => { if (document.querySelector("#sidebar").classList.contains("sidebar-open")) { closeSidebar(); } else { openSidebar(); } });
+  document.querySelector("#closeSidebar").addEventListener("click", () => closeSidebar());
+  document.querySelector("#mobileScrim").addEventListener("click", () => closeSidebar());
   window.addEventListener("resize", () => { if (window.matchMedia("(min-width: 901px)").matches) closeSidebar({ returnFocus: false }); });
   document.addEventListener("keydown", (event) => { if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") { event.preventDefault(); document.querySelector("#searchInput").focus(); } if (event.key === "Escape") { closeNotifications(); document.querySelectorAll(".dialog-layer:not([hidden])").forEach((layer) => closeDialog(layer.id)); closeSidebar(); } });
 
@@ -526,14 +531,14 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const stored = localStorage.getItem(SIDEBAR_COLLAPSED_KEY);
       if (stored === "true") applySidebarState(true);
-    } catch (e) { /* storage unavailable */ }
+    } catch { /* storage unavailable */ }
   }
 
   sidebarToggleBtn?.addEventListener("click", () => {
     if (!isDesktop()) return;
     const willCollapse = !sidebarEl.classList.contains("collapsed");
     applySidebarState(willCollapse);
-    try { localStorage.setItem(SIDEBAR_COLLAPSED_KEY, String(willCollapse)); } catch (e) { /* ok */ }
+    try { localStorage.setItem(SIDEBAR_COLLAPSED_KEY, String(willCollapse)); } catch { /* ok */ }
   });
 
   // Reset collapsed state when resizing below desktop
