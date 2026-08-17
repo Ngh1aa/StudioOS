@@ -315,3 +315,9 @@ body { background: var(--portfolio-soft); }
     gap: 10px;
   }
 }
+
+
+/* The grid already reserves the collapsed 72px rail; do not add a second main offset. */
+.studio-sidebar.collapsed + .mobile-scrim + .studio-main {
+  margin-left: 0;
+}
