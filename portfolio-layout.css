@@ -463,3 +463,63 @@ body { background: var(--portfolio-soft); }
     height: 18px;
   }
 }
+
+
+/* Account menu — compact workspace identity and account actions. */
+.sidebar-bottom { position: relative; }
+.sidebar-profile { position: relative; z-index: 2; }
+.sidebar-profile:focus-visible { outline: 2px solid #111111; outline-offset: 3px; }
+.account-popover[hidden] { display: none !important; }
+.account-popover {
+  position: absolute;
+  z-index: 45;
+  left: 0;
+  bottom: calc(100% + 10px);
+  width: 100%;
+  padding: 10px;
+  color: #111111;
+  background: #fff;
+  border: 1px solid #d8d8d8;
+  border-radius: 15px;
+  box-shadow: 0 18px 42px rgba(17,17,17,.16);
+  animation: pop-in 180ms var(--ease-out);
+}
+.account-popover-head,
+.account-workspace,
+.account-menu-section button,
+.account-menu-footer button { display: flex; align-items: center; }
+.account-popover-head { gap: 9px; padding: 4px 4px 11px; border-bottom: 1px solid #ececec; }
+.account-popover-head .profile-avatar { width: 32px; height: 32px; flex: 0 0 32px; border-width: 2px; font-size: 9px; }
+.account-popover-head > span:nth-child(2) { display: grid; min-width: 0; gap: 3px; }
+.account-popover-head strong { font-size: 11px; line-height: 1.1; white-space: nowrap; }
+.account-popover-head small { color: #777; font-size: 9px; line-height: 1.1; white-space: nowrap; }
+.account-status { position: relative; margin-left: auto; padding-left: 9px; color: #777; font-size: 9px; white-space: nowrap; }
+.account-status::before { position: absolute; top: 50%; left: 0; width: 5px; height: 5px; content: ''; background: #111111; border-radius: 50%; transform: translateY(-50%); }
+.account-workspace { gap: 8px; padding: 11px 4px; border-bottom: 1px solid #ececec; }
+.account-workspace-mark { display: grid; flex: 0 0 25px; width: 25px; height: 25px; place-items: center; color: #fff; background: #111111; border-radius: 8px; font-size: 10px; font-weight: 700; }
+.account-workspace > span:nth-child(2) { display: grid; min-width: 0; gap: 3px; }
+.account-workspace small { color: #888; font-size: 8px; letter-spacing: .08em; text-transform: uppercase; }
+.account-workspace strong { overflow: hidden; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+.account-current { margin-left: auto; padding: 4px 6px; color: #666; background: #f3f3f3; border-radius: 999px; font-size: 8px; font-weight: 700; white-space: nowrap; }
+.account-menu-section { display: grid; gap: 2px; padding: 8px 0; border-bottom: 1px solid #ececec; }
+.account-menu-section button,
+.account-menu-footer button { width: 100%; gap: 9px; padding: 9px 6px; color: #333; background: transparent; border-radius: 9px; text-align: left; }
+.account-menu-section button:hover,
+.account-menu-section button:focus-visible { color: #111; background: #f3f3f3; }
+.account-menu-section button > .studio-icon,
+.account-menu-footer button > .studio-icon { width: 16px; height: 16px; flex: 0 0 16px; color: #777; }
+.account-menu-section button > span:last-child { display: grid; gap: 3px; min-width: 0; }
+.account-menu-section button strong { font-size: 10px; font-weight: 700; }
+.account-menu-section button small { overflow: hidden; color: #888; font-size: 8px; text-overflow: ellipsis; white-space: nowrap; }
+.account-menu-footer { display: grid; gap: 6px; padding-top: 8px; }
+.account-menu-footer button { gap: 8px; padding: 7px 6px; color: #666; font-size: 10px; font-weight: 700; }
+.account-menu-footer button:hover,
+.account-menu-footer button:focus-visible { color: #111; background: #f3f3f3; }
+.account-version { padding: 0 6px; color: #aaa; font-size: 8px; letter-spacing: .04em; }
+.studio-sidebar.collapsed .account-popover { left: 50px; bottom: 0; width: 238px; }
+.studio-sidebar.collapsed .account-popover-head .profile-avatar { margin: 0; }
+
+@media (max-width: 900px) {
+  .account-popover { position: fixed; right: 14px; bottom: 14px; left: 14px; width: auto; max-width: 292px; }
+  .studio-sidebar.collapsed .account-popover { right: 14px; bottom: 14px; left: 14px; width: auto; }
+}
