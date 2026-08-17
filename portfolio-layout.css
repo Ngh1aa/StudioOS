@@ -212,3 +212,106 @@ body { background: var(--portfolio-soft); }
   .inbox-legend { align-items: flex-start; flex-direction: column; gap: 4px; }
   .inbox-status { font-size: 7px; }
 }
+
+
+/* Collapsed rail UX refinement: preserve information hierarchy instead of reducing the sidebar to icon-only chrome. */
+@media (min-width: 901px) {
+  .sidebar-profile {
+    position: relative;
+    width: 100%;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    background: transparent;
+    text-align: left;
+    cursor: pointer;
+    transition: background 180ms ease, border-color 180ms ease;
+  }
+  .sidebar-profile:hover,
+  .sidebar-profile:focus-visible {
+    background: #f1f1f1;
+    border-color: #dedede;
+  }
+  .studio-sidebar.collapsed .side-nav {
+    gap: 4px;
+  }
+  .studio-sidebar.collapsed .side-nav-item {
+    width: 44px;
+    height: 40px;
+    min-height: 40px;
+  }
+  .studio-sidebar.collapsed .side-nav-item > [data-icon] svg {
+    width: 19px;
+    height: 19px;
+  }
+  .studio-sidebar.collapsed .side-nav-item[data-nav] > em {
+    position: absolute;
+    top: -3px;
+    right: -4px;
+    z-index: 2;
+    display: grid !important;
+    place-items: center;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 3px;
+    border: 2px solid #fff;
+    border-radius: 999px;
+    background: #111111;
+    color: #fff;
+    font-size: 8px;
+    font-style: normal;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -.02em;
+  }
+  .studio-sidebar.collapsed .side-nav-item.active {
+    background: #111111 !important;
+    border-color: #111111;
+    color: #fff !important;
+    box-shadow: 0 7px 16px rgba(17,17,17,.16);
+  }
+  .studio-sidebar.collapsed .side-nav-item.active em {
+    border-color: #111111;
+    background: #fff;
+    color: #111111;
+  }
+  .studio-sidebar.collapsed .nav-section-spaced {
+    display: block;
+    width: 44px;
+    height: 18px;
+    margin: 7px auto 1px;
+    padding: 8px 0 0;
+    border-top: 1px solid #d7d7d7;
+    color: transparent;
+    font-size: 0;
+    line-height: 0;
+  }
+  .studio-sidebar.collapsed .sidebar-profile {
+    width: 44px;
+    height: 44px;
+    justify-content: center;
+    padding: 0;
+    border-radius: 12px;
+  }
+  .studio-sidebar.collapsed .sidebar-profile > .profile-more {
+    position: absolute;
+    right: -3px;
+    bottom: -3px;
+    z-index: 2;
+    display: grid !important;
+    place-items: center;
+    width: 15px;
+    height: 15px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    background: #fff;
+    color: #111111;
+    box-shadow: 0 0 0 1px #111111;
+  }
+  .studio-sidebar.collapsed .sidebar-profile .profile-more svg {
+    width: 8px;
+    height: 8px;
+  }
+  .studio-sidebar.collapsed .sidebar-bottom {
+    gap: 10px;
+  }
+}
