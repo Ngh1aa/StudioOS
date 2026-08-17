@@ -32,15 +32,16 @@ body { background: var(--portfolio-soft); }
 
 .studio-main { width: auto; min-width: 0; margin-left: 0; background: #fff; overflow-y: auto; }
 .mobile-scrim { display: none !important; }
-.sidebar-toggle { position: absolute; top: 12px; right: 12px; z-index: 5; width: 30px; height: 30px; display: grid; place-items: center; color: #999; background: #fff; border: 1px solid #dedede; border-radius: 50%; padding: 0; font-size: 12px; font-weight: 600; }
+.sidebar-toggle { position: relative; top: auto; right: auto; z-index: 5; width: 100%; min-height: 38px; display: flex; align-items: center; justify-content: flex-start; gap: 10px; color: #666; background: #fff; border: 1px solid #dedede; border-radius: 10px; padding: 0 12px; font-size: 11px; font-weight: 700; letter-spacing: .02em; }
 .sidebar-toggle:hover { color: #fff; background: #0a0a0a; border-color: #0a0a0a; }
 .sidebar-toggle:active { transform: scale(.95); }
 .sidebar-toggle .studio-icon { color: currentColor; width: 14px; height: 14px; transition: transform 220ms var(--ease-out); }
-.sidebar-toggle .toggle-label { display: none !important; }
+.sidebar-toggle .toggle-label { display: inline !important; overflow: hidden; white-space: nowrap; }
 .sidebar-bottom { gap: 8px; padding-top: 8px; display: grid; }
 .sidebar-profile { gap: 8px; }
-.studio-sidebar.collapsed .sidebar-toggle { position: relative; top: auto; right: auto; transform: none; color: #555; border-color: #d0d0d0; }
+.studio-sidebar.collapsed .sidebar-toggle { position: relative; top: auto; right: auto; transform: none; width: 44px; min-height: 40px; height: 40px; margin: 0 auto; justify-content: center; gap: 0; padding: 0; color: #555; border-color: #d0d0d0; }
 .studio-sidebar.collapsed .sidebar-toggle svg { transform: rotate(180deg); }
+.studio-sidebar.collapsed .sidebar-toggle .toggle-label { display: none !important; }
 .studio-sidebar.collapsed + .mobile-scrim + .studio-main { margin-left: 72px; }
 .studio-sidebar.collapsed .brand-lockup,
 .studio-sidebar.collapsed .nav-section-label,
@@ -151,24 +152,28 @@ body { background: var(--portfolio-soft); }
 @media (max-width: 900px) {
   .studio-shell { display: block; }
   .studio-shell, .studio-shell:has(.studio-sidebar.collapsed) { display: block; }
-  .studio-sidebar { position: fixed; z-index: 50; width: min(320px, 86vw); height: 100vh; padding: 24px; background: #fff; transform: translateX(-105%); transition: transform 220ms var(--ease-out); }
-  .studio-sidebar.collapsed { width: min(320px, 86vw); padding: 24px; }
-  .sidebar-toggle { display: none; }
+  .studio-sidebar { position: fixed; z-index: 50; width: min(320px, 86vw); height: 100vh; min-height: 100dvh; padding: 24px 20px max(24px, env(safe-area-inset-bottom)); background: #fff; transform: translateX(-105%); transition: transform 220ms var(--ease-out); }
+  .studio-sidebar.collapsed { width: min(320px, 86vw); padding: 24px 20px max(24px, env(safe-area-inset-bottom)); }
   .studio-sidebar.sidebar-open { transform: translateX(0); }
+  .sidebar-toggle { display: none; }
   .mobile-scrim { display: block !important; position: fixed; z-index: 20; inset: 0; opacity: 0; visibility: hidden; pointer-events: none; background: rgba(0,0,0,.48); transition: opacity 220ms var(--ease-out), visibility 220ms var(--ease-out); }
   .mobile-scrim.scrim-visible { opacity: 1; visibility: visible; pointer-events: auto; }
   .brand-lockup, .nav-section-label, .sidebar-profile > span:not(.profile-avatar), .profile-more { display: flex; }
-  .sidebar-brand { justify-content: flex-start; gap: 12px; }
-  .brand-lockup { display: grid; }
+  .sidebar-brand { justify-content: flex-start; gap: 10px; }
+  .brand-lockup { display: grid; min-width: 0; flex: 1 1 auto; }
+  .sidebar-close { flex: 0 0 36px; width: 36px; height: 36px; }
   .side-nav { margin-top: 26px; gap: 4px; }
   .side-nav-item { justify-content: flex-start; width: 100%; height: 48px; min-height: 48px; padding: 0 14px; margin: 0; border-radius: 12px; }
   .side-nav-item > span:not([data-icon]) { position: static; width: auto; height: auto; padding: 0; overflow: visible; clip: auto; white-space: normal; }
   .side-nav-item em { display: block; }
   .side-nav-item.active { color: #fff; }
-  .sidebar-bottom { margin-top: auto; }
+  .sidebar-bottom { margin-top: auto; gap: 10px; padding-top: 18px; padding-bottom: 2px; }
+  .sidebar-profile { min-height: 44px; }
+  .sidebar-profile .profile-avatar { width: 38px; height: 38px; }
   .topbar { height: 70px; padding: 0 18px; }
   .portfolio-breadcrumbs { display: none; }
-  .portfolio-overview { grid-template-columns: 1fr; }
+  .portfolio-overview { width: 100%; min-width: 0; grid-template-columns: minmax(0, 1fr); }
+  .portfolio-projects, .project-inbox { width: 100%; min-width: 0; max-width: 100%; }
   .portfolio-projects { padding: 32px 20px; border-right: 0; }
   .project-inbox { padding-top: 30px; }
   .portfolio-footer { padding: 18px 20px; }
