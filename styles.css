@@ -184,11 +184,11 @@ svg, .studio-icon { width: 17px; height: 17px; display: block; flex: 0 0 auto; f
 .studio-sidebar.collapsed::after { display: none; }
 .studio-sidebar.collapsed .sidebar-brand { padding: 0 0 29px; justify-content: center; }
 .studio-sidebar.collapsed .brand-lockup { display: none; }
-.studio-sidebar.collapsed .workspace-switcher { justify-content: center; padding: 10px 0; width: 44px; margin: 0 auto; }
+.studio-sidebar.collapsed .workspace-switcher { justify-content: flex-start; padding: 10px 0 10px 14px; width: 44px; margin: 0; }
 .studio-sidebar.collapsed .workspace-switcher .workspace-copy,
 .studio-sidebar.collapsed .workspace-switcher > span:last-child { display: none; }
 .studio-sidebar.collapsed .nav-section-label { display: none; }
-.studio-sidebar.collapsed .side-nav-item { justify-content: center; padding: 0; min-height: 44px; width: 44px; height: 44px; margin: 0 auto; position: relative; overflow: visible; border-radius: 10px; }
+.studio-sidebar.collapsed .side-nav-item { justify-content: flex-start; padding: 0 0 0 14px; min-height: 44px; width: 44px; height: 44px; margin: 0; position: relative; overflow: visible; border-radius: 10px; }
 .studio-sidebar.collapsed .side-nav-item > *:not([data-icon]) { display: none !important; }
 .studio-sidebar.collapsed .side-nav-item > [data-icon] { display: flex !important; align-items: center; justify-content: center; width: 100%; height: 100%; }
 .studio-sidebar.collapsed .side-nav-item svg { width: 18px; height: 18px; }
@@ -196,7 +196,7 @@ svg, .studio-icon { width: 17px; height: 17px; display: block; flex: 0 0 auto; f
 .studio-sidebar.collapsed .sidebar-toggle { justify-content: center; padding: 0; width: 44px; height: 40px; margin: 0 auto; position: relative; overflow: visible; }
 .studio-sidebar.collapsed .sidebar-toggle .toggle-label { display: none !important; }
 .studio-sidebar.collapsed .sidebar-toggle svg { transform: rotate(180deg); }
-.studio-sidebar.collapsed .sidebar-profile { justify-content: center; padding: 0; }
+.studio-sidebar.collapsed .sidebar-profile { justify-content: flex-start; padding: 0 0 0 14px; }
 .studio-sidebar.collapsed .sidebar-profile > span:nth-child(2) { display: none; }
 .studio-sidebar.collapsed .profile-more { display: none; }
 .studio-sidebar.collapsed .sidebar-close { display: none; }
