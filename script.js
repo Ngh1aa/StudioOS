@@ -341,7 +341,7 @@ function renderProjects(query = "") {
   const grid = document.querySelector("#projectGrid");
   grid.innerHTML = visible.length ? visible.map(projectCard).join("") : `<div class="empty-search">${icon("search")}<strong>No projects found</strong><span>Try another name, type or owner.</span></div>`;
   const button = document.querySelector("#showAllButton");
-  button.innerHTML = `${showAllProjects ? "Show less" : "View all projects"} ${icon("arrow-up-right")}`;
+  button.innerHTML = `${icon("arrow-up-right")}<span class="sr-only">${showAllProjects ? "Show less" : "View all projects"}</span>`;
   document.querySelector("#activeProjectCount").textContent = String(projects.length).padStart(2, "0");
   const inReview = projects.filter((p) => p.status && p.status.toLowerCase().includes("review")).length;
   const dueSoon = projects.filter((p) => {
