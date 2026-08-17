@@ -12,16 +12,11 @@ body { background: var(--portfolio-soft); }
 .sidebar-brand { justify-content: flex-start; padding: 8px 0 6px; min-height: 58px; }
 .brand-mark-wrap { width: 40px; height: 40px; background: #0a0a0a !important; border-radius: 13px; box-shadow: none; flex-shrink: 0; }
 .brand-mark-wrap img { width: 24px; height: 24px; }
-.brand-lockup, .workspace-switcher, .nav-section-label, .sidebar-profile > span:not(.profile-avatar), .profile-more { display: initial; }
+.brand-lockup, .nav-section-label, .sidebar-profile > span:not(.profile-avatar), .profile-more { display: initial; }
 .brand-lockup { display: grid; }
 .brand-name { color: #111 !important; font-size: 15px !important; letter-spacing: -.03em !important; line-height: 1.1 !important; white-space: nowrap !important; }
 .brand-caption { color: #777 !important; font-size: 7px !important; letter-spacing: 0 !important; white-space: nowrap !important; line-height: 1.1 !important; }
 .brand-lockup { min-width: 0; width: 156px; flex-shrink: 0; }
-.workspace-switcher { margin-top: 0; color: #111; background: #fafafa; border-color: #dedede; }
-.workspace-switcher:hover { background: #f1f1f1; border-color: #bdbdbd; }
-.workspace-switcher > span:last-child { color: #777; }
-.workspace-copy span { color: #111; }
-.workspace-copy small { color: #777; }
 .nav-section-label { color: #8b8b8b; }
 .side-nav { display: grid; gap: 0; margin-top: 8px; }
 .side-nav-item { position: relative; justify-content: flex-start; width: 100%; height: 31px; min-height: 31px; margin: 0; padding: 0 12px; color: #6f736f; border: 1px solid transparent; border-radius: 10px; }
@@ -47,17 +42,15 @@ body { background: var(--portfolio-soft); }
 .studio-sidebar.collapsed .sidebar-toggle { position: absolute; top: 62px; right: 50%; transform: translateX(50%); color: #555; border-color: #d0d0d0; }
 .studio-sidebar.collapsed .sidebar-toggle svg { transform: rotate(180deg); }
 .studio-sidebar.collapsed .brand-lockup,
-.studio-sidebar.collapsed .workspace-switcher,
 .studio-sidebar.collapsed .nav-section-label,
 .studio-sidebar.collapsed .sidebar-profile > span:not(.profile-avatar),
 .studio-sidebar.collapsed .profile-more { display: none; }
 .studio-sidebar.collapsed .sidebar-brand { justify-content: center; padding: 0 0 18px; }
-.studio-sidebar.collapsed .workspace-switcher { width: 44px; margin: 0 auto; }
-.studio-sidebar.collapsed .side-nav-item { justify-content: center; width: 44px; height: 37px; min-height: 37px; margin: 0 auto; padding: 0; border-radius: 10px; }
+.studio-sidebar.collapsed .side-nav-item { justify-content: flex-start; width: 44px; height: 37px; min-height: 37px; margin: 0; padding-left: 12px; border-radius: 10px; }
 .studio-sidebar.collapsed .side-nav-item > span:not([data-icon]) { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 .studio-sidebar.collapsed .side-nav-item em { display: none; }
-.studio-sidebar.collapsed .sidebar-profile { justify-content: center; padding: 0; }
-.studio-sidebar.collapsed .profile-avatar { margin: 0 auto; }
+.studio-sidebar.collapsed .sidebar-profile { justify-content: flex-start; padding: 0; }
+.studio-sidebar.collapsed .profile-avatar { margin: 0; }
 .studio-sidebar { transition: width 280ms var(--ease-out); }
 
 .topbar { position: sticky; top: 0; z-index: 15; height: 86px; padding: 0 42px; background: rgba(255,255,255,.94); border-bottom: 1px solid var(--portfolio-line); box-shadow: none; }
@@ -163,10 +156,9 @@ body { background: var(--portfolio-soft); }
   .studio-sidebar.sidebar-open { transform: translateX(0); }
   .mobile-scrim { display: block !important; position: fixed; z-index: 20; inset: 0; opacity: 0; visibility: hidden; pointer-events: none; background: rgba(0,0,0,.48); transition: opacity 220ms var(--ease-out), visibility 220ms var(--ease-out); }
   .mobile-scrim.scrim-visible { opacity: 1; visibility: visible; pointer-events: auto; }
-  .brand-lockup, .workspace-switcher, .nav-section-label, .sidebar-profile > span:not(.profile-avatar), .profile-more { display: flex; }
+  .brand-lockup, .nav-section-label, .sidebar-profile > span:not(.profile-avatar), .profile-more { display: flex; }
   .sidebar-brand { justify-content: flex-start; gap: 12px; }
   .brand-lockup { display: grid; }
-  .workspace-switcher { margin-top: 22px; }
   .side-nav { margin-top: 26px; gap: 4px; }
   .side-nav-item { justify-content: flex-start; width: 100%; height: 48px; min-height: 48px; padding: 0 14px; margin: 0; border-radius: 12px; }
   .side-nav-item > span:not([data-icon]) { position: static; width: auto; height: auto; padding: 0; overflow: visible; clip: auto; white-space: normal; }
