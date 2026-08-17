@@ -482,4 +482,41 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelector("#openSidebar").addEventListener("click", () => { document.querySelector("#sidebar").classList.contains("sidebar-open") ? closeSidebar() : openSidebar(); }); document.querySelector("#closeSidebar").addEventListener("click", () => closeSidebar()); document.querySelector("#mobileScrim").addEventListener("click", () => closeSidebar());
   window.addEventListener("resize", () => { if (window.matchMedia("(min-width: 901px)").matches) closeSidebar({ returnFocus: false }); });
   document.addEventListener("keydown", (event) => { if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") { event.preventDefault(); document.querySelector("#searchInput").focus(); } if (event.key === "Escape") { closeNotifications(); document.querySelectorAll(".dialog-layer:not([hidden])").forEach((layer) => closeDialog(layer.id)); closeSidebar(); } });
+
+  /* Sidebar collapse / expand toggle — desktop only, persisted to localStorage. */
+  const SIDEBAR_COLLAPSED_KEY = "studioos-sidebar-collapsed";
+  const sidebarEl = document.querySelector("#sidebar");
+  const sidebarToggleBtn = document.querySelector("#sidebarToggle");
+  const toggleLabel = sidebarToggleBtn?.querySelector(".toggle-label");
+
+  function applySidebarState(collapsed) {
+    if (!sidebarEl) return;
+    sidebarEl.classList.toggle("collapsed", collapsed);
+    if (toggleLabel) toggleLabel.textContent = collapsed ? "Expand" : "Collapse";
+    if (sidebarToggleBtn) sidebarToggleBtn.setAttribute("aria-label", collapsed ? "Expand sidebar" : "Collapse sidebar");
+  }
+
+  function isDesktop() { return window.innerWidth > 900; }
+
+  // Restore persisted state on desktop
+  if (isDesktop()) {
+    try {
+      const stored = localStorage.getItem(SIDEBAR_COLLAPSED_KEY);
+      if (stored === "true") applySidebarState(true);
+    } catch (e) { /* storage unavailable */ }
+  }
+
+  sidebarToggleBtn?.addEventListener("click", () => {
+    if (!isDesktop()) return;
+    const willCollapse = !sidebarEl.classList.contains("collapsed");
+    applySidebarState(willCollapse);
+    try { localStorage.setItem(SIDEBAR_COLLAPSED_KEY, String(willCollapse)); } catch (e) { /* ok */ }
+  });
+
+  // Reset collapsed state when resizing below desktop
+  window.addEventListener("resize", () => {
+    if (!isDesktop() && sidebarEl?.classList.contains("collapsed")) {
+      // Don't remove the class, just let CSS media queries override the collapsed styles
+    }
+  });
 });
