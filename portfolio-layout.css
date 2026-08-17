@@ -361,3 +361,15 @@ body { background: var(--portfolio-soft); }
     height: 16px;
   }
 }
+
+
+/* Keep expanded navigation rhythm consistent with the icon rail instead of leaving an auto-margin void. */
+@media (min-width: 901px) {
+  .studio-sidebar:not(.collapsed) .side-nav {
+    flex: 1 1 auto;
+    min-height: 0;
+    align-content: space-evenly;
+    gap: 4px;
+    padding: 10px 0 14px;
+  }
+}
