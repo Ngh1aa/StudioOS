@@ -129,4 +129,4 @@
 
 - [x] Chuyển visual system StudioOS sang monochrome đen–trắng, gồm canvas, surface, navigation và trạng thái tương tác.
 - [x] Điều chỉnh hierarchy, typography và project portfolio để phù hợp hướng monochrome.
-- [ ] Sửa workflow GitHub Pages, kiểm tra lại static interactions và xác minh bản cập nhật công khai.
+- [x] Sửa workflow GitHub Pages, kiểm tra lại static interactions và xác minh bản cập nhật công khai.
