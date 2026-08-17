@@ -523,3 +523,56 @@ body { background: var(--portfolio-soft); }
   .account-popover { position: fixed; right: 14px; bottom: 14px; left: 14px; width: auto; max-width: 292px; }
   .studio-sidebar.collapsed .account-popover { right: 14px; bottom: 14px; left: 14px; width: auto; }
 }
+
+
+/* Avatar-only account trigger: keep the user identity centered in both sidebar modes. */
+.sidebar-profile {
+  width: 44px;
+  min-height: 44px;
+  height: 44px;
+  margin: 0 auto;
+  padding: 0;
+  justify-content: center;
+  gap: 0;
+  border-radius: 12px;
+}
+.sidebar-profile > span:not(.profile-avatar),
+.sidebar-profile .profile-more {
+  display: none !important;
+}
+.sidebar-profile > .profile-avatar {
+  width: 44px;
+  height: 44px;
+  margin: 0;
+}
+
+@media (max-width: 900px) {
+  .sidebar-profile {
+    width: 44px;
+    min-height: 44px;
+    height: 44px;
+    margin-inline: auto;
+  }
+}
+
+/* Non-active navigation hover uses a light surface with black iconography. */
+.side-nav-item:not(.active):hover,
+.side-nav-item:not(.active):focus-visible {
+  background: #f1f1f1;
+  border-color: #dedede;
+  color: #111111;
+}
+.side-nav-item:not(.active):hover svg,
+.side-nav-item:not(.active):focus-visible svg {
+  color: #111111 !important;
+}
+.studio-sidebar .side-nav-item.active:hover,
+.studio-sidebar .side-nav-item.active:focus-visible {
+  background: #111111 !important;
+  border-color: #111111;
+  color: #fff !important;
+}
+.studio-sidebar .side-nav-item.active:hover svg,
+.studio-sidebar .side-nav-item.active:focus-visible svg {
+  color: #fff !important;
+}
