@@ -25,9 +25,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css?v=20260817-contrast-v1" />
-    <link rel="stylesheet" href="./monochrome-overrides.css?v=20260817-contrast-v1" />
-    <link rel="stylesheet" href="./portfolio-layout.css?v=20260817-contrast-v1" />
+    <link rel="stylesheet" href="./styles.css?v=20260817-ux-audit-v1" />
+    <link rel="stylesheet" href="./monochrome-overrides.css?v=20260817-ux-audit-v1" />
+    <link rel="stylesheet" href="./portfolio-layout.css?v=20260817-ux-audit-v1" />
     <link rel="preload" as="image" href="./assets/studioos-project-architecture-refresh.webp" fetchpriority="high" />
     <title>StudioOS — Creative project workspace for small teams</title>
   </head>
@@ -99,12 +99,12 @@
 
             <aside class="project-inbox" aria-labelledby="inboxTitle">
               <header class="inbox-heading"><h2 id="inboxTitle">Project inbox</h2><button class="icon-button subtle-icon" type="button" data-action="activity-options" aria-label="Inbox options"><span data-icon="more"></span></button></header>
-              <p class="inbox-intro">Updates that need a decision, a handoff, or a next step.</p>
-              <div class="inbox-list" aria-label="Project updates">
-                <button class="inbox-item is-priority" type="button" data-action="review-notification"><span class="inbox-avatar">LH</span><span><strong>Lumen House</strong><small>Review request · 2 assets awaiting approval</small><time>Due today</time></span><span data-icon="arrow-up-right"></span></button>
-                <button class="inbox-item" type="button" data-action="calendar-notification"><span class="inbox-avatar">CG</span><span><strong>Common Ground</strong><small>Delivery window confirmed · 18 Aug</small><time>18 Aug</time></span><span data-icon="arrow-up-right"></span></button>
-                <button class="inbox-item" type="button" data-action="activity"><span class="inbox-avatar">NQ</span><span><strong>Northstar / Q3</strong><small>Brief updated · campaign scope revised</small><time>02 Sep</time></span><span data-icon="arrow-up-right"></span></button>
-                <button class="inbox-item" type="button" data-action="activity"><span class="inbox-avatar">FN</span><span><strong>Field Notes</strong><small>Research handoff · summary ready</small><time>09 Sep</time></span><span data-icon="arrow-up-right"></span></button>
+              <p class="inbox-intro">Updates that need a decision, a handoff, or a next step.</p><div class="inbox-legend" role="group" aria-label="Inbox status legend"><span><i aria-hidden="true"></i> Needs review</span><small>Highlighted items need your next decision.</small></div>
+              <div class="inbox-list" role="group" aria-label="Project updates">
+                <button class="inbox-item is-priority" type="button" data-action="review-notification"><span class="inbox-avatar">LH</span><span><strong>Lumen House</strong><small>Review request · 2 assets awaiting approval</small><span class="inbox-status inbox-status-review">Needs review</span><time>Due today</time></span><span data-icon="arrow-up-right"></span></button>
+                <button class="inbox-item" type="button" data-action="calendar-notification"><span class="inbox-avatar">CG</span><span><strong>Common Ground</strong><small>Delivery window confirmed · 18 Aug</small><span class="inbox-status inbox-status-confirmed">Confirmed</span><time>18 Aug</time></span><span data-icon="arrow-up-right"></span></button>
+                <button class="inbox-item" type="button" data-action="activity"><span class="inbox-avatar">NQ</span><span><strong>Northstar / Q3</strong><small>Brief updated · campaign scope revised</small><span class="inbox-status inbox-status-updated">Updated</span><time>02 Sep</time></span><span data-icon="arrow-up-right"></span></button>
+                <button class="inbox-item" type="button" data-action="activity"><span class="inbox-avatar">FN</span><span><strong>Field Notes</strong><small>Research handoff · summary ready</small><span class="inbox-status inbox-status-ready">Ready</span><time>09 Sep</time></span><span data-icon="arrow-up-right"></span></button>
               </div>
 
               <section class="inbox-focus" aria-labelledby="focusTitle">
@@ -144,6 +144,6 @@
 
     <div class="toast-region" id="toastRegion" aria-live="polite"></div>
     <noscript><div class="noscript-message">StudioOS needs JavaScript enabled to show the workspace interactions.</div></noscript>
-    <script src="./script.js?v=20260817-contrast-v1" defer></script>
+    <script src="./script.js?v=20260817-ux-audit-v1" defer></script>
   </body>
 </html>

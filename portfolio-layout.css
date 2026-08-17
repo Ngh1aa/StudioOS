@@ -193,3 +193,22 @@ body { background: var(--portfolio-soft); }
   .portfolio-project-grid .project-cover, .portfolio-project-grid .project-card:first-child .project-cover { height: 146px; }
   .inbox-item small { white-space: normal; }
 }
+
+
+/* UX audit refinement: explain the highlighted inbox state instead of relying on a lone border. */
+.inbox-legend { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 10px; margin: -4px clamp(24px, 3vw, 44px) 17px; color: #777; font-size: 9px; }
+.inbox-legend span { display: inline-flex; align-items: center; gap: 6px; color: #111111; font-weight: 700; }
+.inbox-legend span i { width: 6px; height: 6px; display: block; border-radius: 50%; background: #111111; }
+.inbox-legend small { color: #999; font-size: 9px; }
+.inbox-item > span:nth-child(2) { align-content: start; }
+.inbox-status { width: fit-content; padding: 3px 6px; border-radius: 999px; font-size: 8px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
+.inbox-status-review { color: #111111; background: #e8e8e8; }
+.inbox-status-confirmed { color: #536b58; background: #e8efe8; }
+.inbox-status-updated { color: #536875; background: #e9eff1; }
+.inbox-status-ready { color: #6b6659; background: #efede6; }
+.inbox-item.is-priority .inbox-status-review { border: 1px solid #111111; }
+
+@media (max-width: 680px) {
+  .inbox-legend { align-items: flex-start; flex-direction: column; gap: 4px; }
+  .inbox-status { font-size: 7px; }
+}

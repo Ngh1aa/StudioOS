@@ -219,3 +219,18 @@
 .insight-hero .health-bar { background: rgba(255, 255, 255, .12); }
 .insight-hero .insight-footnote { color: #89958b; }
 .insight-hero .insight-footnote .text-button { color: #e8a58d; }
+
+
+/* UX audit refinement: the health score is operational data, not a decorative editorial card. */
+.insight-data-panel { background: #fff !important; border-color: #111111; color: #111111; }
+.insight-data-panel .insight-data-label { color: #111111; }
+.insight-data-panel .section-kicker { color: #8b8b8b; }
+.insight-data-panel h2 { color: #111111; }
+.insight-data-panel h2 em { color: #111111; }
+.insight-data-panel .health-badge { color: #4f6655; border-color: #d9ded8; }
+.insight-data-panel .health-badge i { background: #111111; }
+.insight-data-panel .health-score strong { color: #111111; }
+.insight-data-panel .health-score span, .insight-data-panel .health-score p { color: #777777; }
+.insight-data-panel .health-bar { background: #e8e8e8; }
+.insight-data-panel .insight-footnote { color: #737373; }
+.insight-data-panel .insight-footnote .text-button { color: #111111; }

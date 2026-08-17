@@ -1226,3 +1226,38 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-display); }
     transform: none !important;
   }
 }
+
+
+/* UX audit refinement: separate decorative notes from operational data. */
+.metric-strip-note { background: #ededed !important; color: var(--ink); }
+.metric-strip-note > span { background: var(--copper-soft); color: var(--copper-dark); }
+.metric-strip-note strong { color: var(--ink); }
+.metric-strip-note .metric-note-label { color: var(--copper-dark); font-size: 8px; letter-spacing: .08em; text-transform: uppercase; }
+.metric-strip-note small:not(.metric-note-label) { color: #777f76; }
+
+.cover-caption > span { display: grid; gap: 3px; }
+.cover-caption > span b { color: inherit; font-size: inherit; font-weight: 700; }
+.cover-caption-note { color: rgba(255,253,247,.72); font-size: 8px; font-weight: 600; letter-spacing: .03em; }
+
+.agenda-legend { display: flex; flex-wrap: wrap; gap: 8px 12px; margin-top: 15px; padding-top: 13px; border-top: 1px solid #eceee8; color: #858e86; font-size: 8px; font-weight: 700; }
+.agenda-legend span { display: inline-flex; align-items: center; gap: 5px; }
+.agenda-legend .agenda-dot { width: 6px; height: 6px; }
+
+.insight-data-panel { background: #fff; border-color: #111111; color: var(--ink); }
+.insight-data-label { display: inline-flex; align-items: center; gap: 7px; margin-bottom: 15px; color: #111111; font-size: 9px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+.insight-data-label svg { width: 14px; height: 14px; color: var(--copper-dark); }
+.insight-data-panel .section-kicker { color: #8b938b; }
+.insight-data-panel h2 { color: #111111; }
+.insight-data-panel h2 em { color: var(--copper-dark); }
+.insight-data-panel .health-badge { border-color: #d9ded8; color: var(--sage-dark); }
+.insight-data-panel .health-score strong { color: #111111; }
+.insight-data-panel .health-score span { color: #7d877e; }
+.insight-data-panel .health-score p { color: #7d877e; }
+.insight-data-panel .health-bar { background: #e8ebe5; }
+.insight-data-panel .insight-footnote { color: #737d74; }
+.insight-data-panel .insight-footnote .text-button { color: var(--copper-dark); }
+
+@media (max-width: 680px) {
+  .agenda-legend { gap: 7px 10px; }
+  .insight-data-label { margin-bottom: 10px; }
+}
