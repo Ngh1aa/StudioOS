@@ -372,6 +372,7 @@ function bindNotesPage() {
     tagButtons.forEach((item) => { const isActive = item.dataset.noteTag === active; item.classList.toggle("active", isActive); item.setAttribute("aria-pressed", String(isActive)); });
     applyFilters();
   }));
+  applyFilters();
 }
 function bindPageActions() {
   document.querySelectorAll("#pageView [data-action]").forEach((button) => button.addEventListener("click", () => {
