@@ -2129,3 +2129,88 @@ textarea:focus-visible,
   font-size: 11px;
   line-height: 1;
 }
+
+
+/* Team audit follow-up */
+.team-grid {
+  align-items: stretch;
+}
+.member-card {
+  min-width: 0;
+}
+.member-load {
+  min-height: 48px;
+}
+.member-card footer {
+  min-height: 24px;
+  align-items: center;
+}
+.capacity-value {
+  align-items: center;
+  gap: 7px;
+}
+.capacity-value > span:first-child {
+  font-variant-numeric: tabular-nums;
+}
+.capacity-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 18px;
+  padding: 3px 7px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 7px !important;
+  font-weight: 800 !important;
+  letter-spacing: .06em;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.capacity-badge-healthy {
+  background: var(--sage-soft);
+  border-color: #bfd7c4;
+  color: var(--sage-dark) !important;
+}
+.capacity-badge-watch {
+  background: var(--amber-soft);
+  border-color: #e2c77d;
+  color: #765000 !important;
+}
+.capacity-badge-high {
+  background: var(--danger-soft);
+  border-color: #e1aaa5;
+  color: var(--danger) !important;
+}
+.capacity-track.capacity-healthy i {
+  background: var(--sage) !important;
+}
+.capacity-track.capacity-watch i {
+  background: var(--amber) !important;
+}
+.capacity-track.capacity-high i {
+  background: var(--danger) !important;
+}
+.capacity-value-healthy > span:first-child {
+  color: var(--sage-dark) !important;
+}
+.capacity-value-watch > span:first-child {
+  color: #765000 !important;
+}
+.capacity-value-high > span:first-child {
+  color: var(--danger) !important;
+}
+@media (max-width: 760px) {
+  .capacity-badge {
+    min-height: 17px;
+    padding-inline: 6px;
+    font-size: 6px !important;
+  }
+}
+
+
+/* Keep capacity semantics visible on compact member cards. */
+@media (max-width: 760px) {
+  .capacity-value em.capacity-badge {
+    display: inline-flex !important;
+  }
+}
