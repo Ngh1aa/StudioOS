@@ -877,3 +877,59 @@ body { background: var(--portfolio-soft); }
   .capacity-value em { display: none; }
   .calendar-event { padding-inline: 6px; font-size: 8px; }
 }
+
+
+/* UI/UX Director refinement: Team and Notes system rules. */
+.team-context-note { display: flex; align-items: center; gap: 14px; margin: 12px 0 28px; padding: 16px 20px; border: 1px solid var(--line); background: rgba(255,254,251,.72); }
+.team-context-note > div { display: grid; gap: 3px; }
+.team-context-note strong { color: var(--ink); font-size: 13px; }
+.team-context-note p { margin: 0; color: #7f8980; font-size: 10px; line-height: 1.45; }
+.team-context-icon { display: grid; width: 34px; height: 34px; place-items: center; background: #f2f1eb; color: var(--ink); }
+.member-avatar.avatar-copper { background: #f2ded6; color: #894a36; }
+.member-avatar.avatar-sage { background: #e0eadf; color: #58705a; }
+.member-avatar.avatar-blue { background: #dce8e9; color: #557277; }
+.member-avatar.avatar-ink { background: #e8e6df; color: #363936; }
+.capacity-track.capacity-high i { background: #c56f62 !important; }
+.capacity-value-high { color: #a95045 !important; }
+.note-card-labels { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+.note-state { padding: 4px 7px; border: 1px solid rgba(255,255,255,.28); color: #fff8ee; font-size: 8px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; }
+.note-card:not(.note-card-featured) .note-state { border-color: var(--line); color: #6f776f; }
+.notes-tags button { width: 100%; }
+.notes-tags button.active { color: var(--ink); font-weight: 700; }
+.notes-tags button em { margin-left: auto; color: #a3aaa2; font-size: 8px; font-style: normal; }
+.note-card[hidden] { display: none; }
+.context-menu { position: absolute; z-index: 1000; min-width: 168px; padding: 5px; border: 1px solid #d7dad3; background: #fffefa; box-shadow: 0 12px 30px rgba(27,32,28,.14); }
+.context-menu button { display: block; width: 100%; padding: 9px 10px; color: #495149; font-size: 10px; text-align: left; }
+.context-menu button:hover, .context-menu button:focus-visible { background: #f0f2eb; color: var(--ink); outline: none; }
+@media (max-width: 760px) {
+  .team-context-note { margin-bottom: 20px; }
+  .note-state { font-size: 7px; }
+}
+
+
+/* UI/UX Director refinement: Team and Notes system rules. */
+.team-context-note { display: flex; align-items: center; gap: 14px; margin: 12px 0 28px; padding: 16px 20px; border: 1px solid var(--line); background: rgba(255,254,251,.72); }
+.team-context-note > div { display: grid; gap: 3px; }
+.team-context-note strong { color: var(--ink); font-size: 13px; }
+.team-context-note p { margin: 0; color: #7f8980; font-size: 10px; line-height: 1.45; }
+.team-context-icon { display: grid; width: 34px; height: 34px; place-items: center; background: #f2f1eb; color: var(--ink); }
+.member-avatar.avatar-copper { background: #f2ded6; color: #894a36; }
+.member-avatar.avatar-sage { background: #e0eadf; color: #58705a; }
+.member-avatar.avatar-blue { background: #dce8e9; color: #557277; }
+.member-avatar.avatar-ink { background: #e8e6df; color: #363936; }
+.capacity-track.capacity-high i { background: #c56f62 !important; }
+.capacity-value-high { color: #a95045 !important; }
+.note-card-labels { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+.note-state { padding: 4px 7px; border: 1px solid rgba(255,255,255,.28); color: #fff8ee; font-size: 8px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; }
+.note-card:not(.note-card-featured) .note-state { border-color: var(--line); color: #6f776f; }
+.notes-tags button { width: 100%; }
+.notes-tags button.active { color: var(--ink); font-weight: 700; }
+.notes-tags button em { margin-left: auto; color: #a3aaa2; font-size: 8px; font-style: normal; }
+.note-card[hidden] { display: none; }
+.context-menu { position: absolute; z-index: 1000; min-width: 168px; padding: 5px; border: 1px solid #d7dad3; background: #fffefa; box-shadow: 0 12px 30px rgba(27,32,28,.14); }
+.context-menu button { display: block; width: 100%; padding: 9px 10px; color: #495149; font-size: 10px; text-align: left; }
+.context-menu button:hover, .context-menu button:focus-visible { background: #f0f2eb; color: var(--ink); outline: none; }
+@media (max-width: 760px) {
+  .team-context-note { margin-bottom: 20px; }
+  .note-state { font-size: 7px; }
+}

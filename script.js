@@ -55,6 +55,12 @@ const calendarItems = [
   { id: "feedback-window", time: "11:00", title: "Client feedback window", project: "Lumen House", owner: "Maya Chen", kind: "review", position: "event-four" },
 ];
 const TASK_ORDER_STORAGE_KEY = "studioos-task-order";
+const NOTE_TAG_META = {
+  Review: { className: "review", dot: "copper" },
+  Campaign: { className: "campaign", dot: "sage" },
+  Research: { className: "research", dot: "blue" },
+  Internal: { className: "internal", dot: "neutral" },
+};
 
 function restoreTaskOrder() {
   try {
@@ -133,15 +139,27 @@ function calendarPage() {
 }
 
 function teamPage() {
-  const members = [{ initials: "AT", name: "Alex Tran", role: "Product designer", color: "copper", load: 72, focus: "Lumen House", projects: 3 }, { initials: "MC", name: "Maya Chen", role: "Creative director", color: "sage", load: 54, focus: "Lumen House", projects: 2 }, { initials: "NW", name: "Noah Williams", role: "Design engineer", color: "blue", load: 81, focus: "Common Ground", projects: 4 }, { initials: "JT", name: "Jules Tran", role: "Brand designer", color: "ink", load: 36, focus: "Northstar / Q3", projects: 2 }];
-  return `<div class="page-shell-page">${pageHeader("05 / People", "Team", "See who is shaping the work, and where their attention is going.", `<button class="primary-button" type="button" data-action="invite"><span data-icon="users"></span> Invite collaborator</button>`)}<section class="metric-strip team-metric-strip"><div><small>Studio members</small><strong>04</strong><span>across 04 projects</span></div><div><small>Average capacity</small><strong>61%</strong><span>healthy this week</span></div><div><small>Open invites</small><strong>02</strong><span>awaiting response</span></div><div class="metric-strip-note"><span data-icon="users"></span><p><small class="metric-note-label">Studio note</small><strong>Small teams, clear work.</strong><small>Keep the right people close to the brief.</small></p></div></section><section class="page-section-heading"><div><div class="section-kicker">05 / People</div><h2>Studio directory</h2></div><button class="ghost-button" type="button" data-action="team-filter">Filter <span data-icon="sliders"></span></button></section><div class="team-grid">${members.map((member) => `<article class="member-card"><div class="member-card-top"><span class="member-avatar avatar-${member.color}">${member.initials}</span><button class="icon-button subtle-icon" type="button" data-action="member-options" aria-label="More options for ${member.name}"><span data-icon="more"></span></button></div><h3>${member.name}</h3><p>${member.role}</p><div class="member-focus"><small>Primary focus</small><strong>${member.focus}</strong></div><div class="member-load"><div><span>Capacity</span><b class="capacity-value capacity-value-${capacityTone(member.load)}">${member.load}% <em>${capacityLabel(member.load)}</em></b></div><div class="capacity-track capacity-${capacityTone(member.load)}" role="progressbar" aria-label="${member.name} capacity" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${member.load}"><i style="width:${member.load}%"></i></div></div><footer><span>${member.projects} projects</span><button class="text-button" type="button" data-action="member-profile">View profile ${icon("chevron-right")}</button></footer></article>`).join("")}<button class="member-card member-card-add" type="button" data-action="invite"><span data-icon="plus"></span><strong>Add someone to the studio</strong><small>Invite a collaborator with a clear role.</small></button></div></div>`;
+  const members = [
+    { initials: "AT", name: "Alex Tran", role: "Product designer", color: "copper", load: 72, focus: "Lumen House", projects: 3 },
+    { initials: "MC", name: "Maya Chen", role: "Creative director", color: "sage", load: 54, focus: "Lumen House", projects: 2 },
+    { initials: "NW", name: "Noah Williams", role: "Design engineer", color: "blue", load: 81, focus: "Common Ground", projects: 4 },
+    { initials: "JT", name: "Jules Tran", role: "Brand designer", color: "ink", load: 36, focus: "Northstar / Q3", projects: 2 },
+  ];
+  return `<div class="page-shell-page">${pageHeader("05 / People", "Team", "See who is shaping the work, and where their attention is going.", `<button class="primary-button" type="button" data-action="invite"><span data-icon="users"></span> Invite collaborator</button>`)}<section class="metric-strip team-metric-strip"><div><small>Studio members</small><strong>04</strong><span>across 04 projects</span></div><div><small>Average capacity</small><strong>61%</strong><span>healthy this week</span></div><div><small>Open invites</small><strong>02</strong><span>awaiting response</span></div></section><article class="team-context-note panel-surface"><span class="team-context-icon" data-icon="users"></span><div><small class="metric-note-label">Workspace context</small><strong>Small teams, clear work.</strong><p>Keep the right people close to the brief.</p></div></article><section class="page-section-heading"><div><div class="section-kicker">05 / People</div><h2>Studio directory</h2></div><button class="ghost-button" type="button" data-action="team-filter">Filter <span data-icon="sliders"></span></button></section><div class="team-grid">${members.map((member) => `<article class="member-card"><div class="member-card-top"><span class="member-avatar avatar-${member.color}" aria-label="${member.name} avatar">${member.initials}</span><button class="icon-button subtle-icon" type="button" data-action="member-options" data-member-name="${member.name}" aria-haspopup="menu" aria-label="More actions for ${member.name}" title="Open member actions"><span data-icon="more"></span></button></div><h3>${member.name}</h3><p>${member.role}</p><div class="member-focus"><small>Primary focus</small><strong>${member.focus}</strong></div><div class="member-load"><div><span>Capacity</span><b class="capacity-value capacity-value-${capacityTone(member.load)}">${member.load}% <em>${capacityLabel(member.load)}</em></b></div><div class="capacity-track capacity-${capacityTone(member.load)}" role="progressbar" aria-label="${member.name} capacity" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${member.load}"><i style="width:${member.load}%"></i></div></div><footer><span>${member.projects} projects</span><button class="text-button" type="button" data-action="member-profile" data-member-name="${member.name}">View profile ${icon("chevron-right")}</button></footer></article>`).join("")}<button class="member-card member-card-add" type="button" data-action="invite"><span data-icon="plus"></span><strong>Add someone to the studio</strong><small>Invite a collaborator with a clear role.</small></button></div></div>`;
 }
-
 function notesPage() {
-  const notes = [{ title: "Lumen House / feedback", tag: "Review", time: "12 min ago", excerpt: "The type rhythm feels right. One last pass on the mobile lockup." }, { title: "Northstar / launch notes", tag: "Campaign", time: "Yesterday", excerpt: "Keep the launch story focused on the first moment of recognition." }, { title: "Common Ground / research", tag: "Research", time: "12 Aug", excerpt: "People understand the purpose quickly when the first action is visible." }, { title: "Studio / weekly rhythm", tag: "Internal", time: "08 Aug", excerpt: "Protect Tuesday mornings for deep work and thoughtful review." }];
-  return `<div class="page-shell-page">${pageHeader("06 / Capture", "Notes", "Keep the thinking close to the work, without adding another place to search.", `<button class="primary-button" type="button" data-action="new-note"><span data-icon="plus"></span> New note</button>`)}<section class="notes-layout"><aside class="notes-sidebar panel-surface"><label class="toolbar-search notes-search"><span data-icon="search"></span><span class="sr-only">Search notes</span><input id="notesSearchInput" type="search" placeholder="Search notes" /></label><div class="notes-nav"><button class="notes-nav-item active" type="button" data-action="notes-filter"><span data-icon="inbox"></span> All notes <em>08</em></button><button class="notes-nav-item" type="button" data-action="notes-filter"><span data-icon="file-check"></span> Project notes <em>05</em></button><button class="notes-nav-item" type="button" data-action="notes-filter"><span data-icon="users"></span> Team notes <em>03</em></button></div><div class="notes-tags"><small>Tags</small><button type="button" data-action="notes-tag"><i class="tag-dot copper"></i> Review</button><button type="button" data-action="notes-tag"><i class="tag-dot sage"></i> Research</button><button type="button" data-action="notes-tag"><i class="tag-dot blue"></i> Internal</button></div></aside><div class="notes-content"><div class="page-section-heading notes-heading"><div><div class="section-kicker">All notes / Recent</div><h2>Thoughts in motion</h2></div><span class="page-count">08 notes</span></div><div class="notes-grid">${notes.map((note, index) => `<article class="note-card ${index === 0 ? "note-card-featured" : ""}"><div class="note-card-top"><span class="note-tag tag-${note.tag.toLowerCase()}">${note.tag}</span><button class="icon-button subtle-icon" type="button" data-action="note-options" aria-label="More options"><span data-icon="more"></span></button></div><h3>${note.title}</h3><p>${note.excerpt}</p><footer><span>${note.time}</span><button class="text-button" type="button" data-action="open-note">Open note ${icon("arrow-up-right")}</button></footer></article>`).join("")}</div></div></section></div>`;
+  const notes = [
+    { title: "Lumen House / feedback", tag: "Review", scope: "project", dateLabel: "18 Aug", datetime: "2026-08-18", excerpt: "The type rhythm feels right. One last pass on the mobile lockup.", featured: true },
+    { title: "Northstar / launch notes", tag: "Campaign", scope: "project", dateLabel: "17 Aug", datetime: "2026-08-17", excerpt: "Keep the launch story focused on the first moment of recognition." },
+    { title: "Common Ground / research", tag: "Research", scope: "project", dateLabel: "12 Aug", datetime: "2026-08-12", excerpt: "People understand the purpose quickly when the first action is visible." },
+    { title: "Studio / weekly rhythm", tag: "Internal", scope: "team", dateLabel: "08 Aug", datetime: "2026-08-08", excerpt: "Protect Tuesday mornings for deep work and thoughtful review." },
+  ];
+  const scopeCounts = { all: notes.length, project: notes.filter((note) => note.scope === "project").length, team: notes.filter((note) => note.scope === "team").length };
+  const tagCounts = Object.fromEntries(Object.keys(NOTE_TAG_META).map((tag) => [tag, notes.filter((note) => note.tag === tag).length]));
+  const tagButtons = Object.entries(NOTE_TAG_META).map(([tag, meta]) => `<button type="button" data-note-tag="${meta.className}" aria-pressed="false"><i class="tag-dot ${meta.dot}"></i><span>${tag}</span><em>${tagCounts[tag].toString().padStart(2, "0")}</em></button>`).join("");
+  const noteCards = notes.map((note) => { const tagClass = NOTE_TAG_META[note.tag].className; return `<article class="note-card ${note.featured ? "note-card-featured" : ""}" data-note-scope="${note.scope}" data-note-tag="${tagClass}"><div class="note-card-top"><div class="note-card-labels"><span class="note-tag tag-${tagClass}">${note.tag}</span>${note.featured ? `<span class="note-state">Pinned</span>` : ""}</div><button class="icon-button subtle-icon" type="button" data-action="note-options" data-note-title="${note.title}" aria-haspopup="menu" aria-label="More actions for ${note.title}" title="Open note actions"><span data-icon="more"></span></button></div><h3>${note.title}</h3><p>${note.excerpt}</p><footer><time datetime="${note.datetime}">${note.dateLabel}</time><button class="text-button" type="button" data-action="open-note" data-note-title="${note.title}">Open note ${icon("arrow-up-right")}</button></footer></article>`; }).join("");
+  return `<div class="page-shell-page">${pageHeader("06 / Capture", "Notes", "Keep the thinking close to the work, without adding another place to search.", `<button class="primary-button" type="button" data-action="new-note"><span data-icon="plus"></span> New note</button>`)}<section class="notes-layout"><aside class="notes-sidebar panel-surface"><label class="toolbar-search notes-search"><span data-icon="search"></span><span class="sr-only">Search notes</span><input id="notesSearchInput" type="search" placeholder="Search notes" /></label><div class="notes-nav" role="group" aria-label="Note scope"><button class="notes-nav-item active" type="button" data-note-scope="all" aria-pressed="true"><span data-icon="inbox"></span> All notes <em>${scopeCounts.all.toString().padStart(2, "0")}</em></button><button class="notes-nav-item" type="button" data-note-scope="project" aria-pressed="false"><span data-icon="file-check"></span> Project notes <em>${scopeCounts.project.toString().padStart(2, "0")}</em></button><button class="notes-nav-item" type="button" data-note-scope="team" aria-pressed="false"><span data-icon="users"></span> Team notes <em>${scopeCounts.team.toString().padStart(2, "0")}</em></button></div><div class="notes-tags" role="group" aria-label="Note tags"><small>Tags</small>${tagButtons}</div></aside><div class="notes-content"><div class="page-section-heading notes-heading"><div><div class="section-kicker">All notes / Recent</div><h2>Thoughts in motion</h2></div><span class="page-count" id="notesPageCount" aria-live="polite">Showing ${notes.length} of ${notes.length} notes</span></div><div class="notes-grid">${noteCards}</div></div></section></div>`;
 }
-
 function insightsPage() {
   return `<div class="page-shell-page">${pageHeader("07 / Perspective", "Insights", "A quiet read on the health of your projects, capacity and attention.", `<button class="ghost-button" type="button" data-action="export-insights"><span data-icon="arrow-up-right"></span> Export summary</button>`)}<section class="insights-layout"><article class="insight-hero insight-data-panel panel-surface" aria-labelledby="studioHealthTitle"><div class="insight-data-label"><span data-icon="chart"></span><span>Key studio signal</span></div><div class="section-heading-row compact-heading"><div><div class="section-kicker">Studio health / This month</div><h2 id="studioHealthTitle">Work is moving<br><em>with intention.</em></h2></div><span class="health-badge"><i></i> Healthy</span></div><div class="health-score"><strong>82</strong><span>/ 100</span><p>up 8 points from last month</p></div><div class="health-bar"><i style="width:82%"></i></div><div class="insight-footnote"><span>Based on progress, deadlines and review rhythm.</span><button class="text-button" type="button" data-action="insights-method">How this works ${icon("chevron-right")}</button></div></article><div class="insight-stat-grid"><article class="insight-stat"><small>Average progress</small><strong>47%</strong><span class="stat-trend up">↑ 12% vs. July</span><div class="mini-bars"><i style="height:34%"></i><i style="height:52%"></i><i style="height:43%"></i><i style="height:72%"></i><i style="height:61%"></i><i style="height:86%"></i></div></article><article class="insight-stat"><small>Review turnaround</small><strong>1.8d</strong><span class="stat-trend up">↓ 0.4 days</span><div class="spark-line"><i></i><i></i><i></i><i></i><i></i><i></i></div></article><article class="insight-stat"><small>Focus time</small><strong>26h</strong><span class="stat-trend neutral">on track this week</span><div class="focus-ring"><i>72%</i></div></article><article class="insight-stat"><small>Tasks completed</small><strong>18</strong><span class="stat-trend up">↑ 4 this week</span><div class="completion-dots"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></article></div></section><section class="insights-lower"><article class="panel-surface workload-panel"><div class="section-heading-row compact-heading"><div><div class="section-kicker">Capacity / Current week</div><h2>Where time is going</h2></div><button class="ghost-button" type="button" data-action="workload-options">This week <span data-icon="chevron-down"></span></button></div><div class="workload-chart"><div class="chart-y-axis"><span>32h</span><span>24h</span><span>16h</span><span>8h</span><span>0h</span></div><div class="chart-bars"><div><i style="height:63%"></i><span>Mon</span></div><div><i style="height:42%"></i><span>Tue</span></div><div><i style="height:77%"></i><span>Wed</span></div><div><i style="height:55%"></i><span>Thu</span></div><div><i style="height:82%"></i><span>Fri</span></div><div><i class="weekend" style="height:18%"></i><span>Sat</span></div><div><i class="weekend" style="height:8%"></i><span>Sun</span></div></div></div><div class="chart-legend"><span><i class="legend-copper"></i> Deep work</span><span><i class="legend-sage"></i> Reviews</span><span><i class="legend-ink"></i> Meetings</span></div></article><article class="panel-surface attention-panel"><div class="section-heading-row compact-heading"><div><div class="section-kicker">Signal / Right now</div><h2>Worth your attention</h2></div></div><div class="attention-list"><button type="button" data-action="insight-attention"><span class="attention-icon copper" data-icon="message"></span><span><strong>Lumen House needs a review</strong><small>Due today · 12 min since last comment</small></span><span data-icon="chevron-right"></span></button><button type="button" data-action="insight-attention"><span class="attention-icon sage" data-icon="clock"></span><span><strong>Protect Friday capacity</strong><small>Northstar has 4 tasks moving to review</small></span><span data-icon="chevron-right"></span></button><button type="button" data-action="insight-attention"><span class="attention-icon blue" data-icon="users"></span><span><strong>Noah is nearing capacity</strong><small>81% scheduled · 4 active projects</small></span><span data-icon="chevron-right"></span></button></div></article></section></div>`;
 }
@@ -309,32 +327,57 @@ function bindTasksPage() {
 function bindNotesPage() {
   const input = document.querySelector("#notesSearchInput");
   const grid = document.querySelector(".notes-grid");
+  const count = document.querySelector("#notesPageCount");
   if (!input || !grid) return;
-  input.addEventListener("input", (event) => {
-    const query = event.target.value.trim().toLowerCase();
-    const cards = [...grid.querySelectorAll(".note-card")];
+  const cards = [...grid.querySelectorAll(".note-card")];
+  const scopeButtons = [...document.querySelectorAll("button[data-note-scope]")];
+  const tagButtons = [...document.querySelectorAll("button[data-note-tag]")];
+  const state = { query: "", scope: "all", tag: "all" };
+  let empty = document.querySelector("#notesSearchEmpty");
+  if (!empty) {
+    empty = document.createElement("div");
+    empty.id = "notesSearchEmpty";
+    empty.className = "empty-search page-empty";
+    empty.innerHTML = `${icon("search")}<strong>No notes found</strong><span>Try another keyword or clear the filters.</span>`;
+    grid.parentElement.append(empty);
+    renderIcons();
+  }
+  const applyFilters = () => {
+    const query = state.query;
     let visible = 0;
     cards.forEach((card) => {
-      const matches = !query || card.textContent.toLowerCase().includes(query);
-      card.hidden = !matches;
-      if (matches) visible += 1;
+      const matchesQuery = !query || card.textContent.toLowerCase().includes(query);
+      const matchesScope = state.scope === "all" || card.dataset.noteScope === state.scope;
+      const matchesTag = state.tag === "all" || card.dataset.noteTag === state.tag;
+      const visibleCard = matchesQuery && matchesScope && matchesTag;
+      card.hidden = !visibleCard;
+      if (visibleCard) visible += 1;
     });
-    let empty = document.querySelector("#notesSearchEmpty");
-    if (!empty) {
-      empty = document.createElement("div");
-      empty.id = "notesSearchEmpty";
-      empty.className = "empty-search page-empty";
-      empty.innerHTML = `${icon("search")}<strong>No notes found</strong><span>Try another keyword or clear the search.</span>`;
-      grid.parentElement.append(empty);
-      renderIcons();
-    }
-    empty.hidden = visible > 0 || !query;
-  });
+    empty.hidden = visible > 0;
+    if (count) count.textContent = `Showing ${visible} of ${cards.length} notes`;
+  };
+  input.addEventListener("input", (event) => { state.query = event.target.value.trim().toLowerCase(); applyFilters(); });
+  scopeButtons.forEach((button) => button.addEventListener("click", () => {
+    state.scope = button.dataset.noteScope;
+    state.tag = "all";
+    scopeButtons.forEach((item) => { const active = item === button; item.classList.toggle("active", active); item.setAttribute("aria-pressed", String(active)); });
+    tagButtons.forEach((item) => { item.classList.remove("active"); item.setAttribute("aria-pressed", "false"); });
+    applyFilters();
+  }));
+  tagButtons.forEach((button) => button.addEventListener("click", () => {
+    const active = state.tag === button.dataset.noteTag ? "all" : button.dataset.noteTag;
+    state.tag = active;
+    state.scope = "all";
+    scopeButtons.forEach((item) => { const isAll = item.dataset.noteScope === "all"; item.classList.toggle("active", isAll); item.setAttribute("aria-pressed", String(isAll)); });
+    tagButtons.forEach((item) => { const isActive = item.dataset.noteTag === active; item.classList.toggle("active", isActive); item.setAttribute("aria-pressed", String(isActive)); });
+    applyFilters();
+  }));
 }
-
 function bindPageActions() {
   document.querySelectorAll("#pageView [data-action]").forEach((button) => button.addEventListener("click", () => {
     const action = button.dataset.action;
+    if (action === "note-options") return showContextMenu(button, ["Pin note", "Archive note", "Delete note"]);
+    if (action === "member-options") return showContextMenu(button, ["View profile", "Copy contact", "Remove from studio"]);
     const messages = { "sort-projects": "Projects are sorted by the latest activity.", "calendar-prev": "Previous week is coming next.", "calendar-next": "Next week is coming next.", "calendar-add": "Milestone composer is coming soon.", "calendar-month": "Month view is coming next.", "calendar-event": "Event detail is coming soon.", "calendar-full": "Full calendar view is coming next.", "team-filter": "Team filters are coming soon.", "member-options": "Member actions are coming soon.", "member-profile": "Member profiles are coming soon.", "new-note": "Note composer is coming soon.", "notes-filter": "Note filters are ready for the next slice.", "notes-tag": "Tag filtering is coming soon.", "note-options": "Note actions are coming soon.", "open-note": "Note detail is coming soon.", "export-insights": "Your insights summary is being prepared.", "insights-method": "Insights are based on progress, deadlines and review rhythm.", "workload-options": "Time range options are coming soon.", "insight-attention": "Attention detail is coming soon.", "save-settings": "Workspace settings saved.", "invite": "Invite flow is coming soon." };
     toast(messages[action] || "This workspace action is coming soon.");
   }));
