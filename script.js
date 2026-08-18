@@ -94,6 +94,55 @@ let currentTaskFilter = "Open";
 let activeDraggedTaskId = null;
 let pageTransitionTimer = null;
 let lastSidebarFocus = null;
+const WORKSPACE_STATE_KEY = "studioos-workspace-state-v1";
+let activeDialogId = null;
+let dialogReturnFocus = null;
+let searchResultItems = [];
+let readNotifications = new Set();
+let workspaceSettings = { workspaceName: "StudioOS", workspaceSlug: "studioos", workspaceDescription: "A small creative studio making clear, considered work.", showHealth: true, mondayStart: true, dailyFocus: false };
+const searchNotes = [
+  { id: "note-lumen-feedback", title: "Lumen House / feedback", excerpt: "The type rhythm feels right. One last pass on the mobile lockup.", tag: "Review" },
+  { id: "note-northstar-launch", title: "Northstar / launch notes", excerpt: "Keep the launch story focused on the first moment of recognition.", tag: "Campaign" },
+  { id: "note-common-ground-research", title: "Common Ground / research", excerpt: "People understand the purpose quickly when the first action is visible.", tag: "Research" },
+  { id: "note-studio-rhythm", title: "Studio / weekly rhythm", excerpt: "Protect Tuesday mornings for deep work and thoughtful review.", tag: "Internal" },
+];
+
+function loadWorkspaceState() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(WORKSPACE_STATE_KEY) || "null");
+    if (!saved || typeof saved !== "object") return;
+    if (Array.isArray(saved.projects) && saved.projects.length) projects.splice(0, projects.length, ...saved.projects);
+    if (Array.isArray(saved.tasks) && saved.tasks.length) tasks = saved.tasks;
+    if (saved.settings && typeof saved.settings === "object") workspaceSettings = { ...workspaceSettings, ...saved.settings };
+    if (Array.isArray(saved.readNotifications)) readNotifications = new Set(saved.readNotifications);
+  } catch {
+    localStorage.removeItem(WORKSPACE_STATE_KEY);
+  }
+}
+
+function persistWorkspaceState() {
+  try {
+    localStorage.setItem(WORKSPACE_STATE_KEY, JSON.stringify({ projects, tasks, settings: workspaceSettings, readNotifications: [...readNotifications] }));
+  } catch {
+    // The current session remains usable when storage is unavailable.
+  }
+}
+
+function restoreSettingsView() {
+  const name = document.querySelector("#workspaceNameInput");
+  const slug = document.querySelector("#workspaceSlugInput");
+  const description = document.querySelector("#workspaceDescriptionInput");
+  if (name) name.value = workspaceSettings.workspaceName;
+  if (slug) slug.value = workspaceSettings.workspaceSlug;
+  if (description) description.value = workspaceSettings.workspaceDescription;
+  document.querySelectorAll("[data-setting-key]").forEach((input) => {
+    const key = input.dataset.settingKey;
+    if (key in workspaceSettings) input.checked = Boolean(workspaceSettings[key]);
+  });
+}
+
+loadWorkspaceState();
+persistWorkspaceState();
 
 function pageHeader(kicker, title, description, action = "") {
   return `<section class="view-heading"><div><div class="section-kicker">${kicker}</div><h1>${title}<span>.</span></h1><p class="view-description">${description}</p></div>${action}</section>`;
@@ -164,7 +213,7 @@ function insightsPage() {
   return `<div class="page-shell-page">${pageHeader("07 / Insights", "Insights", "A quiet read on the health of your projects, capacity and attention.", `<button class="ghost-button" type="button" data-action="export-insights"><span data-icon="arrow-up-right"></span> Export summary</button>`)}<section class="insights-layout"><article class="insight-hero insight-data-panel panel-surface" aria-labelledby="studioHealthTitle" aria-describedby="studioHealthDescription"><div class="insight-data-label"><span data-icon="chart"></span><span>Key studio signal</span></div><div class="section-heading-row compact-heading"><div><div class="section-kicker">Studio health / This month</div><h2 id="studioHealthTitle">Work is moving<br><em>with intention.</em></h2></div><span class="health-badge health-badge-healthy"><i></i><span>Healthy</span><small>80–100</small></span></div><div class="health-score"><strong>82</strong><span>/ 100</span><p>Up 8 points from last month</p></div><div class="health-bar" role="progressbar" aria-label="Studio health score" aria-valuemin="0" aria-valuemax="100" aria-valuenow="82"><i style="width:82%"></i></div><div class="insight-footnote"><span id="studioHealthDescription">Based on progress, deadlines and review rhythm.</span><button class="text-button" type="button" data-action="insights-method">How this works ${icon("chevron-right")}</button></div></article><div class="insight-stat-grid"><article class="insight-stat"><small>Average progress</small><strong>47%</strong><span class="stat-trend positive">↑ 12% vs. July <em>better</em></span><div class="mini-bars metric-chart" role="img" aria-label="Average progress trend across six periods"><i style="height:34%"></i><i style="height:52%"></i><i style="height:43%"></i><i style="height:72%"></i><i style="height:61%"></i><i style="height:86%"></i></div></article><article class="insight-stat"><small>Review turnaround</small><strong>1.8d</strong><span class="stat-trend positive">↓ 0.4 days <em>faster</em></span><div class="mini-bars metric-chart metric-chart--sage" role="img" aria-label="Review turnaround is improving"><i style="height:30%"></i><i style="height:42%"></i><i style="height:50%"></i><i style="height:62%"></i><i style="height:72%"></i><i style="height:84%"></i></div></article><article class="insight-stat"><small>Focus time</small><strong>26h</strong><span class="stat-trend neutral">On track this week <em>72% of goal</em></span><div class="metric-progress" role="progressbar" aria-label="Focus time goal completion" aria-valuemin="0" aria-valuemax="100" aria-valuenow="72"><i style="width:72%"></i></div></article><article class="insight-stat"><small>Tasks completed</small><strong>18</strong><span class="stat-trend positive">↑ 4 this week <em>better</em></span><div class="mini-bars metric-chart metric-chart--ink" role="img" aria-label="Tasks completed across six periods"><i style="height:42%"></i><i style="height:50%"></i><i style="height:50%"></i><i style="height:68%"></i><i style="height:68%"></i><i style="height:82%"></i></div></article></div></section><section class="insights-lower"><article class="panel-surface workload-panel"><div class="section-heading-row compact-heading"><div><div class="section-kicker">Capacity / Current week</div><h2>Where time is going</h2></div><button class="ghost-button" type="button" data-action="workload-options">This week <span data-icon="chevron-down"></span></button></div><div class="workload-chart" role="img" aria-label="Weekly workload by category: deep work, reviews and meetings"><div class="chart-y-axis"><span>32h</span><span>24h</span><span>16h</span><span>8h</span><span>0h</span></div><div class="chart-bars"><div><i class="bar-deep" style="height:63%"></i><span>Mon</span></div><div><i class="bar-review" style="height:42%"></i><span>Tue</span></div><div><i class="bar-deep" style="height:77%"></i><span>Wed</span></div><div><i class="bar-meeting" style="height:55%"></i><span>Thu</span></div><div><i class="bar-deep" style="height:82%"></i><span>Fri</span></div><div><i class="bar-meeting" style="height:18%"></i><span>Sat</span></div><div><i class="bar-review" style="height:8%"></i><span>Sun</span></div></div></div><div class="chart-legend" aria-label="Workload legend"><span><i class="legend-deepwork"></i> Deep work</span><span><i class="legend-review"></i> Reviews</span><span><i class="legend-meeting"></i> Meetings</span></div></article><article class="panel-surface attention-panel"><div class="section-heading-row compact-heading"><div><div class="section-kicker">Signal / Right now</div><h2>Worth your attention</h2></div></div><div class="attention-list"><button type="button" data-action="insight-attention"><span class="attention-icon copper" data-icon="message"></span><span><strong>Lumen House needs a review</strong><small>Due today · 12 min since last comment</small></span><span data-icon="chevron-right"></span></button><button type="button" data-action="insight-attention"><span class="attention-icon sage" data-icon="clock"></span><span><strong>Protect Friday capacity</strong><small>Northstar has 4 tasks moving to review</small></span><span data-icon="chevron-right"></span></button><button type="button" data-action="insight-attention"><span class="attention-icon blue" data-icon="users"></span><span><strong>Noah is nearing capacity</strong><small>81% scheduled · 4 active projects</small></span><span data-icon="chevron-right"></span></button></div></article></section></div>`;
 }
 function settingsPage() {
-  return `<div class="page-shell-page">${pageHeader("08 / Settings", "Settings", "Shape the workspace around the way your studio actually works.", `<span class="settings-saved"><i></i> All changes saved</span>`)}<section class="settings-layout"><aside class="settings-nav panel-surface"><button class="settings-nav-item active" type="button" data-settings-tab="Workspace"><span data-icon="dashboard"></span> Workspace</button><button class="settings-nav-item" type="button" data-settings-tab="Notifications"><span data-icon="bell"></span> Notifications</button><button class="settings-nav-item" type="button" data-settings-tab="Appearance"><span data-icon="sparkles"></span> Appearance</button><button class="settings-nav-item" type="button" data-settings-tab="Members"><span data-icon="users"></span> Members & access</button></aside><div class="settings-content"><article class="settings-card panel-surface"><div class="settings-card-heading"><div><div class="section-kicker">Workspace / Identity</div><h2>Workspace profile</h2><p>Give your team a clear, human place to return to.</p></div><span class="settings-mark settings-avatar" aria-label="StudioOS workspace avatar">S</span></div><div class="settings-form-grid"><label>Workspace name<input value="StudioOS" /></label><label>Workspace URL<div class="settings-url-field"><span>studioos.app/</span><input value="studioos" aria-label="Workspace URL path" /></div><small class="settings-field-hint">Your workspace will be available at studioos.app/studioos.</small></label><label class="full-span">Workspace description<textarea rows="3">A small creative studio making clear, considered work.</textarea></label></div><button class="primary-button settings-save" type="button" data-action="save-settings">Save changes</button></article><article class="settings-card panel-surface"><div class="section-kicker">Workspace / Preferences</div><h2>Working rhythm</h2><p class="settings-lead">Small defaults that make the system feel like yours.</p><div class="settings-toggle-list"><label class="settings-toggle"><span><strong>Show project health on overview</strong><small>Keep progress and review signals visible at a glance.</small></span><input type="checkbox" checked data-setting-toggle aria-label="Show project health on overview" /><i aria-hidden="true"></i><b class="toggle-state" data-toggle-state>On</b></label><label class="settings-toggle"><span><strong>Week starts on Monday</strong><small>Use a Monday-first calendar for the whole workspace.</small></span><input type="checkbox" checked data-setting-toggle aria-label="Week starts on Monday" /><i aria-hidden="true"></i><b class="toggle-state" data-toggle-state>On</b></label><label class="settings-toggle"><span><strong>Send a daily focus note</strong><small>Receive a short summary of tasks that need your attention.</small></span><input type="checkbox" data-setting-toggle aria-label="Send a daily focus note" /><i aria-hidden="true"></i><b class="toggle-state" data-toggle-state>Off</b></label></div></article></div></section></div>`;
+  return `<div class="page-shell-page">${pageHeader("08 / Settings", "Settings", "Shape the workspace around the way your studio actually works.", `<span class="settings-saved"><i></i> All changes saved</span>`)}<section class="settings-layout"><aside class="settings-nav panel-surface"><button class="settings-nav-item active" type="button" data-settings-tab="Workspace"><span data-icon="dashboard"></span> Workspace</button><button class="settings-nav-item" type="button" data-settings-tab="Notifications"><span data-icon="bell"></span> Notifications</button><button class="settings-nav-item" type="button" data-settings-tab="Appearance"><span data-icon="sparkles"></span> Appearance</button><button class="settings-nav-item" type="button" data-settings-tab="Members"><span data-icon="users"></span> Members & access</button></aside><div class="settings-content"><article class="settings-card panel-surface"><div class="settings-card-heading"><div><div class="section-kicker">Workspace / Identity</div><h2>Workspace profile</h2><p>Give your team a clear, human place to return to.</p></div><span class="settings-mark settings-avatar" aria-label="StudioOS workspace avatar">S</span></div><div class="settings-form-grid"><label>Workspace name<input id="workspaceNameInput" value="StudioOS" /></label><label>Workspace URL<div class="settings-url-field"><span>studioos.app/</span><input id="workspaceSlugInput" value="studioos" aria-label="Workspace URL path" /></div><small class="settings-field-hint">Your workspace will be available at studioos.app/studioos.</small></label><label class="full-span">Workspace description<textarea id="workspaceDescriptionInput" rows="3">A small creative studio making clear, considered work.</textarea></label></div><button class="primary-button settings-save" type="button" data-action="save-settings">Save changes</button></article><article class="settings-card panel-surface"><div class="section-kicker">Workspace / Preferences</div><h2>Working rhythm</h2><p class="settings-lead">Small defaults that make the system feel like yours.</p><div class="settings-toggle-list"><label class="settings-toggle"><span><strong>Show project health on overview</strong><small>Keep progress and review signals visible at a glance.</small></span><input type="checkbox" checked data-setting-toggle data-setting-key="showHealth" aria-label="Show project health on overview" /><i aria-hidden="true"></i><b class="toggle-state" data-toggle-state>On</b></label><label class="settings-toggle"><span><strong>Week starts on Monday</strong><small>Use a Monday-first calendar for the whole workspace.</small></span><input type="checkbox" checked data-setting-toggle data-setting-key="mondayStart" aria-label="Week starts on Monday" /><i aria-hidden="true"></i><b class="toggle-state" data-toggle-state>On</b></label><label class="settings-toggle"><span><strong>Send a daily focus note</strong><small>Receive a short summary of tasks that need your attention.</small></span><input type="checkbox" data-setting-toggle data-setting-key="dailyFocus" aria-label="Send a daily focus note" /><i aria-hidden="true"></i><b class="toggle-state" data-toggle-state>Off</b></label></div></article></div></section></div>`;
 }
 function renderPage(name) {
   const render = () => {
@@ -175,6 +224,7 @@ function renderPage(name) {
     if (name === "Projects") { currentProjectFilter = "All"; currentProjectView = "All"; currentProjectSort = "priority"; renderProjectsPage(); bindProjectsPage(); }
     if (name === "Tasks") { currentTaskFilter = "Open"; renderTasksPage(); bindTasksPage(); }
     if (name === "Notes") bindNotesPage();
+    if (name === "Settings") restoreSettingsView();
     bindPageActions();
     document.querySelector(".studio-main")?.scrollTo({ top: 0, behavior: reduced ? "auto" : "smooth" });
     view.classList.remove("is-leaving");
@@ -246,6 +296,7 @@ function bindTasksPage() {
     }
     tasks.splice(targetIndex + (after ? 1 : 0), 0, movedTask);
     persistTaskOrder();
+    persistWorkspaceState();
     return true;
   };
   const focusTaskHandle = (taskId) => document.querySelector(`[data-task-id="${taskId}"] [data-task-drag-handle]`)?.focus();
@@ -375,13 +426,15 @@ function bindNotesPage() {
 function bindPageActions() {
   document.querySelectorAll("#pageView [data-action]").forEach((button) => button.addEventListener("click", () => {
     const action = button.dataset.action;
+    if (action === "save-settings") return saveSettings();
     if (action === "note-options") return showContextMenu(button, ["Pin note", "Archive note", "Delete note"]);
     if (action === "member-options") return showContextMenu(button, ["View profile", "Copy contact", "Remove from studio"]);
-    const messages = { "sort-projects": "Projects are sorted by the latest activity.", "calendar-prev": "Previous week is coming next.", "calendar-next": "Next week is coming next.", "calendar-add": "Milestone composer is coming soon.", "calendar-month": "Month view is coming next.", "calendar-event": "Event detail is coming soon.", "calendar-full": "Full calendar view is coming next.", "team-filter": "Team filters are coming soon.", "member-options": "Member actions are coming soon.", "member-profile": "Member profiles are coming soon.", "new-note": "Note composer is coming soon.", "notes-filter": "Note filters are ready for the next slice.", "notes-tag": "Tag filtering is coming soon.", "note-options": "Note actions are coming soon.", "open-note": "Note detail is coming soon.", "export-insights": "Your insights summary is being prepared.", "insights-method": "Insights are based on progress, deadlines and review rhythm.", "workload-options": "Time range options are coming soon.", "insight-attention": "Attention detail is coming soon.", "save-settings": "Workspace settings saved.", "invite": "Invite flow is coming soon." };
+    const messages = { "sort-projects": "Projects are sorted by the latest activity.", "calendar-prev": "Previous week is coming next.", "calendar-next": "Next week is coming next.", "calendar-add": "Milestone composer is coming soon.", "calendar-month": "Month view is coming next.", "calendar-event": "Event detail is coming soon.", "calendar-full": "Full calendar view is coming next.", "team-filter": "Team filters are coming soon.", "member-options": "Member actions are coming soon.", "member-profile": "Member profiles are coming soon.", "new-note": "Note composer is coming soon.", "notes-filter": "Note filters are ready for the next slice.", "notes-tag": "Tag filtering is coming soon.", "note-options": "Note actions are coming soon.", "open-note": "Note detail is coming soon.", "export-insights": "Your insights summary is being prepared.", "insights-method": "Insights are based on progress, deadlines and review rhythm.", "workload-options": "Time range options are coming soon.", "insight-attention": "Attention detail is coming soon.", "invite": "Invite flow is coming soon." };
     toast(messages[action] || "This workspace action is coming soon.");
   }));
   document.querySelectorAll("[data-settings-tab]").forEach((button) => button.addEventListener("click", () => { document.querySelectorAll("[data-settings-tab]").forEach((item) => item.classList.toggle("active", item === button)); toast(`${button.dataset.settingsTab} settings selected.`); }));
   document.querySelectorAll("[data-setting-toggle]").forEach((input) => { const sync = () => { const state = input.closest(".settings-toggle")?.querySelector("[data-toggle-state]"); if (!state) return; state.textContent = input.checked ? "On" : "Off"; state.classList.toggle("is-on", input.checked); state.classList.toggle("is-off", !input.checked); }; sync(); input.addEventListener("change", () => { sync(); document.querySelector(".settings-saved")?.classList.add("is-dirty"); toast(`${input.getAttribute("aria-label")} turned ${input.checked ? "on" : "off"}.`); }); });
+  document.querySelectorAll("#workspaceNameInput, #workspaceSlugInput, #workspaceDescriptionInput").forEach((field) => field.addEventListener("input", () => document.querySelector(".settings-saved")?.classList.add("is-dirty")));
 }
 
 function icon(name) { return `<svg class="studio-icon" aria-hidden="true" focusable="false" role="presentation" viewBox="0 0 24 24">${icons[name] || ""}</svg>`; }
@@ -437,22 +490,24 @@ function refreshTaskViews() {
 }
 
 function toggleTask(task) {
-  if (task.done) {
-    task.done = false;
-    refreshTaskViews();
-    toast("Task moved back to your open queue.");
-    return;
-  }
-  task.done = true;
+  const wasDone = task.done;
+  task.done = !wasDone;
+  persistWorkspaceState();
   refreshTaskViews();
-  toast("Task marked complete.", "", { label: "Undo", action: () => { task.done = false; refreshTaskViews(); toast("Task restored to your open queue."); } });
+  toast(wasDone ? "Task moved back to your open queue." : "Task marked complete.", "", !wasDone ? { label: "Undo", action: () => { task.done = false; persistWorkspaceState(); refreshTaskViews(); toast("Task restored to your open queue."); } } : null);
 }
 
-function addTaskToWorkspace() {
-  tasks.push({ id: Date.now(), label: "Define final QA checklist", project: "Workspace", due: "Due this week", priority: "Medium", done: false });
+function addTaskToWorkspace(taskData = null) {
+  if (!taskData) {
+    openDialog("taskDialog");
+    return;
+  }
+  const task = { id: Date.now(), label: taskData.label, project: taskData.project || "Workspace", due: taskData.due || "Due this week", priority: taskData.priority || "Medium", done: false };
+  tasks.unshift(task);
   persistTaskOrder();
+  persistWorkspaceState();
   refreshTaskViews();
-  toast("Task added to your focus list.");
+  toast(`${task.label} added to your focus list.`, "", { label: "Undo", action: () => { tasks = tasks.filter((item) => item.id !== task.id); persistTaskOrder(); persistWorkspaceState(); refreshTaskViews(); toast("Task removed from your focus list."); } });
 }
 
 function toast(message, type = "", actionConfig = null) {
@@ -490,9 +545,93 @@ function triggerStudioMotion(scope = document.querySelector("#pageView")) {
   });
 }
 
-function openDialog(id) { document.querySelector(`#${id}`).hidden = false; document.body.style.overflow = "hidden"; const first = document.querySelector(`#${id} input`); if (first) window.setTimeout(() => first.focus(), 20); }
-function closeDialog(id) { document.querySelector(`#${id}`).hidden = true; document.body.style.overflow = ""; }
-function closeNotifications() { document.querySelector("#notificationPopover").hidden = true; document.querySelector("#notificationButton").setAttribute("aria-expanded", "false"); }
+function getFocusable(container) {
+  return [...container.querySelectorAll("a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex='-1'])")].filter((node) => !node.hidden);
+}
+
+function openDialog(id) {
+  const layer = document.querySelector(`#${id}`);
+  if (!layer) return;
+  dialogReturnFocus = document.activeElement;
+  activeDialogId = id;
+  layer.hidden = false;
+  document.body.style.overflow = "hidden";
+  const dialog = layer.querySelector("[role='dialog']");
+  const focusables = getFocusable(dialog || layer);
+  window.setTimeout(() => (focusables[0] || dialog)?.focus(), 20);
+}
+
+function closeDialog(id) {
+  const layer = document.querySelector(`#${id}`);
+  if (!layer) return;
+  layer.hidden = true;
+  if (activeDialogId === id) activeDialogId = null;
+  document.body.style.overflow = document.querySelector(".dialog-layer:not([hidden])") ? "hidden" : "";
+  if (dialogReturnFocus && typeof dialogReturnFocus.focus === "function") window.setTimeout(() => dialogReturnFocus.focus(), 20);
+  dialogReturnFocus = null;
+}
+
+function updateNotificationBadge() {
+  const unread = document.querySelectorAll("#notificationPopover [data-notification-id]");
+  const count = [...unread].filter((button) => !readNotifications.has(button.dataset.notificationId)).length;
+  const badge = document.querySelector(".notification-badge");
+  const button = document.querySelector("#notificationButton");
+  const label = `Open notifications, ${count} unread`;
+  if (badge) { badge.textContent = String(count); badge.hidden = count === 0; }
+  button?.setAttribute("aria-label", label);
+  const countLabel = document.querySelector("#notificationPopover .popover-heading span");
+  if (countLabel) countLabel.textContent = `${String(count).padStart(2, "0")} unread`;
+  unread.forEach((item) => item.classList.toggle("is-read", readNotifications.has(item.dataset.notificationId)));
+}
+
+function markNotificationRead(id) {
+  if (!id || readNotifications.has(id)) return;
+  readNotifications.add(id);
+  persistWorkspaceState();
+  updateNotificationBadge();
+  toast("Notification marked as read.", "", { label: "Undo", action: () => { readNotifications.delete(id); persistWorkspaceState(); updateNotificationBadge(); toast("Notification restored to unread."); } });
+}
+
+function closeNotifications() { const popover = document.querySelector("#notificationPopover"); if (popover) popover.hidden = true; document.querySelector("#notificationButton")?.setAttribute("aria-expanded", "false"); }
+
+function hideGlobalSearch() {
+  const panel = document.querySelector("#globalSearchPanel");
+  const input = document.querySelector("#searchInput");
+  if (panel) panel.hidden = true;
+  input?.setAttribute("aria-expanded", "false");
+}
+
+function renderGlobalSearchResults(query = "") {
+  const panel = document.querySelector("#globalSearchPanel");
+  const input = document.querySelector("#searchInput");
+  if (!panel || !input) return;
+  const normalized = query.trim().toLowerCase();
+  if (!normalized) { hideGlobalSearch(); return; }
+  const projectResults = projects.filter((item) => `${item.name} ${item.type} ${item.owner} ${item.status}`.toLowerCase().includes(normalized)).map((item) => ({ type: "Project", id: item.id, title: item.name, meta: `${item.status} · ${item.progress}% complete`, icon: "folder" }));
+  const taskResults = tasks.filter((item) => `${item.label} ${item.project} ${item.priority}`.toLowerCase().includes(normalized)).map((item) => ({ type: "Task", id: item.id, title: item.label, meta: `${item.project} · ${item.due}`, icon: "check-circle" }));
+  const noteResults = searchNotes.filter((item) => `${item.title} ${item.excerpt} ${item.tag}`.toLowerCase().includes(normalized)).map((item) => ({ type: "Note", id: item.id, title: item.title, meta: `${item.tag} · Note`, icon: "inbox" }));
+  searchResultItems = [...projectResults, ...taskResults, ...noteResults].slice(0, 8);
+  panel.innerHTML = searchResultItems.length ? searchResultItems.map((item, index) => `<button type="button" role="option" class="global-search-result" data-search-index="${index}" data-search-type="${item.type}" data-search-id="${item.id}"><span class="search-result-icon" data-icon="${item.icon}"></span><span><strong>${item.title}</strong><small>${item.type} · ${item.meta}</small></span><span class="search-result-arrow">↵</span></button>`).join("") : `<div class="global-search-empty"><strong>No workspace results</strong><span>Try a project, task or note name.</span></div>`;
+  panel.hidden = false;
+  input.setAttribute("aria-expanded", "true");
+  renderIcons();
+}
+
+function openSearchResult(item) {
+  if (!item) return;
+  hideGlobalSearch();
+  const nav = document.querySelector(`[data-nav='${item.type === "Project" ? "Projects" : item.type === "Task" ? "Tasks" : "Notes"}']`);
+  nav?.click();
+  window.setTimeout(() => {
+    const selector = item.type === "Project" ? "#projectFilterInput" : item.type === "Task" ? "#tasksSearchInput" : "#notesSearchInput";
+    const field = document.querySelector(selector);
+    if (!field) return;
+    const source = item.type === "Project" ? projects.find((project) => project.id === item.id)?.name : item.type === "Task" ? tasks.find((task) => String(task.id) === String(item.id))?.label : searchNotes.find((note) => note.id === item.id)?.title;
+    field.value = source || "";
+    field.dispatchEvent(new Event("input", { bubbles: true }));
+    field.focus();
+  }, 180);
+}
 
 function openReview(project) {
   activeReviewProject = project;
@@ -532,6 +671,54 @@ function syncSidebarState(isOpen, returnFocus = true) {
 function closeSidebar(options = {}) { syncSidebarState(false, options.returnFocus !== false); }
 function openSidebar() { syncSidebarState(true); }
 
+function bindTaskComposer() {
+  const form = document.querySelector("#taskForm");
+  if (!form || form.dataset.bound === "true") return;
+  form.dataset.bound = "true";
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const title = document.querySelector("#taskTitleInput")?.value.trim();
+    if (!title) return toast("Give the task a clear title before adding it.", "error");
+    addTaskToWorkspace({ label: title, project: document.querySelector("#taskProjectInput")?.value, priority: document.querySelector("#taskPriorityInput")?.value, due: document.querySelector("#taskDueInput")?.value.trim() });
+    form.reset();
+    const due = document.querySelector("#taskDueInput");
+    if (due) due.value = "Due this week";
+    closeDialog("taskDialog");
+  });
+}
+
+function saveSettings() {
+  const name = document.querySelector("#workspaceNameInput")?.value.trim();
+  const slug = document.querySelector("#workspaceSlugInput")?.value.trim().toLowerCase().replace(/[^a-z0-9-]+/g, "-");
+  const description = document.querySelector("#workspaceDescriptionInput")?.value.trim();
+  if (!name || !slug) return toast("Workspace name and URL are required.", "error");
+  workspaceSettings = { ...workspaceSettings, workspaceName: name, workspaceSlug: slug, workspaceDescription: description || workspaceSettings.workspaceDescription };
+  document.querySelectorAll("[data-setting-key]").forEach((input) => { workspaceSettings[input.dataset.settingKey] = input.checked; });
+  persistWorkspaceState();
+  const saved = document.querySelector(".settings-saved");
+  saved?.classList.remove("is-dirty");
+  if (saved) saved.innerHTML = `<i></i> Saved just now`;
+  toast("Workspace settings saved.");
+}
+
+function bindGlobalSearch() {
+  const input = document.querySelector("#searchInput");
+  const panel = document.querySelector("#globalSearchPanel");
+  if (!input || !panel || input.dataset.bound === "true") return;
+  input.dataset.bound = "true";
+  input.addEventListener("input", (event) => {
+    const query = event.target.value;
+    renderGlobalSearchResults(query);
+    if (document.querySelector("#activeBreadcrumb").textContent === "Overview") { renderProjects(query); renderTasks(query); }
+    else if (document.querySelector("#activeBreadcrumb").textContent === "Projects") { const pageInput = document.querySelector("#projectFilterInput"); if (pageInput) { pageInput.value = query; renderProjectsPage(query, currentProjectFilter); } }
+  });
+  input.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") { hideGlobalSearch(); input.blur(); return; }
+    if (event.key === "ArrowDown" && searchResultItems.length) { event.preventDefault(); panel.querySelector("[data-search-index='0']")?.focus(); }
+  });
+  panel.addEventListener("click", (event) => { const result = event.target.closest("[data-search-index]"); if (result) openSearchResult(searchResultItems[Number(result.dataset.searchIndex)]); });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const overviewMarkup = document.querySelector("#pageView").innerHTML;
   const showOverview = () => { const view = document.querySelector("#pageView"); const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches; view.innerHTML = overviewMarkup; renderIcons(); renderProjects(); renderTasks(); bindOverviewActions(); triggerStudioMotion(view); document.querySelector(".studio-main")?.scrollTo({ top: 0, behavior: reduced ? "auto" : "smooth" }); };
@@ -549,10 +736,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const updateHeaderContext = (page) => { document.querySelector("#activeBreadcrumb").textContent = page; const visibleContext = document.querySelector("#pageContext"); const mobileContext = document.querySelector(".mobile-context-page"); if (visibleContext) visibleContext.textContent = page; if (mobileContext) mobileContext.textContent = page; };
   const closeHelp = () => { const popover = document.querySelector("#helpPopover"); const button = document.querySelector("#helpButton"); if (popover) popover.hidden = true; button?.setAttribute("aria-expanded", "false"); };
   const closeAccountMenu = () => { const popover = document.querySelector("#accountPopover"); const button = document.querySelector("#accountMenuButton"); if (popover) popover.hidden = true; button?.setAttribute("aria-expanded", "false"); };
-  renderIcons(); renderProjects(); renderTasks(); bindOverviewActions(); triggerStudioMotion(document.querySelector("#pageView"));
+  renderIcons(); renderProjects(); renderTasks(); bindOverviewActions(); bindTaskComposer(); bindGlobalSearch(); updateNotificationBadge(); triggerStudioMotion(document.querySelector("#pageView"));
   document.querySelectorAll("[data-nav]").forEach((button) => button.addEventListener("click", () => { document.querySelectorAll("[data-nav]").forEach((item) => { const isActive = item === button; item.classList.toggle("active", isActive); if (isActive) item.setAttribute("aria-current", "page"); else item.removeAttribute("aria-current"); }); updateHeaderContext(button.dataset.nav); closeSidebar(); if (button.dataset.nav === "Overview") showOverview(); else renderPage(button.dataset.nav); }));
-  document.querySelector("#searchInput").addEventListener("input", (event) => { if (document.querySelector("#activeBreadcrumb").textContent === "Overview") { renderProjects(event.target.value); renderTasks(event.target.value); } else if (document.querySelector("#activeBreadcrumb").textContent === "Projects") { const input = document.querySelector("#projectFilterInput"); if (input) { input.value = event.target.value; renderProjectsPage(event.target.value, currentProjectFilter); } } });
-  document.querySelector("#createProjectForm").addEventListener("submit", (event) => { event.preventDefault(); const name = document.querySelector("#projectNameInput").value.trim(); if (!name) return toast("Give the project a name before creating it.", "error"); projects.unshift({ id:name.toLowerCase().replace(/[^a-z0-9]+/g, "-"), name, type:document.querySelector("#projectTypeInput").value, status:"Not started", tone:"quiet", progress:0, due:"No date", dueTone:"quiet", owner:"You", members:["YO"], cover:"./assets/studioos-project-motion-refresh.webp" }); document.querySelector("#createProjectForm").reset(); closeDialog("createDialog"); if (document.querySelector("#activeBreadcrumb").textContent === "Projects") { renderProjectsPage(); bindProjectsPage(); } else { renderProjects(document.querySelector("#searchInput").value); } toast(`${name} is ready for its first task.`); });
+  // Global search binding is centralized in bindGlobalSearch() so the palette and route filters stay in sync.
+
+  document.querySelector("#createProjectForm").addEventListener("submit", (event) => { event.preventDefault(); const name = document.querySelector("#projectNameInput").value.trim(); if (!name) return toast("Give the project a name before creating it.", "error");       const project = { id:name.toLowerCase().replace(/[^a-z0-9]+/g, "-"), name, type:document.querySelector("#projectTypeInput").value, status:"Not started", tone:"quiet", progress:0, due:"No date", dueTone:"quiet", owner:"You", members:["YO"], cover:"./assets/studioos-project-motion-refresh.webp" }; projects.unshift(project); persistWorkspaceState(); document.querySelector("#createProjectForm").reset(); closeDialog("createDialog"); if (document.querySelector("#activeBreadcrumb").textContent === "Projects") { renderProjectsPage(); bindProjectsPage(); } else { renderProjects(document.querySelector("#searchInput").value); } toast(`${name} is ready for its first task.`, "", { label: "Undo", action: () => { const index = projects.findIndex((item) => item.id === project.id); if (index >= 0) projects.splice(index, 1); persistWorkspaceState(); if (document.querySelector("#activeBreadcrumb").textContent === "Projects") { renderProjectsPage(); bindProjectsPage(); } else { renderProjects(document.querySelector("#searchInput").value); } toast(`${name} removed from the workspace.`); } }); });
   document.querySelector("#markReviewedButton").addEventListener("click", () => { const name = activeReviewProject?.name || "Project"; closeDialog("reviewDialog"); toast(`${name} marked as ready for the next review.`); });
   document.querySelector("#searchInput")?.addEventListener("keydown", (event) => { if (event.key === "Escape") event.currentTarget.blur(); });
   document.querySelector("#notificationButton").addEventListener("click", () => { closeHelp(); closeAccountMenu(); const popover = document.querySelector("#notificationPopover"); popover.hidden = !popover.hidden; document.querySelector("#notificationButton").setAttribute("aria-expanded", String(!popover.hidden)); });
@@ -561,9 +749,9 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelector("#accountMenuButton")?.addEventListener("click", () => { closeNotifications(); closeHelp(); const popover = document.querySelector("#accountPopover"); const button = document.querySelector("#accountMenuButton"); if (!popover) return; popover.hidden = !popover.hidden; button.setAttribute("aria-expanded", String(!popover.hidden)); if (!popover.hidden) window.setTimeout(() => popover.querySelector("[role='menuitem']")?.focus(), 20); });
   document.querySelectorAll("[data-account-action]").forEach((button) => button.addEventListener("click", () => { const messages = { profile:"Profile settings are coming soon.", preferences:"Workspace preferences are coming soon.", "sign-out":"Sign out is available in the full workspace." }; closeAccountMenu(); toast(messages[button.dataset.accountAction] || "Account action is coming soon."); }));
   document.querySelector("#accountPopover")?.addEventListener("keydown", (event) => { const items = [...event.currentTarget.querySelectorAll("[role='menuitem']")]; const index = items.indexOf(document.activeElement); if (event.key === "ArrowDown" || event.key === "ArrowUp") { event.preventDefault(); items[(index + (event.key === "ArrowDown" ? 1 : items.length - 1)) % items.length]?.focus(); } if (event.key === "Home") { event.preventDefault(); items[0]?.focus(); } if (event.key === "End") { event.preventDefault(); items.at(-1)?.focus(); } });
-  document.addEventListener("click", (event) => { if (!event.target.closest(".topbar-actions")) { closeNotifications(); closeHelp(); } if (!event.target.closest("#accountMenuButton, #accountPopover")) closeAccountMenu(); });
-  document.querySelectorAll("[data-action='review-notification']").forEach((button) => button.addEventListener("click", () => { closeNotifications(); openReview(projects[0]); }));
-  document.querySelectorAll("[data-action='calendar-notification']").forEach((button) => button.addEventListener("click", () => { closeNotifications(); document.querySelector("[data-nav='Calendar']").click(); }));
+  document.addEventListener("click", (event) => { if (!event.target.closest(".topbar-actions")) { closeNotifications(); closeHelp(); hideGlobalSearch(); } if (!event.target.closest("#accountMenuButton, #accountPopover")) closeAccountMenu(); });
+  document.querySelectorAll("[data-action='review-notification']").forEach((button) => button.addEventListener("click", () => { markNotificationRead(button.dataset.notificationId); closeNotifications(); openReview(projects[0]); }));
+  document.querySelectorAll("[data-action='calendar-notification']").forEach((button) => button.addEventListener("click", () => { markNotificationRead(button.dataset.notificationId); closeNotifications(); document.querySelector("[data-nav='Calendar']").click(); }));
   document.querySelectorAll("[data-close-dialog]").forEach((button) => button.addEventListener("click", () => closeDialog(button.dataset.closeDialog)));
   document.querySelectorAll(".dialog-layer").forEach((layer) => layer.addEventListener("click", (event) => { if (event.target === layer) closeDialog(layer.id); }));
   document.querySelectorAll("[data-action]").forEach((button) => button.addEventListener("click", () => { const action = button.dataset.action; if (["workspace","focus-options","activity-options","activity","comment"].includes(action)) toast(action === "comment" ? "Comment composer is coming soon." : "This workspace action is coming soon."); }));
@@ -571,7 +759,17 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelector("#closeSidebar").addEventListener("click", () => closeSidebar());
   document.querySelector("#mobileScrim").addEventListener("click", () => closeSidebar());
   window.addEventListener("resize", () => { if (window.matchMedia("(min-width: 901px)").matches) closeSidebar({ returnFocus: false }); });
-  document.addEventListener("keydown", (event) => { if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") { event.preventDefault(); document.querySelector("#searchInput").focus(); } if ((event.metaKey || event.ctrlKey) && event.key === "/") { event.preventDefault(); if (window.matchMedia("(max-width: 900px)").matches) openSidebar(); else document.querySelector("#sidebarToggle")?.focus(); } if (event.key === "Escape") { closeNotifications(); closeHelp(); closeAccountMenu(); document.querySelectorAll(".dialog-layer:not([hidden])").forEach((layer) => closeDialog(layer.id)); closeSidebar(); } });
+  document.addEventListener("keydown", (event) => {
+    if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") { event.preventDefault(); document.querySelector("#searchInput")?.focus(); return; }
+    if ((event.metaKey || event.ctrlKey) && event.key === "/") { event.preventDefault(); if (window.matchMedia("(max-width: 900px)").matches) openSidebar(); else document.querySelector("#sidebarToggle")?.focus(); return; }
+    if (activeDialogId) {
+      const layer = document.querySelector(`#${activeDialogId}`);
+      const dialog = layer?.querySelector("[role='dialog']");
+      if (event.key === "Tab" && dialog) { const focusables = getFocusable(dialog); if (focusables.length) { const first = focusables[0]; const last = focusables.at(-1); if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); } else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); } } }
+      if (event.key === "Escape") { event.preventDefault(); closeDialog(activeDialogId); return; }
+    }
+    if (!activeDialogId && event.key === "Escape") { closeNotifications(); closeHelp(); closeAccountMenu(); hideGlobalSearch(); closeSidebar(); }
+  });
 
   /* Sidebar collapse / expand toggle — desktop only, persisted to localStorage. */
   const SIDEBAR_COLLAPSED_KEY = "studioos-sidebar-collapsed";

@@ -1118,3 +1118,47 @@ body { background: var(--portfolio-soft); }
   .insight-stat { min-height: 96px; padding: 12px; }
   .settings-card { padding: 16px; }
 }
+
+
+/* UX P0 sprint: command palette, task composer and accessible transient surfaces */
+.global-search-panel {
+  position: absolute;
+  z-index: 60;
+  top: 54px;
+  right: 178px;
+  width: min(390px, 42vw);
+  overflow: hidden;
+  border: 1px solid #d9d9d4;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 18px 42px rgba(17,17,17,.14);
+}
+.global-search-panel[hidden] { display: none !important; }
+.global-search-result { width: 100%; display: grid; grid-template-columns: 30px minmax(0,1fr) auto; align-items: center; gap: 10px; padding: 11px 13px; border-bottom: 1px solid #eeeeea; background: #fff; color: var(--ink); text-align: left; }
+.global-search-result:last-child { border-bottom: 0; }
+.global-search-result:hover, .global-search-result:focus-visible { outline: 0; background: #f7f7f3; }
+.global-search-result:focus-visible { box-shadow: inset 0 0 0 2px rgba(17,17,17,.16); }
+.search-result-icon { width: 28px; height: 28px; display: grid; place-items: center; border: 1px solid #e0e0da; border-radius: 8px; background: #f7f7f3; color: #6c746d; }
+.search-result-icon svg { width: 14px; height: 14px; }
+.global-search-result > span:nth-child(2) { min-width: 0; display: grid; gap: 3px; }
+.global-search-result strong { overflow: hidden; font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+.global-search-result small { overflow: hidden; color: #878e87; font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
+.search-result-arrow { color: #a2a7a1; font-size: 13px; }
+.global-search-empty { display: grid; gap: 4px; padding: 18px 16px; color: #7b837b; }
+.global-search-empty strong { color: var(--ink); font-size: 11px; }
+.global-search-empty span { font-size: 9px; }
+.dialog-form-row { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(120px, .6fr); gap: 12px; }
+.dialog-card input:focus-visible, .dialog-card select:focus-visible, .dialog-card textarea:focus-visible { outline: 0; border-color: #111; box-shadow: 0 0 0 3px rgba(17,17,17,.08); }
+.dialog-layer .dialog-card { max-height: min(700px, calc(100vh - 32px)); overflow: auto; }
+.settings-saved.is-dirty { color: #9a6b35; }
+.settings-saved.is-dirty i { background: var(--copper); }
+@media (max-width: 900px) {
+  .global-search-panel { top: 52px; right: 0; width: min(390px, calc(100vw - 36px)); }
+}
+@media (max-width: 560px) {
+  .dialog-form-row { grid-template-columns: 1fr; }
+  .global-search-panel { right: -8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .global-search-panel { animation: none; }
+}

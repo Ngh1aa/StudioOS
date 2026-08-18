@@ -66,7 +66,8 @@
           <div class="mobile-header-context" id="mobileHeaderContext"><strong class="mobile-context-page">Overview</strong><small>Portfolio workspace</small></div>
           <div class="breadcrumbs portfolio-breadcrumbs"><strong class="app-header-title">StudioOS</strong><span class="app-header-divider"></span><button class="workspace-context" type="button" data-action="workspace" aria-label="Switch workspace"><span>Portfolio workspace</span><span aria-hidden="true">⌄</span></button><span class="app-header-divider context-divider"></span><span class="header-page-context" id="pageContext">Overview</span><strong id="activeBreadcrumb" class="sr-only">Overview</strong></div>
           <div class="topbar-actions">
-            <label class="top-search"><span data-icon="search"></span><span class="sr-only">Search projects, tasks, and notes</span><input id="searchInput" type="search" placeholder="Search projects, tasks, notes…" aria-label="Search projects, tasks, and notes" autocomplete="off" /><kbd><span data-icon="command"></span> K</kbd></label>
+            <label class="top-search"><span data-icon="search"></span><span class="sr-only">Search projects, tasks, and notes</span><input id="searchInput" type="search" placeholder="Search projects, tasks, notes…" aria-label="Search projects, tasks, and notes" autocomplete="off" aria-controls="globalSearchPanel" aria-expanded="false" /><kbd><span data-icon="command"></span> K</kbd></label>
+            <div class="global-search-panel" id="globalSearchPanel" role="listbox" aria-label="Workspace search results" hidden></div>
             <button class="icon-button notification-button" id="notificationButton" type="button" aria-label="Open notifications, 2 unread" aria-expanded="false" aria-controls="notificationPopover"><span data-icon="bell"></span><span class="notification-badge" aria-hidden="true">2</span></button>
             <button class="help-button" id="helpButton" type="button" data-action="help" aria-label="Open help and shortcuts" aria-expanded="false" aria-controls="helpPopover" title="Help & shortcuts"><span data-icon="help"></span></button>
             <button class="account-menu-button" id="accountMenuButton" type="button" aria-label="Open account menu for Alex Tran" aria-controls="accountPopover" aria-expanded="false" title="Open account menu"><span class="profile-avatar">AT</span></button>
@@ -84,8 +85,8 @@
             </div>
             <div class="notification-popover" id="notificationPopover" hidden>
               <div class="popover-heading"><strong>Notifications</strong><span>02 unread</span></div>
-              <button type="button" data-action="review-notification"><span class="notification-icon copper" data-icon="message"></span><span><strong>Maya left feedback</strong><small>Lumen House · 12 min ago</small></span></button>
-              <button type="button" data-action="calendar-notification"><span class="notification-icon sage" data-icon="calendar"></span><span><strong>Two deadlines this week</strong><small>Northstar / Q3 · 1 hr ago</small></span></button>
+              <button type="button" data-action="review-notification" data-notification-id="review-feedback"><span class="notification-icon copper" data-icon="message"></span><span><strong>Maya left feedback</strong><small>Lumen House · 12 min ago</small></span></button>
+              <button type="button" data-action="calendar-notification" data-notification-id="calendar-deadlines"><span class="notification-icon sage" data-icon="calendar"></span><span><strong>Two deadlines this week</strong><small>Northstar / Q3 · 1 hr ago</small></span></button>
             </div>
             <div class="help-popover" id="helpPopover" hidden>
               <div class="popover-heading"><strong>Help &amp; shortcuts</strong><span>Quick guide</span></div>
@@ -148,6 +149,21 @@
       </div>
     </div>
 
+    <div class="dialog-layer" id="taskDialog" hidden>
+      <div class="dialog-card" role="dialog" aria-modal="true" aria-labelledby="taskDialogTitle" aria-describedby="taskDialogDescription">
+        <button class="dialog-close" type="button" data-close-dialog="taskDialog" aria-label="Close dialog"><span data-icon="x"></span></button>
+        <div class="dialog-eyebrow"><span data-icon="circle-plus"></span> Focus list</div>
+        <h2 id="taskDialogTitle">Add the next clear step.</h2>
+        <p class="dialog-description" id="taskDialogDescription">Capture a task with enough context to make the next decision easy.</p>
+        <form id="taskForm" class="dialog-form">
+          <label>Task title<input id="taskTitleInput" name="taskTitle" type="text" placeholder="e.g. Review final type specimens" required /></label>
+          <div class="dialog-form-row"><label>Project<select id="taskProjectInput" name="taskProject"><option>Workspace</option><option>Lumen House</option><option>Common Ground</option><option>Northstar / Q3</option><option>Field Notes</option></select></label><label>Priority<select id="taskPriorityInput" name="taskPriority"><option>High</option><option selected>Medium</option><option>Low</option></select></label></div>
+          <label>Due<input id="taskDueInput" name="taskDue" type="text" placeholder="e.g. Due tomorrow" value="Due this week" /></label>
+          <div class="dialog-actions"><button class="cancel-button" type="button" data-close-dialog="taskDialog">Cancel</button><button class="primary-button" type="submit">Add task <span data-icon="check"></span></button></div>
+        </form>
+      </div>
+    </div>
+
     <div class="dialog-layer" id="reviewDialog" hidden>
       <div class="dialog-card review-dialog" role="dialog" aria-modal="true" aria-labelledby="reviewDialogTitle">
         <button class="dialog-close" type="button" data-close-dialog="reviewDialog" aria-label="Close dialog"><span data-icon="x"></span></button>
@@ -162,6 +178,6 @@
 
     <div class="toast-region" id="toastRegion" aria-live="polite"></div>
     <noscript><div class="noscript-message">StudioOS needs JavaScript enabled to show the workspace interactions.</div></noscript>
-    <script src="./script.js?v=20260818-uiux-director-v6" defer></script>
+    <script src="./script.js?v=20260818-uiux-director-v7" defer></script>
   </body>
 </html>
