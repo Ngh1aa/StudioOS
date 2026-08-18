@@ -136,3 +136,20 @@
 - [x] Thay shell Overview cũ bằng bố cục Portfolio ba vùng: icon rail, project canvas và client inbox.
 - [x] Dựng project cards monochrome theo mẫu, gồm tiến độ, collaborators, deadline và hành động ngữ cảnh.
 - [x] Hoàn thiện responsive behavior, kiểm thử tương tác của Project inbox và xuất bản GitHub Pages sau khi xác nhận Portfolio layout hiển thị đầy đủ.
+
+## Projects refinement follow-up
+
+- [x] Chuẩn hóa filter Search, Status và Type thành một hệ thống tag thống nhất, không dùng khung bao thừa.
+- [x] Tách Total Value, Moving Well và Needs Attention thành các widget độc lập; giữ accent cảnh báo ở Needs Attention.
+- [x] Làm sạch thumbnail project, chỉ hiển thị CTA View project ở hover/focus và loại bỏ các hình học overlay.
+- [x] Làm mảnh progress bar, đổi màu Review về neutral với accent chỉ khi hover/focus.
+- [ ] Kiểm thử desktop/mobile, commit và đồng bộ Projects refinement lên GitHub Pages.
+
+## Calendar and Tasks calm UI follow-up
+
+- [x] Đưa mọi panel Calendar về surface sáng, làm nhẹ Week/Month filter và bỏ border bao ngoài không cần thiết.
+- [x] Thay các khối sidebar Tasks nền đen/ngọc bằng surface sáng cùng ngôn ngữ, thêm khoảng cách rõ ràng giữa các panel.
+- [x] Tách metrics và khu vực Search/Filter Tasks bằng khoảng trắng thay cho khung viền và divider dọc.
+- [x] Giảm visual weight của bộ lọc Tasks; dùng active state nhẹ, không cạnh tranh với nút Add task.
+- [x] Tiết chế semantic color của priority/due: dot đỏ cho High, chữ trung tính; Due today cam/amber và đỏ chỉ dành cho overdue.
+- [ ] Kiểm thử Calendar/Tasks desktop-mobile, commit và đồng bộ toàn bộ calm UI refinements lên GitHub Pages.
