@@ -631,3 +631,64 @@ body { background: var(--portfolio-soft); }
 @media (prefers-reduced-motion: reduce) {
   .account-menu-button { transition: none; }
 }
+
+
+/* Content card standardization: square geometry and one quiet border tone across every page. */
+:root {
+  --content-card-border: #d9d9d9;
+  --content-card-radius: 0px;
+}
+
+.signal-card,
+.project-card,
+.panel-surface,
+.member-card,
+.note-card,
+.insight-stat,
+.insight-hero,
+.insight-data-panel,
+.review-preview,
+.metric-strip,
+.empty-search,
+.page-empty,
+.dialog-card {
+  border: 1px solid var(--content-card-border) !important;
+  border-radius: var(--content-card-radius) !important;
+}
+
+.project-card-body {
+  border-top: 1px solid var(--content-card-border) !important;
+}
+
+.signal-card:hover,
+.project-card:hover,
+.member-card:hover,
+.note-card:hover {
+  border-color: var(--content-card-border) !important;
+}
+
+.inbox-focus {
+  border: 1px solid var(--content-card-border);
+  border-radius: var(--content-card-radius);
+}
+
+.review-preview img {
+  border-radius: var(--content-card-radius);
+}
+
+@media (max-width: 900px) {
+  .project-card,
+  .panel-surface,
+  .member-card,
+  .note-card,
+  .insight-stat,
+  .insight-hero,
+  .insight-data-panel,
+  .review-preview,
+  .metric-strip,
+  .empty-search,
+  .page-empty,
+  .dialog-card {
+    border-radius: var(--content-card-radius) !important;
+  }
+}
