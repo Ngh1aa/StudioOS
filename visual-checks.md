@@ -13,3 +13,7 @@ Calendar renders as an uninterrupted light workspace: the weekly grid and `Next 
 The Tasks `Open` filter continues to limit the queue to the three open items and keeps the understated active treatment. Calendar navigation returns to the revised weekly surface without visual regressions. The remaining interaction check is the Month view; responsive checks will follow before the GitHub synchronization.
 
 The existing Month control intentionally presents the `Month view is coming next` notice and retains that behavior after the visual restyle. Returning to Projects confirms the four-card grid and filter rail render without regression. This verification covered the agreed UI scope; the explicit Month implementation remains out of scope for this refinement.
+
+## Public deployment check
+
+The source commits were accepted by `main` as `6751532` and `b01c3b3`. The public GitHub Pages URL remained on the prior visual build during the first refresh window, so its Pages deployment configuration must be inspected before declaring the public URL current.
