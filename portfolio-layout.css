@@ -854,3 +854,26 @@ body { background: var(--portfolio-soft); }
     grid-column: auto;
   }
 }
+
+
+/* UI/UX Director: shared semantic signals for calendar, tasks and people. */
+.task-priority.priority-high i { background: var(--copper); }
+.task-priority.priority-medium i { background: var(--sage-dark); }
+.task-priority.priority-low i { background: #9aa39a; }
+.task-priority.priority-high { color: var(--copper-dark); }
+.task-priority.priority-medium { color: var(--sage-dark); }
+.task-priority.priority-low { color: #68736a; }
+.capacity-track.capacity-high i { background: #c56f62; }
+.capacity-track.capacity-watch i { background: var(--copper); }
+.capacity-track.capacity-healthy i { background: var(--sage); }
+.capacity-value { display: inline-flex; align-items: baseline; gap: 5px; }
+.capacity-value em { color: #9aa39a; font-size: 8px; font-style: normal; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+.capacity-value-high { color: #ad5d51 !important; }
+.capacity-value-watch { color: var(--copper-dark) !important; }
+.capacity-value-healthy { color: var(--sage-dark) !important; }
+.task-principles { border-top: 2px solid var(--sage); }
+.task-principles .section-kicker { color: var(--sage-dark); }
+@media (max-width: 760px) {
+  .capacity-value em { display: none; }
+  .calendar-event { padding-inline: 6px; font-size: 8px; }
+}
