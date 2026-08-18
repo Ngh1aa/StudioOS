@@ -1162,3 +1162,80 @@ body { background: var(--portfolio-soft); }
 @media (prefers-reduced-motion: reduce) {
   .global-search-panel { animation: none; }
 }
+
+
+/* Focused metrics layout: remove decorative context cards and keep the data strip actionable. */
+.projects-metric-strip,
+.tasks-metric-strip,
+.team-metric-strip {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-bottom: 20px;
+}
+
+.projects-metric-strip > div,
+.tasks-metric-strip > div,
+.team-metric-strip > div {
+  min-width: 0;
+}
+
+.projects-metric-strip > div + div,
+.tasks-metric-strip > div + div,
+.team-metric-strip > div + div {
+  border-left: 1px solid var(--line);
+}
+
+.projects-metric-strip small,
+.projects-metric-strip span,
+.tasks-metric-strip small,
+.tasks-metric-strip span,
+.team-metric-strip small,
+.team-metric-strip span {
+  overflow-wrap: anywhere;
+}
+
+.team-metric-strip + .page-section-heading {
+  margin-top: 0;
+}
+
+@media (max-width: 680px) {
+  .projects-metric-strip,
+  .tasks-metric-strip,
+  .team-metric-strip {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-bottom: 18px;
+  }
+
+  .projects-metric-strip > div,
+  .tasks-metric-strip > div,
+  .team-metric-strip > div {
+    min-height: 72px;
+    padding: 10px 9px;
+  }
+
+  .projects-metric-strip strong,
+  .tasks-metric-strip strong,
+  .team-metric-strip strong {
+    font-size: 25px;
+  }
+}
+
+@media (max-width: 390px) {
+  .projects-metric-strip > div,
+  .tasks-metric-strip > div,
+  .team-metric-strip > div {
+    padding-inline: 7px;
+  }
+
+  .projects-metric-strip small,
+  .projects-metric-strip span,
+  .tasks-metric-strip small,
+  .tasks-metric-strip span,
+  .team-metric-strip small,
+  .team-metric-strip span {
+    font-size: 9px;
+  }
+}
+
+/* The context card is no longer rendered; keep no visual placeholder in its former slot. */
+.team-context-note { display: none; }
+.metric-strip-note { display: none; }
