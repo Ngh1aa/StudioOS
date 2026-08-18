@@ -187,7 +187,8 @@ persistWorkspaceState();
 applyWorkspaceIdentity();
 
 function pageHeader(kicker, title, description, action = "") {
-  return `<section class="view-heading"><div><div class="section-kicker">${kicker}</div><h1>${title}<span>.</span></h1><p class="view-description">${description}</p></div>${action}</section>`;
+  const headingDot = title === "Projects" ? "" : "<span>.</span>";
+  return `<section class="view-heading"><div><div class="section-kicker">${kicker}</div><h1>${title}${headingDot}</h1><p class="view-description">${description}</p></div>${action}</section>`;
 }
 
 function capacityTone(load) { return load >= 80 ? "high" : load >= 65 ? "watch" : "healthy"; }
@@ -482,11 +483,14 @@ function bindPageActions() {
 function icon(name) { return `<svg class="studio-icon" aria-hidden="true" focusable="false" role="presentation" viewBox="0 0 24 24">${icons[name] || ""}</svg>`; }
 function renderIcons() { document.querySelectorAll("[data-icon]").forEach((node) => { const name = node.dataset.icon; node.innerHTML = icon(name); }); }
 
-function avatarStack(members) { return `<span class="avatar-stack" aria-label="${members.length} project members">${members.map((member, index) => `<span class="avatar avatar-${index}">${member}</span>`).join("")}</span>`; }
+function memberAvatarTone(member) { return ({ MC: "sage", JT: "ink", AN: "amber", NW: "blue", LC: "copper", OR: "sage", AR: "blue" })[member] || "neutral"; }
+function avatarStack(members) { return `<span class="avatar-stack" aria-label="${members.length} project members">${members.map((member, index) => `<span class="avatar avatar-${index} avatar-member-${member.toLowerCase()} avatar-tone-${memberAvatarTone(member)}">${member}</span>`).join("")}</span>`; }
 function projectIndex(id) { return ({"lumen-house":"01","common-ground":"02",northstar:"03","field-notes":"04"})[id] || "04"; }
+function projectProgressTone(progress) { return progress < 30 ? "low" : progress < 70 ? "mid" : "high"; }
 function projectCard(project) {
   const imagePriority = project.id === "lumen-house" ? 'fetchpriority="high" loading="eager"' : 'loading="lazy"';
-  return `<article class="project-card"><div class="project-cover"><img src="${project.cover}" width="1600" height="1067" ${imagePriority} decoding="async" alt="${project.name} cover artwork; ${project.type}, ${project.progress}% complete, ${project.due}" /><div class="cover-shade"></div><div class="project-cover-top"><span class="cover-index">${projectIndex(project.id)}</span><button class="icon-button icon-button-light js-more" type="button" aria-label="More options for ${project.name}">${icon("more")}</button></div><div class="cover-caption"><span><b>${project.type}</b><small class="cover-caption-note">Preview artwork</small></span>${icon("arrow-up-right")}</div></div><div class="project-card-body"><div class="project-title-row"><div><h3>${project.name}</h3><p>${project.owner}</p></div><span class="status-pill status-${project.tone}"><i class="status-dot"></i>${project.status}</span></div><div class="progress-meta"><span>Project progress</span><strong>${project.progress}%</strong></div><div class="progress-track" aria-label="${project.progress}% complete"><span style="width:${project.progress}%"></span></div><div class="project-card-footer"><span class="due-date due-${project.dueTone}">${icon("clock")} ${project.due}</span><span class="card-actions">${avatarStack(project.members)}<button class="text-button js-review" type="button">Review ${icon("chevron-right")}</button></span></div></div></article>`;
+  const progressTone = projectProgressTone(project.progress);
+  return `<article class="project-card project-card-${project.id} project-progress-${progressTone}"><div class="project-cover"><img src="${project.cover}" width="1600" height="1067" ${imagePriority} decoding="async" alt="${project.name} cover artwork; ${project.type}, ${project.progress}% complete, ${project.due}" /><div class="cover-shade"></div><div class="project-cover-top"><span class="cover-index">${projectIndex(project.id)}</span><button class="icon-button icon-button-light js-more" type="button" aria-label="More options for ${project.name}">${icon("more")}</button></div><div class="cover-caption"><span><b>${project.type}</b><small class="cover-caption-note">Preview artwork</small></span><button class="cover-open-button js-review" type="button" aria-label="Open ${project.name} preview">${icon("arrow-up-right")}</button></div></div><div class="project-card-body"><div class="project-title-row"><div><h3>${project.name}</h3><p>${project.owner}</p></div><span class="status-pill status-${project.tone}"><i class="status-dot"></i>${project.status}</span></div><div class="progress-meta"><span>Project progress</span><strong>${project.progress}%</strong></div><div class="progress-track progress-track-${progressTone}" aria-label="${project.progress}% complete"><span style="width:${project.progress}%"></span></div><div class="project-card-footer"><span class="due-date due-${project.dueTone}">${icon("clock")} ${project.due}</span><span class="card-actions">${avatarStack(project.members)}<button class="text-button js-review" type="button">Review ${icon("chevron-right")}</button></span></div></div></article>`;
 }
 
 function renderProjects(query = "") {

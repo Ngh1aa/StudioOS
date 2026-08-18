@@ -1824,3 +1824,219 @@ textarea:focus-visible,
     gap: 8px;
   }
 }
+
+
+/* Projects audit follow-up: clarify filter depth, progress semantics, and card affordances. */
+.project-controls .filter-group {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+}
+.project-controls .filter-group-label {
+  align-self: center;
+  margin: 0;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+.project-taxonomy {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.project-taxonomy .taxonomy-heading {
+  flex: 0 0 auto;
+}
+
+/* Status is copper; Type is blue-gray so the two independent AND filters read as separate systems. */
+.project-controls .filter-chip.active {
+  background: var(--copper) !important;
+  border-color: var(--copper) !important;
+  color: #fff !important;
+}
+.project-taxonomy .taxonomy-chip.active {
+  background: var(--blue-dark) !important;
+  border-color: var(--blue-dark) !important;
+  color: #fff !important;
+  box-shadow: var(--shadow-sm);
+}
+.project-taxonomy .taxonomy-chip.active em {
+  color: var(--blue-soft) !important;
+}
+
+/* Completion and project status are different signals: low, mid and high use distinct progress tones. */
+.project-card .progress-track {
+  background: #e7ebe8;
+}
+.project-card .progress-track-low span {
+  background: var(--copper) !important;
+}
+.project-card .progress-track-mid span {
+  background: var(--amber) !important;
+}
+.project-card .progress-track-high span {
+  background: var(--sage) !important;
+}
+
+/* Normalize editorial covers while lifting the unusually heavy Campaign thumbnail. */
+.portfolio-project-grid .project-cover img,
+.projects-page-grid .project-cover img {
+  filter: grayscale(1) contrast(.96) brightness(1.08);
+}
+.portfolio-project-grid .project-card-northstar .project-cover img,
+.projects-page-grid .project-card-northstar .project-cover img {
+  filter: grayscale(1) contrast(.9) brightness(1.22);
+}
+
+/* Give the two thumbnail actions independent, comfortably sized hit areas. */
+.portfolio-project-grid .project-cover-top,
+.projects-page-grid .project-cover-top,
+.portfolio-project-grid .cover-caption,
+.projects-page-grid .cover-caption {
+  z-index: 3;
+}
+.portfolio-project-grid .icon-button-light,
+.projects-page-grid .icon-button-light,
+.portfolio-project-grid .cover-open-button,
+.projects-page-grid .cover-open-button {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid rgba(255,255,255,.58);
+  border-radius: 50%;
+}
+.portfolio-project-grid .cover-open-button,
+.projects-page-grid .cover-open-button {
+  color: #fff;
+  background: rgba(24,26,27,.72);
+  transition: background 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+.portfolio-project-grid .cover-open-button:hover,
+.projects-page-grid .cover-open-button:hover,
+.portfolio-project-grid .cover-open-button:focus-visible,
+.projects-page-grid .cover-open-button:focus-visible {
+  background: var(--copper);
+  border-color: #fff;
+  transform: translateY(-1px);
+}
+
+/* Keep identity colors stable when the same initials appear across multiple cards. */
+.portfolio-project-grid .avatar-tone-sage,
+.projects-page-grid .avatar-tone-sage { background: var(--sage-soft) !important; color: var(--sage-dark) !important; border-color: #fff !important; }
+.portfolio-project-grid .avatar-tone-ink,
+.projects-page-grid .avatar-tone-ink { background: var(--ink) !important; color: #fff !important; border-color: #fff !important; }
+.portfolio-project-grid .avatar-tone-amber,
+.projects-page-grid .avatar-tone-amber { background: var(--amber-soft) !important; color: var(--amber) !important; border-color: #fff !important; }
+.portfolio-project-grid .avatar-tone-blue,
+.projects-page-grid .avatar-tone-blue { background: var(--blue-soft) !important; color: var(--blue-dark) !important; border-color: #fff !important; }
+.portfolio-project-grid .avatar-tone-copper,
+.projects-page-grid .avatar-tone-copper { background: var(--copper-soft) !important; color: var(--copper-dark) !important; border-color: #fff !important; }
+.portfolio-project-grid .avatar-tone-neutral,
+.projects-page-grid .avatar-tone-neutral { background: #eef0ed !important; color: var(--ink-soft) !important; border-color: #fff !important; }
+
+/* Needs attention is an actionable warning, not a neutral metric. */
+.projects-metric-strip > div:last-child {
+  background: #fff7f1;
+  box-shadow: inset 3px 0 var(--copper);
+}
+.projects-metric-strip > div:last-child small,
+.projects-metric-strip > div:last-child strong {
+  color: var(--copper-dark);
+}
+.projects-metric-strip > div:last-child span {
+  color: #8f6658;
+}
+
+@media (max-width: 900px) {
+  .project-controls .filter-group {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+  .project-controls .filter-group-label {
+    align-self: start;
+  }
+}
+
+@media (max-width: 680px) {
+  .project-taxonomy {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .project-taxonomy .taxonomy-heading {
+    width: 100%;
+  }
+}
+
+
+@media (max-width: 680px) {
+  .project-controls .filter-chips {
+    min-width: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    flex-wrap: nowrap;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .project-controls .filter-chips::-webkit-scrollbar {
+    display: none;
+  }
+  .project-controls .filter-chip {
+    flex: 0 0 auto;
+  }
+  .project-taxonomy .taxonomy-scroller {
+    max-width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .project-taxonomy .taxonomy-scroller::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+
+@media (max-width: 680px) {
+  .project-controls .filter-chips,
+  .project-taxonomy .taxonomy-scroller {
+    overflow: visible;
+    flex-wrap: wrap;
+    row-gap: 6px;
+  }
+}
+
+
+@media (max-width: 680px) {
+  .project-controls .filter-group {
+    min-width: 0;
+  }
+  .project-controls .filter-chips {
+    width: 100%;
+    margin-left: 0;
+  }
+  .project-taxonomy .taxonomy-scroller {
+    width: 100%;
+  }
+}
+
+
+@media (max-width: 680px) {
+  .project-controls .filter-chips,
+  .project-taxonomy .taxonomy-scroller {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px;
+    width: 100%;
+    overflow: visible;
+  }
+  .project-controls .filter-chip,
+  .project-taxonomy .taxonomy-chip {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
