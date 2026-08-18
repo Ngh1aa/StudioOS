@@ -1622,3 +1622,37 @@ textarea:focus-visible,
   .notes-nav-item.active,
   .settings-nav-item.active { background: var(--copper) !important; color: #fff !important; }
 }
+
+
+/* Dashboard content white surface + refreshed project covers */
+.page-content,
+.page-shell-page,
+.portfolio-overview,
+.portfolio-projects,
+.project-inbox {
+  background: #ffffff !important;
+}
+
+.project-inbox {
+  border-left-color: var(--portfolio-line) !important;
+}
+
+.project-cover,
+.review-preview {
+  background: #eeece6;
+}
+
+.project-cover img,
+.review-preview img {
+  object-fit: cover;
+}
+
+@media (max-width: 680px) {
+  .page-content,
+  .page-shell-page,
+  .portfolio-overview,
+  .portfolio-projects,
+  .project-inbox {
+    background: #ffffff !important;
+  }
+}
