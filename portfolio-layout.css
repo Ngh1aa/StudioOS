@@ -907,33 +907,6 @@ body { background: var(--portfolio-soft); }
 }
 
 
-/* UI/UX Director refinement: Team and Notes system rules. */
-.team-context-note { display: flex; align-items: center; gap: 14px; margin: 12px 0 28px; padding: 16px 20px; border: 1px solid var(--line); background: rgba(255,254,251,.72); }
-.team-context-note > div { display: grid; gap: 3px; }
-.team-context-note strong { color: var(--ink); font-size: 13px; }
-.team-context-note p { margin: 0; color: #7f8980; font-size: 10px; line-height: 1.45; }
-.team-context-icon { display: grid; width: 34px; height: 34px; place-items: center; background: #f2f1eb; color: var(--ink); }
-.member-avatar.avatar-copper { background: #f2ded6; color: #894a36; }
-.member-avatar.avatar-sage { background: #e0eadf; color: #58705a; }
-.member-avatar.avatar-blue { background: #dce8e9; color: #557277; }
-.member-avatar.avatar-ink { background: #e8e6df; color: #363936; }
-.capacity-track.capacity-high i { background: #c56f62 !important; }
-.capacity-value-high { color: #a95045 !important; }
-.note-card-labels { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
-.note-state { padding: 4px 7px; border: 1px solid rgba(255,255,255,.28); color: #fff8ee; font-size: 8px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; }
-.note-card:not(.note-card-featured) .note-state { border-color: var(--line); color: #6f776f; }
-.notes-tags button { width: 100%; }
-.notes-tags button.active { color: var(--ink); font-weight: 700; }
-.notes-tags button em { margin-left: auto; color: #a3aaa2; font-size: 8px; font-style: normal; }
-.note-card[hidden] { display: none; }
-.context-menu { position: absolute; z-index: 1000; min-width: 168px; padding: 5px; border: 1px solid #d7dad3; background: #fffefa; box-shadow: 0 12px 30px rgba(27,32,28,.14); }
-.context-menu button { display: block; width: 100%; padding: 9px 10px; color: #495149; font-size: 10px; text-align: left; }
-.context-menu button:hover, .context-menu button:focus-visible { background: #f0f2eb; color: var(--ink); outline: none; }
-@media (max-width: 760px) {
-  .team-context-note { margin-bottom: 20px; }
-  .note-state { font-size: 7px; }
-}
-
 /* UI/UX Director refinement: Insights semantic thresholds, chart encoding and Settings affordances. */
 .health-badge { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .health-badge small { color: currentColor; font-size: 8px; font-weight: 600; letter-spacing: .02em; opacity: .72; }
@@ -979,4 +952,169 @@ body { background: var(--portfolio-soft); }
   .settings-url-field span { padding-left: 8px; font-size: 9px; }
   .settings-field-hint { font-size: 7px; }
   .toggle-state { min-width: 20px; }
+}
+
+
+/* Layout density pass: tighten spacing across all content pages. */
+:root {
+  --content-density-section: 36px;
+  --content-density-control: 20px;
+  --content-density-card: 18px;
+}
+
+/* Shared page rhythm: preserve hierarchy while shortening the scan path. */
+.page-content {
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+.page-shell-page > .view-heading,
+.page-shell-page .page-intro-row {
+  margin-bottom: var(--content-density-control);
+}
+.page-shell-page .page-intro-row { margin-bottom: var(--content-density-control); }
+.view-heading { gap: 24px; }
+.view-heading h1 { margin-top: 8px; font-size: clamp(42px, 4.3vw, 60px); }
+.view-description { margin-top: 8px; }
+.page-toolbar { margin-bottom: var(--content-density-control); padding: 8px; }
+.project-taxonomy { margin: -8px 0 18px; }
+.metric-strip { margin-bottom: 24px; }
+.metric-strip > div { min-height: 80px; padding: 14px 16px; }
+.metric-strip-note { min-height: 62px !important; }
+.section-block { margin-bottom: var(--content-density-section); }
+.section-heading-row { margin-bottom: 14px; }
+.page-section-heading { margin-bottom: 12px; }
+
+/* Overview / portfolio board. */
+.portfolio-projects { padding-top: clamp(24px, 3vw, 44px); padding-bottom: clamp(24px, 3vw, 44px); }
+.portfolio-stats { margin: 22px 0 18px; padding: 14px 0; }
+.portfolio-project-grid { gap: 14px; }
+.portfolio-project-grid .project-card { min-height: 280px; }
+.portfolio-project-grid .project-card:first-child { min-height: 236px; }
+.portfolio-project-grid .project-cover { height: 160px; }
+.portfolio-project-grid .project-card:first-child .project-cover { height: 138px; }
+.portfolio-project-grid .project-card-body { padding: 14px; }
+.portfolio-project-grid .progress-meta { margin-top: 14px; }
+.portfolio-project-grid .project-card-footer { margin-top: 10px; }
+.inbox-heading { padding-bottom: 12px; }
+.inbox-intro { margin: 10px clamp(24px, 3vw, 44px) 14px; }
+.inbox-item { padding-top: 12px; padding-bottom: 12px; }
+.inbox-focus { padding-top: 18px; padding-bottom: 24px; }
+.inbox-focus .mini-progress { margin-top: 12px; margin-bottom: 8px; }
+.inbox-focus .task-row { padding-top: 9px; padding-bottom: 9px; }
+
+/* Tasks. */
+.tasks-panel, .task-focus-card, .task-principles { padding: var(--content-density-card); }
+.tasks-layout { gap: 12px; }
+.tasks-heading { margin-bottom: 14px; }
+.tasks-heading-meta { padding-top: 4px; }
+.task-list-heading { padding-top: 12px; padding-bottom: 6px; }
+.task-page-row { min-height: 58px; padding-top: 7px; padding-bottom: 7px; }
+.task-focus-card p, .task-principles p { margin-top: 8px; }
+.focus-callout { margin-top: 14px; padding: 10px; }
+
+/* Calendar. */
+.calendar-layout { gap: 12px; }
+.calendar-main, .calendar-agenda { padding: var(--content-density-card); }
+.calendar-toolbar { padding-bottom: 14px; }
+.week-grid { min-height: 420px; margin-top: 12px; }
+.line-1 { top: 105px; }
+.line-2 { top: 210px; }
+.line-3 { top: 315px; }
+.line-4 { top: 420px; }
+.event-one { top: 86px; }
+.event-two { top: 191px; }
+.event-three { top: 296px; }
+.event-four { top: 86px; }
+.agenda-item { padding-top: 9px; padding-bottom: 9px; }
+
+/* Team. */
+.team-context-note { margin: 10px 0 20px; padding: 12px 16px; }
+.member-card { padding: 15px 15px 13px; }
+.member-card-top { margin-bottom: 14px; }
+.member-focus { margin-top: 16px; padding-top: 11px; }
+.member-load { margin-top: 12px; }
+.member-card footer { margin-top: 14px; padding-top: 10px; }
+.member-card-add { min-height: 210px; }
+
+/* Notes. */
+.notes-layout { gap: 18px; }
+.notes-sidebar { padding: 12px; }
+.notes-nav { padding: 14px 0 16px; }
+.notes-tags { padding-top: 14px; }
+.notes-heading { margin-bottom: 16px; }
+.note-card { min-height: 168px; padding: 15px; }
+.note-card-featured { min-height: 156px; }
+.note-card h3 { margin-top: 14px; }
+.note-card p { margin-top: 7px; }
+.note-card footer { padding-top: 12px; }
+
+/* Insights. */
+.insights-layout { gap: 12px; }
+.insight-hero { min-height: 230px; padding: 20px; }
+.health-score { margin-top: 24px; }
+.health-bar { margin-top: 14px; }
+.insight-footnote { margin-top: 15px; }
+.insight-stat-grid { gap: 10px; }
+.insight-stat { min-height: 100px; padding: 13px; }
+.insight-stat strong { margin-top: 9px; }
+.insights-lower { gap: 12px; margin-top: 14px; }
+.workload-panel, .attention-panel { padding: var(--content-density-card); }
+.workload-chart { height: 180px; margin-top: 16px; }
+.chart-legend { margin-top: 12px; }
+.attention-list button { padding-top: 9px; padding-bottom: 9px; }
+
+/* Settings. */
+.settings-layout { gap: 12px; }
+.settings-content { gap: 12px; }
+.settings-card { padding: var(--content-density-card); }
+.settings-card-heading { padding-bottom: 14px; }
+.settings-form-grid { gap: 14px; margin-top: 16px; }
+.settings-save { margin-top: 14px; }
+.settings-toggle-list { margin-top: 14px; }
+.settings-toggle { padding-top: 10px; padding-bottom: 10px; }
+
+@media (max-width: 900px) {
+  .portfolio-projects { padding: 30px 26px; border-right: 0; }
+  .portfolio-stats { margin-top: 20px; }
+  .project-inbox { padding-top: 26px; }
+  .notes-sidebar { padding: 12px; }
+}
+
+@media (max-width: 680px) {
+  .page-content { padding: 28px 18px 24px; }
+  .view-heading { gap: 17px; }
+  .view-heading h1 { font-size: clamp(42px, 13vw, 58px); }
+  .page-shell-page > .view-heading,
+  .page-shell-page .page-intro-row { margin-bottom: 18px; }
+  .page-toolbar { margin-bottom: 16px; }
+  .metric-strip { margin-bottom: 22px; }
+  .metric-strip > div { min-height: 76px; padding: 12px; }
+  .metric-strip-note { min-height: 58px !important; }
+  .portfolio-projects { padding: 26px 18px 30px; }
+  .portfolio-project-grid { gap: 12px; }
+  .portfolio-project-grid .project-card,
+  .portfolio-project-grid .project-card:first-child { min-height: 0; }
+  .portfolio-project-grid .project-cover,
+  .portfolio-project-grid .project-card:first-child .project-cover { height: 154px; }
+  .inbox-heading { padding-inline: 20px; }
+  .inbox-intro { margin-right: 20px; margin-left: 20px; }
+  .inbox-item { padding-right: 20px; padding-left: 20px; }
+  .project-inbox { padding-top: 24px; }
+  .calendar-main, .calendar-agenda, .workload-panel, .attention-panel, .insight-hero { padding: 15px; }
+  .week-grid { min-height: 360px; margin-top: 10px; margin-right: -15px; margin-left: -15px; }
+  .line-1 { top: 90px; }
+  .line-2 { top: 180px; }
+  .line-3 { top: 270px; }
+  .line-4 { top: 360px; }
+  .event-one, .event-four { top: 72px; }
+  .event-two { top: 162px; }
+  .event-three { top: 252px; }
+  .member-card-add { min-height: 150px; }
+  .notes-sidebar { padding: 0; }
+  .notes-nav { padding-top: 14px; padding-bottom: 12px; }
+  .notes-tags { padding-top: 12px; }
+  .note-card { min-height: 0; }
+  .note-card-featured { min-height: 0; }
+  .insight-stat { min-height: 96px; padding: 12px; }
+  .settings-card { padding: 16px; }
 }
