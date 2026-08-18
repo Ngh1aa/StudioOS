@@ -524,9 +524,16 @@ function renderTasks(query = "") {
   const visible = normalized ? tasks.filter((task) => `${task.label} ${task.project}`.toLowerCase().includes(normalized)) : tasks;
   document.querySelector("#taskList").innerHTML = visible.map((task) => `<button class="task-row ${task.done ? "task-done" : ""}" type="button" data-task-id="${task.id}"><span class="task-check ${task.done ? "checked" : ""}">${task.done ? icon("check") : ""}</span><span class="task-copy"><strong>${task.label}</strong><small>${task.project}</small></span><span class="task-due ${task.due.includes("today") ? "task-due-urgent" : ""}">${task.due}</span></button>`).join("");
   const completed = tasks.filter((task) => task.done).length;
+  const progress = tasks.length ? Math.round((completed / tasks.length) * 100) : 0;
   document.querySelector("#taskProgressText").textContent = `${completed}/${tasks.length}`;
-  document.querySelector("#taskProgressPercent").textContent = `${Math.round((completed / tasks.length) * 100)}%`;
-  document.querySelector("#taskProgressBar").style.width = `${(completed / tasks.length) * 100}%`;
+  document.querySelector("#taskProgressPercent").textContent = `${progress}%`;
+  const progressBar = document.querySelector("#taskProgressBar");
+  const progressTrack = progressBar?.parentElement;
+  if (progressBar) {
+    progressBar.style.setProperty("--progress-value", `${progress}%`);
+    progressBar.setAttribute("aria-valuenow", String(progress));
+  }
+  if (progressTrack) progressTrack.setAttribute("aria-valuenow", String(progress));
 }
 
 function refreshTaskViews() {

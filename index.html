@@ -25,9 +25,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css?v=20260818-team-audit-v18" />
+    <link rel="stylesheet" href="./styles.css?v=20260818-notes-insights-audit-v20" />
     <link rel="stylesheet" href="./monochrome-overrides.css?v=20260817-remove-sidebar-diagonal-v1" />
-    <link rel="stylesheet" href="./portfolio-layout.css?v=20260818-team-audit-v18" />
+    <link rel="stylesheet" href="./portfolio-layout.css?v=20260818-notes-insights-audit-v20" />
     <link rel="preload" as="image" href="./assets/studioos-project-lumen-editorial.webp" fetchpriority="high" />
     <title>StudioOS — Creative project workspace for small teams</title>
   </head>
@@ -128,7 +128,7 @@
 
               <section class="inbox-focus" aria-labelledby="focusTitle">
                 <div class="inbox-focus-heading"><div><span class="section-kicker" id="focusKicker">Today</span><h3 id="focusTitle">Next actions</h3></div><span><strong id="taskProgressText">1/4</strong><small id="taskProgressPercent">25%</small></span></div>
-                <span class="mini-progress"><i id="taskProgressBar"></i></span>
+                <span class="mini-progress" role="progressbar" aria-label="Next actions completion" aria-valuemin="0" aria-valuemax="100" aria-valuenow="25"><i id="taskProgressBar" style="--progress-value:25%"></i></span>
                 <div class="task-list" id="taskList"></div>
                 <button class="add-task-button" id="addTaskButton" type="button"><span data-icon="circle-plus"></span> Add task</button>
               </section>
