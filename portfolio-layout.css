@@ -933,3 +933,50 @@ body { background: var(--portfolio-soft); }
   .team-context-note { margin-bottom: 20px; }
   .note-state { font-size: 7px; }
 }
+
+/* UI/UX Director refinement: Insights semantic thresholds, chart encoding and Settings affordances. */
+.health-badge { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.health-badge small { color: currentColor; font-size: 8px; font-weight: 600; letter-spacing: .02em; opacity: .72; }
+.health-badge-healthy { background: #edf4ec; border-color: #b9cbb9 !important; color: #4f6c51 !important; }
+.insight-data-panel .health-score p { text-transform: none; }
+.stat-trend { display: inline-flex; align-items: baseline; gap: 5px; flex-wrap: wrap; }
+.stat-trend em { font-size: 8px; font-style: normal; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+.stat-trend.positive { color: #55765a; }
+.stat-trend.neutral { color: #7d877e; }
+.stat-trend.positive em { color: #55765a; }
+.stat-trend.neutral em { color: #8b938b; }
+.metric-chart { display: flex; align-items: end; gap: 5px; height: 44px; }
+.metric-chart i { position: static; display: block; width: 9px; height: var(--bar-height, 50%); border-radius: 3px 3px 0 0; background: #6d716d; }
+.metric-chart i:nth-child(2n) { background: #8d948d; }
+.metric-chart--sage i { background: #98ab98; }
+.metric-chart--sage i:nth-child(2n) { background: #bdcbbb; }
+.metric-chart--ink i { background: #2a2c2a; }
+.metric-chart--ink i:nth-child(2n) { background: #585d58; }
+.metric-progress { position: absolute; right: 18px; bottom: 24px; width: 82px; height: 5px; overflow: hidden; background: #e7ebe5; }
+.metric-progress i { display: block; height: 100%; background: #78927b; }
+.workload-chart .chart-bars i.bar-deep, .legend-deepwork { background: #1a1c1a !important; }
+.workload-chart .chart-bars i.bar-review, .legend-review { background: #8ca38e !important; }
+.workload-chart .chart-bars i.bar-meeting, .legend-meeting { background: #c9d3c8 !important; }
+.workload-chart .chart-bars i.weekend { opacity: 1; }
+.chart-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.chart-legend i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; }
+.insight-data-panel .health-bar[role="progressbar"] { outline: none; }
+.settings-avatar { border-radius: 50%; background: #eceae3 !important; color: #252725 !important; }
+.settings-url-field { display: flex; align-items: center; min-width: 0; height: 39px; overflow: hidden; border: 1px solid var(--line-strong); background: #f8f8f3; }
+.settings-url-field:focus-within { border-color: rgba(209,111,80,.65); box-shadow: 0 0 0 4px rgba(209,111,80,.09); }
+.settings-url-field span { flex: 0 0 auto; padding-left: 11px; color: #89938a; font-size: 10px; white-space: nowrap; }
+.settings-form-grid .settings-url-field input { height: 37px; min-width: 0; padding-left: 2px; border: 0; background: transparent; box-shadow: none; }
+.settings-field-hint { color: #98a097; font-size: 8px; font-weight: 500; line-height: 1.35; }
+.settings-toggle { padding-right: 0; }
+.settings-toggle > i { margin-left: auto; }
+.toggle-state { min-width: 22px; color: #89938a; font-size: 8px; font-style: normal; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; }
+.toggle-state.is-on { color: #55765a; }
+.toggle-state.is-off { color: #929b92; }
+.settings-saved.is-dirty { color: #9a6b35; }
+.settings-saved.is-dirty i { background: var(--copper); }
+@media (max-width: 760px) {
+  .health-badge small { width: 100%; }
+  .settings-url-field span { padding-left: 8px; font-size: 9px; }
+  .settings-field-hint { font-size: 7px; }
+  .toggle-state { min-width: 20px; }
+}
