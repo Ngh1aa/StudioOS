@@ -2715,3 +2715,251 @@ textarea:focus-visible,
   }
 }
 /* End refinement v22. */
+
+/* Refinement v23: lighten the action rail, reduce card chrome and unify interaction affordances. */
+.project-inbox .inbox-focus {
+  margin-top: auto;
+  padding: 26px clamp(24px, 3vw, 44px) 30px;
+  color: var(--ink) !important;
+  background: #f7f8f6 !important;
+  border-top: 1px solid var(--line) !important;
+}
+.project-inbox .inbox-focus .section-kicker,
+.project-inbox .inbox-focus h3,
+.project-inbox .inbox-focus-heading strong,
+.project-inbox .inbox-focus-heading small {
+  color: var(--ink) !important;
+}
+.project-inbox .inbox-focus .mini-progress {
+  background: #e4e9e5 !important;
+}
+.project-inbox .inbox-focus .mini-progress i {
+  background: var(--ink) !important;
+}
+.project-inbox .inbox-focus .task-list {
+  display: grid;
+  gap: 5px;
+  padding: 12px 0 8px;
+}
+.project-inbox .inbox-focus .task-row {
+  padding: 13px 0 !important;
+  color: var(--ink) !important;
+  border-bottom: 0 !important;
+}
+.project-inbox .inbox-focus .task-row:hover {
+  background: transparent !important;
+}
+.project-inbox .inbox-focus .task-copy strong {
+  color: var(--ink) !important;
+}
+.project-inbox .inbox-focus .task-copy small,
+.project-inbox .inbox-focus .task-due {
+  color: var(--muted) !important;
+}
+.project-inbox .inbox-focus .task-check {
+  border-color: var(--muted) !important;
+  background: transparent !important;
+}
+.project-inbox .inbox-focus .task-check.checked {
+  color: #fff !important;
+  background: var(--ink) !important;
+  border-color: var(--ink) !important;
+}
+.project-inbox .inbox-focus .add-task-button {
+  margin-top: 10px;
+  color: var(--ink) !important;
+  background: transparent !important;
+  border: 1px solid var(--line-strong) !important;
+  border-radius: 0 !important;
+}
+.project-inbox .inbox-focus .add-task-button:hover,
+.project-inbox .inbox-focus .add-task-button:focus-visible {
+  color: var(--blue-dark) !important;
+  background: var(--blue-soft) !important;
+  border-color: var(--blue) !important;
+}
+
+.portfolio-stats {
+  gap: 32px !important;
+}
+.portfolio-stats > i {
+  display: none !important;
+}
+.project-inbox .inbox-list {
+  display: grid;
+  gap: 2px;
+}
+.project-inbox .inbox-item {
+  padding-top: 16px !important;
+  padding-bottom: 16px !important;
+  border-bottom: 0 !important;
+}
+.project-inbox .inbox-item > span:last-child {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  color: var(--ink-soft) !important;
+  background: transparent !important;
+  border: 0 !important;
+}
+.project-inbox .inbox-item > span:last-child .studio-icon {
+  width: 15px;
+  height: 15px;
+}
+.project-inbox .inbox-item:hover > span:last-child {
+  color: var(--blue-dark) !important;
+  transform: translate(2px, -2px);
+}
+
+.project-card {
+  border: 0 !important;
+  box-shadow: 0 10px 24px rgba(31, 36, 32, .08) !important;
+}
+.project-card:hover {
+  border-color: transparent !important;
+  box-shadow: 0 16px 32px rgba(31, 36, 32, .13) !important;
+}
+.project-card-footer {
+  align-items: center !important;
+  min-height: 24px;
+  gap: 12px !important;
+}
+.project-card-footer .due-date {
+  flex: 0 0 auto;
+  line-height: 1;
+}
+.project-card-footer .card-actions {
+  min-width: 0;
+  align-items: center !important;
+  gap: 12px !important;
+}
+.project-card-footer .card-actions .js-review {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 0;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* Project-cover arrow is a quiet text affordance, revealed on hover or focus. */
+.project-card .cover-caption .cover-open-button {
+  width: auto !important;
+  min-width: 0 !important;
+  height: auto !important;
+  flex: 0 0 auto !important;
+  padding: 3px 0 !important;
+  opacity: 0 !important;
+  transform: translateY(3px);
+  color: rgba(255, 253, 247, .95) !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  transition: opacity 160ms ease, color 160ms ease, transform 160ms ease !important;
+}
+.project-card:hover .cover-caption .cover-open-button,
+.project-card .cover-caption .cover-open-button:focus-visible {
+  opacity: 1 !important;
+  transform: translateY(0);
+  color: #fff !important;
+  background: transparent !important;
+  border: 0 !important;
+  outline: 2px solid var(--focus-ring) !important;
+  outline-offset: 4px;
+  box-shadow: none !important;
+}
+.project-card:hover .cover-caption .cover-open-button:hover {
+  color: var(--blue-soft) !important;
+  background: transparent !important;
+  transform: translate(2px, -2px);
+}
+@media (hover: none), (pointer: coarse) {
+  .project-card .cover-caption .cover-open-button {
+    opacity: 1 !important;
+    transform: none;
+  }
+}
+
+.portfolio-view-toggle {
+  width: auto !important;
+  min-width: 0;
+  height: 32px !important;
+  padding: 0 !important;
+  display: inline-flex !important;
+  align-items: center;
+  gap: 6px;
+  color: var(--blue-dark) !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+}
+.portfolio-view-toggle .studio-icon {
+  width: 14px !important;
+  height: 14px !important;
+  order: 2;
+}
+.portfolio-view-toggle .show-all-label {
+  color: currentColor;
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.portfolio-view-toggle:hover {
+  color: var(--blue) !important;
+  background: transparent !important;
+  transform: none !important;
+}
+.portfolio-view-toggle:focus-visible {
+  outline: 2px solid var(--focus-ring) !important;
+  outline-offset: 4px;
+}
+
+@media (min-width: 901px) {
+  .sidebar-toggle,
+  .studio-sidebar.collapsed .sidebar-toggle {
+    width: 100% !important;
+    min-height: 38px !important;
+    height: 38px !important;
+    margin: 0 !important;
+    padding: 0 2px !important;
+    justify-content: flex-start !important;
+    gap: 9px !important;
+    color: #a8aaa9 !important;
+    background: transparent !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+  .sidebar-toggle:hover,
+  .sidebar-toggle:focus-visible,
+  .studio-sidebar.collapsed .sidebar-toggle:hover,
+  .studio-sidebar.collapsed .sidebar-toggle:focus-visible {
+    color: #fff !important;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+  .studio-sidebar.collapsed .sidebar-toggle {
+    width: 44px !important;
+    justify-content: center !important;
+    padding: 0 !important;
+  }
+}
+@media (max-width: 680px) {
+  .portfolio-stats {
+    gap: 20px !important;
+  }
+  .project-inbox .inbox-focus {
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .project-card .cover-caption .cover-open-button,
+  .project-inbox .inbox-item > span:last-child {
+    transition: none !important;
+  }
+}
+/* End refinement v23. */
