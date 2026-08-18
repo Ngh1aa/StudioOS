@@ -692,3 +692,28 @@ body { background: var(--portfolio-soft); }
     border-radius: var(--content-card-radius) !important;
   }
 }
+
+
+/* Project inbox connection: extend its frame to the navbar edge without shifting the heading. */
+@media (min-width: 901px) {
+  .project-inbox {
+    margin-top: -36px;
+    padding-top: calc(clamp(30px, 3.7vw, 60px) + 36px);
+    border-left: 1px solid var(--portfolio-line);
+  }
+}
+
+@media (min-width: 901px) and (max-width: 1120px) {
+  .project-inbox {
+    padding-top: 74px;
+  }
+}
+
+/* On a single-column mobile layout the inbox follows the project list normally. */
+@media (max-width: 900px) {
+  .project-inbox {
+    margin-top: 0;
+    padding-top: 30px;
+    border-left: 0;
+  }
+}
