@@ -717,3 +717,140 @@ body { background: var(--portfolio-soft); }
     border-left: 0;
   }
 }
+
+
+/* UI/UX Director pass: clarify project controls, restore semantic status cues, and separate editorial notes from metrics. */
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.filter-group-label {
+  flex: 0 0 auto;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.project-controls .filter-chips {
+  margin-left: 0;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.project-controls > .ghost-button {
+  margin-left: auto;
+}
+
+.project-taxonomy {
+  align-items: flex-start;
+  border-top-color: var(--content-card-border);
+}
+
+.project-taxonomy .taxonomy-heading {
+  min-width: 118px;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.project-taxonomy .taxonomy-hint {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.3;
+}
+
+.portfolio-overview .status-pill.status-review,
+.projects-page-grid .status-pill.status-review {
+  border-color: #e0ae93;
+  background: #fff2ea;
+  color: #8f4527;
+}
+
+.portfolio-overview .status-pill.status-progress,
+.projects-page-grid .status-pill.status-progress {
+  border-color: #a9cdb5;
+  background: #edf7ef;
+  color: #2d6944;
+}
+
+.portfolio-overview .status-pill.status-quiet,
+.projects-page-grid .status-pill.status-quiet {
+  border-color: #cfd5cf;
+  background: #f2f4f1;
+  color: #667069;
+}
+
+.status-pill.status-review .status-dot { background: #b75e3e; }
+.status-pill.status-progress .status-dot { background: #4f9367; }
+.status-pill.status-quiet .status-dot { background: #8b958d; }
+
+.metric-strip {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  overflow: visible;
+}
+
+.metric-strip-note {
+  grid-column: 1 / -1;
+  min-height: 72px !important;
+  border-top: 1px solid var(--content-card-border);
+  background: #f4f5f1 !important;
+}
+
+.metric-strip-note > span {
+  background: #ffffff !important;
+  color: var(--copper-dark) !important;
+}
+
+.metric-strip-note strong { color: var(--ink) !important; }
+.metric-strip-note small:not(.metric-note-label) { color: var(--muted) !important; }
+
+@media (max-width: 900px) {
+  .project-controls {
+    align-items: stretch;
+  }
+
+  .project-controls .toolbar-search {
+    width: 100%;
+    flex: 1 1 100%;
+  }
+
+  .project-controls .filter-group {
+    flex: 1 1 100%;
+  }
+
+  .project-controls > .ghost-button {
+    margin-left: 0;
+    align-self: flex-start;
+  }
+}
+
+@media (max-width: 680px) {
+  .project-controls .filter-group {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .project-controls .filter-chips {
+    width: 100%;
+  }
+
+  .project-taxonomy .taxonomy-heading {
+    min-width: 0;
+  }
+
+  .metric-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .metric-strip-note {
+    grid-column: auto;
+  }
+}
