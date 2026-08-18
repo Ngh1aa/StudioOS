@@ -483,7 +483,7 @@ function bindPageActions() {
 function icon(name) { return `<svg class="studio-icon" aria-hidden="true" focusable="false" role="presentation" viewBox="0 0 24 24">${icons[name] || ""}</svg>`; }
 function renderIcons() { document.querySelectorAll("[data-icon]").forEach((node) => { const name = node.dataset.icon; node.innerHTML = icon(name); }); }
 
-function memberAvatarTone(member) { return ({ MC: "sage", JT: "ink", AN: "amber", NW: "blue", LC: "copper", OR: "sage", AR: "blue" })[member] || "neutral"; }
+function memberAvatarTone(member) { return ({ MC: "sage", JT: "teal", AN: "amber", NW: "blue", LC: "copper", OR: "sage", AR: "blue" })[member] || "neutral"; }
 function avatarStack(members) { return `<span class="avatar-stack" aria-label="${members.length} project members">${members.map((member, index) => `<span class="avatar avatar-${index} avatar-member-${member.toLowerCase()} avatar-tone-${memberAvatarTone(member)}">${member}</span>`).join("")}</span>`; }
 function projectIndex(id) { return ({"lumen-house":"01","common-ground":"02",northstar:"03","field-notes":"04"})[id] || "04"; }
 function projectProgressTone(progress) { return progress < 30 ? "low" : progress < 70 ? "mid" : "high"; }

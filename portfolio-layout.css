@@ -2658,3 +2658,60 @@ textarea:focus-visible,
 .insight-data-panel h2 em,
 .insight-data-panel .insight-footnote .text-button { color: var(--blue-dark) !important; }
 :focus-visible { outline-color: var(--focus-ring) !important; }
+
+
+/* Refinement v22: identity avatars stay pastel; semantic status and thumbnail states stay distinct. */
+.portfolio-project-grid .avatar-tone-teal,
+.projects-page-grid .avatar-tone-teal {
+  background: #dfecee !important;
+  color: #4f737b !important;
+  border-color: #fff !important;
+}
+
+.inbox-status-ready {
+  color: var(--sage-dark) !important;
+  background: var(--sage-soft) !important;
+  border-color: #b8d8c2 !important;
+}
+
+/* The preview action owns one circular surface; no shadow or pseudo-ring is allowed. */
+.portfolio-project-grid .cover-caption .cover-open-button,
+.projects-page-grid .cover-caption .cover-open-button {
+  position: relative;
+  z-index: 1;
+  flex: 0 0 36px;
+  appearance: none;
+  box-shadow: none !important;
+  background-clip: padding-box;
+  transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, transform 160ms ease;
+}
+.portfolio-project-grid .cover-caption .cover-open-button::before,
+.portfolio-project-grid .cover-caption .cover-open-button::after,
+.projects-page-grid .cover-caption .cover-open-button::before,
+.projects-page-grid .cover-caption .cover-open-button::after {
+  content: none !important;
+  display: none !important;
+}
+.portfolio-project-grid .cover-caption .cover-open-button:hover,
+.projects-page-grid .cover-caption .cover-open-button:hover {
+  background: var(--blue) !important;
+  border-color: #fff !important;
+  color: #fff !important;
+  box-shadow: none !important;
+}
+.portfolio-project-grid .cover-caption .cover-open-button:focus-visible,
+.projects-page-grid .cover-caption .cover-open-button:focus-visible {
+  background: var(--blue) !important;
+  border-color: #fff !important;
+  color: #fff !important;
+  outline: 2px solid var(--focus-ring) !important;
+  outline-offset: 3px;
+  box-shadow: none !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .portfolio-project-grid .cover-caption .cover-open-button,
+  .projects-page-grid .cover-caption .cover-open-button {
+    transition: none;
+  }
+}
+/* End refinement v22. */
