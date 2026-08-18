@@ -25,9 +25,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css?v=20260818-uiux-director-v9" />
+    <link rel="stylesheet" href="./styles.css?v=20260818-uiux-director-v10" />
     <link rel="stylesheet" href="./monochrome-overrides.css?v=20260817-remove-sidebar-diagonal-v1" />
-    <link rel="stylesheet" href="./portfolio-layout.css?v=20260818-uiux-director-v9" />
+    <link rel="stylesheet" href="./portfolio-layout.css?v=20260818-uiux-director-v10" />
     <link rel="preload" as="image" href="./assets/studioos-project-architecture-refresh.webp" fetchpriority="high" />
     <title>StudioOS — Creative project workspace for small teams</title>
   </head>
@@ -64,7 +64,7 @@
         <header class="topbar">
           <button class="mobile-menu-button only-mobile" id="openSidebar" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="sidebar"><span data-icon="menu"></span></button>
           <div class="mobile-header-context" id="mobileHeaderContext"><strong class="mobile-context-page">Overview</strong><small>Portfolio workspace</small></div>
-          <div class="breadcrumbs portfolio-breadcrumbs"><strong class="app-header-title">StudioOS</strong><span class="app-header-divider"></span><button class="workspace-context" type="button" data-action="workspace" aria-label="Switch workspace"><span>Portfolio workspace</span><span aria-hidden="true">⌄</span></button><span class="app-header-divider context-divider"></span><span class="header-page-context" id="pageContext">Overview</span><strong id="activeBreadcrumb" class="sr-only">Overview</strong></div>
+          <div class="breadcrumbs portfolio-breadcrumbs"><strong class="app-header-title">StudioOS</strong><span class="app-header-divider"></span><span class="workspace-switcher"><button class="workspace-context" id="workspaceContextButton" type="button" aria-label="Switch workspace" aria-expanded="false" aria-controls="workspacePopover"><span id="workspaceContextLabel">Portfolio workspace</span><span aria-hidden="true">⌄</span></button><div class="workspace-popover" id="workspacePopover" role="menu" aria-label="Switch workspace" hidden><div class="workspace-popover-heading"><strong>Switch workspace</strong><span id="workspaceCountLabel">3 spaces</span></div><div class="workspace-list" role="group" aria-label="Available workspaces"><button type="button" role="menuitemradio" aria-checked="true" class="workspace-option active" data-workspace-id="portfolio"><span class="workspace-option-mark">P</span><span class="workspace-option-copy"><strong>Portfolio workspace</strong><small>4 projects · Current</small></span><span class="workspace-option-check" aria-hidden="true">✓</span></button><button type="button" role="menuitemradio" aria-checked="false" class="workspace-option" data-workspace-id="atelier"><span class="workspace-option-mark">A</span><span class="workspace-option-copy"><strong>Atelier clients</strong><small>Client briefs and reviews</small></span><span class="workspace-option-check" aria-hidden="true">✓</span></button><button type="button" role="menuitemradio" aria-checked="false" class="workspace-option" data-workspace-id="luxroom"><span class="workspace-option-mark">L</span><span class="workspace-option-copy"><strong>LuxRoom planning</strong><small>Launch planning and delivery</small></span><span class="workspace-option-check" aria-hidden="true">✓</span></button></div><div class="workspace-menu-footer"><button type="button" data-workspace-action="create"><span data-icon="plus" aria-hidden="true"></span><span><strong>New workspace</strong><small>Start a separate studio space</small></span></button><button type="button" data-workspace-action="manage"><span data-icon="settings" aria-hidden="true"></span><span><strong>Manage workspaces</strong><small>Settings and member access</small></span></button></div></div></span><span class="app-header-divider context-divider"></span><span class="header-page-context" id="pageContext">Overview</span><strong id="activeBreadcrumb" class="sr-only">Overview</strong></div>
           <div class="topbar-actions">
             <label class="top-search"><span data-icon="search"></span><span class="sr-only">Search projects, tasks, and notes</span><input id="searchInput" type="search" placeholder="Search projects, tasks, notes…" aria-label="Search projects, tasks, and notes" autocomplete="off" aria-controls="globalSearchPanel" aria-expanded="false" /><kbd><span data-icon="command"></span> K</kbd></label>
             <div class="global-search-panel" id="globalSearchPanel" role="listbox" aria-label="Workspace search results" hidden></div>
@@ -178,6 +178,6 @@
 
     <div class="toast-region" id="toastRegion" aria-live="polite"></div>
     <noscript><div class="noscript-message">StudioOS needs JavaScript enabled to show the workspace interactions.</div></noscript>
-    <script src="./script.js?v=20260818-uiux-director-v9" defer></script>
+    <script src="./script.js?v=20260818-uiux-director-v10" defer></script>
   </body>
 </html>

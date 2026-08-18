@@ -100,6 +100,13 @@ let dialogReturnFocus = null;
 let searchResultItems = [];
 let readNotifications = new Set();
 let workspaceSettings = { workspaceName: "StudioOS", workspaceSlug: "studioos", workspaceDescription: "A small creative studio making clear, considered work.", showHealth: true, mondayStart: true, dailyFocus: false };
+const WORKSPACE_SELECTION_KEY = "studioos-active-workspace";
+const workspaceOptions = [
+  { id: "portfolio", name: "Portfolio workspace", mark: "P", detail: "4 projects · 3 active" },
+  { id: "atelier", name: "Atelier clients", mark: "A", detail: "Client briefs and reviews" },
+  { id: "luxroom", name: "LuxRoom planning", mark: "L", detail: "Launch planning and delivery" },
+];
+let activeWorkspaceId = "portfolio";
 const searchNotes = [
   { id: "note-lumen-feedback", title: "Lumen House / feedback", excerpt: "The type rhythm feels right. One last pass on the mobile lockup.", tag: "Review" },
   { id: "note-northstar-launch", title: "Northstar / launch notes", excerpt: "Keep the launch story focused on the first moment of recognition.", tag: "Campaign" },
@@ -115,6 +122,7 @@ function loadWorkspaceState() {
     if (Array.isArray(saved.tasks) && saved.tasks.length) tasks = saved.tasks;
     if (saved.settings && typeof saved.settings === "object") workspaceSettings = { ...workspaceSettings, ...saved.settings };
     if (Array.isArray(saved.readNotifications)) readNotifications = new Set(saved.readNotifications);
+    if (workspaceOptions.some((item) => item.id === saved.activeWorkspaceId)) activeWorkspaceId = saved.activeWorkspaceId;
   } catch {
     localStorage.removeItem(WORKSPACE_STATE_KEY);
   }
@@ -122,7 +130,7 @@ function loadWorkspaceState() {
 
 function persistWorkspaceState() {
   try {
-    localStorage.setItem(WORKSPACE_STATE_KEY, JSON.stringify({ projects, tasks, settings: workspaceSettings, readNotifications: [...readNotifications] }));
+    localStorage.setItem(WORKSPACE_STATE_KEY, JSON.stringify({ projects, tasks, settings: workspaceSettings, readNotifications: [...readNotifications], activeWorkspaceId }));
   } catch {
     // The current session remains usable when storage is unavailable.
   }
@@ -141,8 +149,42 @@ function restoreSettingsView() {
   });
 }
 
+function loadActiveWorkspace() {
+  try {
+    const stored = localStorage.getItem(WORKSPACE_SELECTION_KEY);
+    if (workspaceOptions.some((item) => item.id === stored)) activeWorkspaceId = stored;
+  } catch {
+    // The default workspace remains available when storage is unavailable.
+  }
+}
+
+function getActiveWorkspace() { return workspaceOptions.find((item) => item.id === activeWorkspaceId) || workspaceOptions[0]; }
+
+function applyWorkspaceIdentity() {
+  const workspace = getActiveWorkspace();
+  document.querySelector("#workspaceContextLabel")?.replaceChildren(document.createTextNode(workspace.name));
+  document.querySelector(".mobile-header-context small")?.replaceChildren(document.createTextNode(workspace.name));
+  const accountWorkspace = document.querySelector(".account-workspace strong");
+  if (accountWorkspace) accountWorkspace.textContent = workspace.name;
+  document.querySelectorAll("[data-workspace-id]").forEach((option) => {
+    const isActive = option.dataset.workspaceId === workspace.id;
+    option.classList.toggle("active", isActive);
+    option.setAttribute("aria-checked", String(isActive));
+  });
+}
+
+function selectWorkspace(id) {
+  if (!workspaceOptions.some((item) => item.id === id)) return;
+  activeWorkspaceId = id;
+  try { localStorage.setItem(WORKSPACE_SELECTION_KEY, id); } catch { /* session state still updates */ }
+  persistWorkspaceState();
+  applyWorkspaceIdentity();
+}
+
+loadActiveWorkspace();
 loadWorkspaceState();
 persistWorkspaceState();
+applyWorkspaceIdentity();
 
 function pageHeader(kicker, title, description, action = "") {
   return `<section class="view-heading"><div><div class="section-kicker">${kicker}</div><h1>${title}<span>.</span></h1><p class="view-description">${description}</p></div>${action}</section>`;
@@ -736,6 +778,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const updateHeaderContext = (page) => { document.querySelector("#activeBreadcrumb").textContent = page; const visibleContext = document.querySelector("#pageContext"); const mobileContext = document.querySelector(".mobile-context-page"); if (visibleContext) visibleContext.textContent = page; if (mobileContext) mobileContext.textContent = page; };
   const closeHelp = () => { const popover = document.querySelector("#helpPopover"); const button = document.querySelector("#helpButton"); if (popover) popover.hidden = true; button?.setAttribute("aria-expanded", "false"); };
   const closeAccountMenu = () => { const popover = document.querySelector("#accountPopover"); const button = document.querySelector("#accountMenuButton"); if (popover) popover.hidden = true; button?.setAttribute("aria-expanded", "false"); };
+  const closeWorkspaceMenu = () => { const popover = document.querySelector("#workspacePopover"); const button = document.querySelector("#workspaceContextButton"); if (popover) popover.hidden = true; button?.setAttribute("aria-expanded", "false"); };
   renderIcons(); renderProjects(); renderTasks(); bindOverviewActions(); bindTaskComposer(); bindGlobalSearch(); updateNotificationBadge(); triggerStudioMotion(document.querySelector("#pageView"));
   document.querySelectorAll("[data-nav]").forEach((button) => button.addEventListener("click", () => { document.querySelectorAll("[data-nav]").forEach((item) => { const isActive = item === button; item.classList.toggle("active", isActive); if (isActive) item.setAttribute("aria-current", "page"); else item.removeAttribute("aria-current"); }); updateHeaderContext(button.dataset.nav); closeSidebar(); if (button.dataset.nav === "Overview") showOverview(); else renderPage(button.dataset.nav); }));
   // Global search binding is centralized in bindGlobalSearch() so the palette and route filters stay in sync.
@@ -746,15 +789,18 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelector("#notificationButton").addEventListener("click", () => { closeHelp(); closeAccountMenu(); const popover = document.querySelector("#notificationPopover"); popover.hidden = !popover.hidden; document.querySelector("#notificationButton").setAttribute("aria-expanded", String(!popover.hidden)); });
   document.querySelector("#helpButton")?.addEventListener("click", () => { closeNotifications(); closeAccountMenu(); const popover = document.querySelector("#helpPopover"); const button = document.querySelector("#helpButton"); popover.hidden = !popover.hidden; button.setAttribute("aria-expanded", String(!popover.hidden)); });
   document.querySelector("#helpDocsButton")?.addEventListener("click", () => { closeHelp(); toast("Help center is coming soon."); });
-  document.querySelector("#accountMenuButton")?.addEventListener("click", () => { closeNotifications(); closeHelp(); const popover = document.querySelector("#accountPopover"); const button = document.querySelector("#accountMenuButton"); if (!popover) return; popover.hidden = !popover.hidden; button.setAttribute("aria-expanded", String(!popover.hidden)); if (!popover.hidden) window.setTimeout(() => popover.querySelector("[role='menuitem']")?.focus(), 20); });
+  document.querySelector("#accountMenuButton")?.addEventListener("click", () => { closeNotifications(); closeHelp(); closeWorkspaceMenu(); const popover = document.querySelector("#accountPopover"); const button = document.querySelector("#accountMenuButton"); if (!popover) return; popover.hidden = !popover.hidden; button.setAttribute("aria-expanded", String(!popover.hidden)); if (!popover.hidden) window.setTimeout(() => popover.querySelector("[role='menuitem']")?.focus(), 20); });
+  document.querySelector("#workspaceContextButton")?.addEventListener("click", () => { closeNotifications(); closeHelp(); closeAccountMenu(); const popover = document.querySelector("#workspacePopover"); const button = document.querySelector("#workspaceContextButton"); if (!popover || !button) return; popover.hidden = !popover.hidden; button.setAttribute("aria-expanded", String(!popover.hidden)); if (!popover.hidden) window.setTimeout(() => popover.querySelector("[role='menuitemradio'].active")?.focus(), 20); });
+  document.querySelector("#workspacePopover")?.addEventListener("click", (event) => { const option = event.target.closest("[data-workspace-id]"); const action = event.target.closest("[data-workspace-action]"); if (option) { const workspace = workspaceOptions.find((item) => item.id === option.dataset.workspaceId); selectWorkspace(option.dataset.workspaceId); closeWorkspaceMenu(); if (workspace) toast(`${workspace.name} is now active.`); return; } if (action?.dataset.workspaceAction === "manage") { closeWorkspaceMenu(); document.querySelector("[data-nav='Settings']")?.click(); return; } if (action?.dataset.workspaceAction === "create") { closeWorkspaceMenu(); toast("Create a new workspace from Settings.", "", { label: "Open settings", action: () => document.querySelector("[data-nav='Settings']")?.click() }); } });
+  document.querySelector("#workspacePopover")?.addEventListener("keydown", (event) => { const items = [...event.currentTarget.querySelectorAll("[role='menuitemradio'], [data-workspace-action]")]; const index = items.indexOf(document.activeElement); if (event.key === "ArrowDown" || event.key === "ArrowUp") { event.preventDefault(); items[(index + (event.key === "ArrowDown" ? 1 : items.length - 1)) % items.length]?.focus(); } if (event.key === "Home") { event.preventDefault(); items[0]?.focus(); } if (event.key === "End") { event.preventDefault(); items.at(-1)?.focus(); } if (event.key === "Escape") { event.preventDefault(); closeWorkspaceMenu(); document.querySelector("#workspaceContextButton")?.focus(); } });
   document.querySelectorAll("[data-account-action]").forEach((button) => button.addEventListener("click", () => { const messages = { profile:"Profile settings are coming soon.", preferences:"Workspace preferences are coming soon.", "sign-out":"Sign out is available in the full workspace." }; closeAccountMenu(); toast(messages[button.dataset.accountAction] || "Account action is coming soon."); }));
   document.querySelector("#accountPopover")?.addEventListener("keydown", (event) => { const items = [...event.currentTarget.querySelectorAll("[role='menuitem']")]; const index = items.indexOf(document.activeElement); if (event.key === "ArrowDown" || event.key === "ArrowUp") { event.preventDefault(); items[(index + (event.key === "ArrowDown" ? 1 : items.length - 1)) % items.length]?.focus(); } if (event.key === "Home") { event.preventDefault(); items[0]?.focus(); } if (event.key === "End") { event.preventDefault(); items.at(-1)?.focus(); } });
-  document.addEventListener("click", (event) => { if (!event.target.closest(".topbar-actions")) { closeNotifications(); closeHelp(); hideGlobalSearch(); } if (!event.target.closest("#accountMenuButton, #accountPopover")) closeAccountMenu(); });
+  document.addEventListener("click", (event) => { if (!event.target.closest(".topbar-actions")) { closeNotifications(); closeHelp(); hideGlobalSearch(); } if (!event.target.closest("#accountMenuButton, #accountPopover")) closeAccountMenu(); if (!event.target.closest(".workspace-switcher")) closeWorkspaceMenu(); });
   document.querySelectorAll("[data-action='review-notification']").forEach((button) => button.addEventListener("click", () => { markNotificationRead(button.dataset.notificationId); closeNotifications(); openReview(projects[0]); }));
   document.querySelectorAll("[data-action='calendar-notification']").forEach((button) => button.addEventListener("click", () => { markNotificationRead(button.dataset.notificationId); closeNotifications(); document.querySelector("[data-nav='Calendar']").click(); }));
   document.querySelectorAll("[data-close-dialog]").forEach((button) => button.addEventListener("click", () => closeDialog(button.dataset.closeDialog)));
   document.querySelectorAll(".dialog-layer").forEach((layer) => layer.addEventListener("click", (event) => { if (event.target === layer) closeDialog(layer.id); }));
-  document.querySelectorAll("[data-action]").forEach((button) => button.addEventListener("click", () => { const action = button.dataset.action; if (["workspace","focus-options","activity-options","activity","comment"].includes(action)) toast(action === "comment" ? "Comment composer is coming soon." : "This workspace action is coming soon."); }));
+  document.querySelectorAll("[data-action]").forEach((button) => button.addEventListener("click", () => { const action = button.dataset.action; if (["focus-options","activity-options","activity","comment"].includes(action)) toast(action === "comment" ? "Comment composer is coming soon." : "This workspace action is coming soon."); }));
   document.querySelector("#openSidebar").addEventListener("click", () => { if (document.querySelector("#sidebar").classList.contains("sidebar-open")) { closeSidebar(); } else { openSidebar(); } });
   document.querySelector("#closeSidebar").addEventListener("click", () => closeSidebar());
   document.querySelector("#mobileScrim").addEventListener("click", () => closeSidebar());
@@ -768,7 +814,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (event.key === "Tab" && dialog) { const focusables = getFocusable(dialog); if (focusables.length) { const first = focusables[0]; const last = focusables.at(-1); if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); } else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); } } }
       if (event.key === "Escape") { event.preventDefault(); closeDialog(activeDialogId); return; }
     }
-    if (!activeDialogId && event.key === "Escape") { closeNotifications(); closeHelp(); closeAccountMenu(); hideGlobalSearch(); closeSidebar(); }
+    if (!activeDialogId && event.key === "Escape") { closeNotifications(); closeHelp(); closeAccountMenu(); hideGlobalSearch(); closeSidebar(); document.querySelector("#workspaceContextButton")?.focus(); }
   });
 
   /* Sidebar collapse / expand toggle — desktop only, persisted to localStorage. */
