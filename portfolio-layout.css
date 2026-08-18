@@ -2040,3 +2040,92 @@ textarea:focus-visible,
     justify-content: flex-start;
   }
 }
+
+
+/* Calendar + Tasks audit follow-up */
+.calendar-view-switch .view-switch.active {
+  background: var(--blue-soft) !important;
+  color: var(--blue-dark) !important;
+  box-shadow: none !important;
+}
+.calendar-view-switch .view-switch:focus-visible {
+  outline-color: var(--blue) !important;
+}
+.week-grid .today-date {
+  background: var(--blue-dark) !important;
+  border-color: var(--blue-dark) !important;
+  color: #fff !important;
+  box-shadow: 0 0 0 3px var(--blue-soft);
+}
+.agenda-item {
+  grid-template-columns: 43px minmax(0, 1fr);
+}
+.agenda-copy {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+.agenda-title-row {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.agenda-title-row strong {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.agenda-title-row .agenda-dot {
+  flex: 0 0 auto;
+  width: 6px;
+  height: 6px;
+}
+.tasks-side-column {
+  align-content: start;
+  row-gap: 15px;
+}
+.tasks-live-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--muted);
+  font-size: var(--type-2xs);
+  font-weight: 700;
+  white-space: nowrap;
+}
+.task-principles {
+  border-top-color: var(--sage) !important;
+  background: var(--sage-soft) !important;
+  color: var(--ink);
+}
+.task-principles h2 {
+  color: var(--ink) !important;
+}
+.task-principles p,
+.task-principles .principle-line {
+  color: #526257 !important;
+  opacity: 1 !important;
+}
+.focus-mark {
+  width: 46px;
+  height: auto;
+  min-height: 33px;
+  padding: 5px 7px;
+  align-content: center;
+  justify-items: end;
+  gap: 1px;
+}
+.focus-mark small {
+  color: #d8b8aa;
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.focus-mark strong {
+  color: #fff;
+  font-size: 11px;
+  line-height: 1;
+}
