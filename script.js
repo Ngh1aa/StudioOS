@@ -191,8 +191,8 @@ function pageHeader(kicker, title, description, action = "") {
   return `<section class="view-heading"><div><div class="section-kicker">${kicker}</div><h1>${title}${headingDot}</h1><p class="view-description">${description}</p></div>${action}</section>`;
 }
 
-function capacityTone(load) { return load >= 80 ? "high" : load >= 65 ? "watch" : "healthy"; }
-function capacityLabel(load) { return load >= 80 ? "near capacity" : load >= 65 ? "watch capacity" : "healthy capacity"; }
+function capacityTone(load) { return load > 75 ? "high" : load >= 50 ? "watch" : "healthy"; }
+function capacityLabel(load) { return load > 75 ? "near capacity" : load >= 50 ? "watch capacity" : "healthy capacity"; }
 function calendarTone(kind) { return kind === "review" ? "copper" : kind === "handoff" ? "sage" : "ink"; }
 
 function renderProjectsPage(query = "", filter = currentProjectFilter, view = currentProjectView) {

@@ -1296,33 +1296,34 @@ body { background: var(--portfolio-soft); }
    treatment without changing route markup or interaction behavior.
    ============================================================================ */
 :root {
-  --canvas: #f6f4ef;
-  --canvas-deep: #eeece6;
+  --canvas: #fafaf9;
+  --canvas-deep: #f1f1f3;
   --paper: #ffffff;
   --paper-raised: #ffffff;
-  --ink: #181a1b;
-  --ink-soft: #303638;
-  --muted: #5b6266;
-  --muted-light: #7c8386;
-  --line: #d9d5ce;
-  --line-strong: #a9a39a;
-  --rail: #181a1b;
-  --rail-soft: #252a2b;
-  --rail-muted: #d7d8d5;
+  --ink: #17181c;
+  --ink-soft: #4a4d55;
+  --muted: #8a8d96;
+  --muted-light: #a3a5ad;
+  --line: #e7e7ea;
+  --line-strong: #c5c6cb;
+  --rail: #17181c;
+  --rail-soft: #23242a;
+  --rail-muted: #d9dbe0;
   --rail-line: rgba(255,255,255,.18);
+  /* Copper remains a restrained editorial accent only; it is not an active or warning state. */
   --copper: #b94a31;
   --copper-dark: #963824;
   --copper-soft: #f1d9d2;
-  --sage: #2f6b4f;
-  --sage-dark: #24563f;
-  --sage-soft: #dceae2;
-  --blue: #5a6f7a;
-  --blue-dark: #405561;
-  --blue-soft: #e1e8eb;
-  --amber: #8a5a00;
-  --amber-soft: #f5e4b7;
-  --danger: #a83b3b;
-  --danger-soft: #f3dbdb;
+  --sage: #1e8e4f;
+  --sage-dark: #176b3b;
+  --sage-soft: #eaf7ef;
+  --blue: #2563eb;
+  --blue-dark: #1d4ed8;
+  --blue-soft: #eff4ff;
+  --amber: #c7811a;
+  --amber-soft: #fdf1df;
+  --danger: #c5391f;
+  --danger-soft: #fcebe7;
   --shadow-sm: 0 1px 0 rgba(24,26,27,.06);
   --shadow-md: 0 18px 42px rgba(24,26,27,.12);
   --shadow-lg: 0 28px 72px rgba(24,26,27,.22);
@@ -2361,3 +2362,299 @@ textarea:focus-visible,
     padding-bottom: 12px;
   }
 }
+
+
+/* Color system v21: Blue for selection, Ink for navigation/CTA, semantic Green/Amber/Red for status. */
+:root {
+  --focus-ring: #2563eb;
+}
+
+/* Primary actions and navigation use Ink; selected controls use Blue. */
+.primary-button,
+.signal-card-add,
+.welcome-row > .primary-button {
+  background: var(--ink) !important;
+  border-color: var(--ink) !important;
+  color: #ffffff !important;
+}
+.primary-button:hover,
+.signal-card-add:hover,
+.welcome-row > .primary-button:hover {
+  background: #282b32 !important;
+  border-color: #282b32 !important;
+}
+.side-nav-item.active,
+.settings-nav-item.active {
+  background: var(--ink) !important;
+  border-color: var(--ink) !important;
+  box-shadow: none !important;
+}
+.filter-chip.active,
+.view-switch.active,
+.notes-nav-item.active,
+.project-controls .filter-chip.active,
+.project-taxonomy .taxonomy-chip.active,
+.calendar-view-switch .view-switch.active,
+.today-date {
+  background: var(--blue) !important;
+  border-color: var(--blue) !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 0 rgba(29, 78, 216, .16) !important;
+}
+.filter-chip.active em,
+.taxonomy-chip.active em,
+.notes-nav-item.active em {
+  color: #dbe8ff !important;
+}
+.filter-chip:hover,
+.view-switch:hover,
+.taxonomy-chip:hover,
+.notes-nav-item:hover {
+  border-color: var(--blue) !important;
+  color: var(--blue-dark) !important;
+}
+.notes-tags button.active {
+  color: var(--blue-dark) !important;
+}
+
+/* Project and task states have one semantic meaning each. */
+.status-pill.status-review {
+  background: var(--amber-soft) !important;
+  border-color: #e7cc92 !important;
+  color: #8a5b0a !important;
+}
+.status-pill.status-progress {
+  background: var(--sage-soft) !important;
+  border-color: #b8d8c2 !important;
+  color: var(--sage-dark) !important;
+}
+.status-pill.status-quiet {
+  background: #f1f1f3 !important;
+  border-color: var(--line) !important;
+  color: var(--muted) !important;
+}
+.status-pill.status-review .status-dot { background: var(--amber) !important; }
+.status-pill.status-progress .status-dot { background: var(--sage) !important; }
+.status-pill.status-quiet .status-dot { background: var(--muted) !important; }
+.task-priority.priority-high,
+.task-priority.priority-high i { color: var(--danger) !important; background-color: var(--danger) !important; }
+.task-priority.priority-medium,
+.task-priority.priority-medium i { color: var(--amber) !important; background-color: var(--amber) !important; }
+.task-priority.priority-low,
+.task-priority.priority-low i { color: var(--muted) !important; background-color: var(--muted) !important; }
+.task-priority.priority-high,
+.task-priority.priority-medium,
+.task-priority.priority-low { background-color: transparent !important; }
+
+/* Completion bars use Green for healthy progress, Amber for watch, Red for risk. */
+.project-card .progress-track-low span { background: var(--danger) !important; }
+.project-card .progress-track-mid span { background: var(--amber) !important; }
+.project-card .progress-track-high span { background: var(--sage) !important; }
+.inbox-focus .mini-progress i { background: var(--sage) !important; }
+.metric-progress i,
+.insight-data-panel .metric-progress i { background: var(--sage) !important; }
+.capacity-track.capacity-healthy i { background: var(--sage) !important; }
+.capacity-track.capacity-watch i { background: var(--amber) !important; }
+.capacity-track.capacity-high i { background: var(--danger) !important; }
+.capacity-badge-healthy { background: var(--sage-soft) !important; border-color: #b8d8c2 !important; color: var(--sage-dark) !important; }
+.capacity-badge-watch { background: var(--amber-soft) !important; border-color: #e7cc92 !important; color: #8a5b0a !important; }
+.capacity-badge-high { background: var(--danger-soft) !important; border-color: #e1aaa5 !important; color: var(--danger) !important; }
+.capacity-value-healthy > span:first-child { color: var(--sage-dark) !important; }
+.capacity-value-watch > span:first-child { color: #8a5b0a !important; }
+.capacity-value-high > span:first-child { color: var(--danger) !important; }
+
+/* Calendar priority and unread signals are warnings, not brand accents. */
+.agenda-item.is-priority { border-left-color: var(--danger) !important; }
+.notification-dot { background: var(--danger) !important; }
+.status-progress .status-dot { background: var(--sage) !important; }
+.review-label { color: #8a5b0a !important; }
+.settings-toggle input:checked + i { background-color: var(--blue) !important; }
+.settings-mark { background: var(--blue) !important; }
+
+/* Decorative editorial accents may remain warm, but focus indication is always Blue. */
+.page-content::after { background: linear-gradient(var(--blue), transparent) !important; }
+:focus-visible { outline-color: var(--focus-ring) !important; }
+
+@media (max-width: 680px) {
+  .filter-chip.active,
+  .view-switch.active,
+  .notes-nav-item.active,
+  .project-controls .filter-chip.active,
+  .project-taxonomy .taxonomy-chip.active {
+    background: var(--blue) !important;
+    border-color: var(--blue) !important;
+    color: #ffffff !important;
+  }
+}
+
+
+/* Color system v21: remaining component semantics. */
+.inbox-status-review {
+  color: #8a5b0a !important;
+  background: var(--amber-soft) !important;
+  border-color: #e7cc92 !important;
+}
+.inbox-status-confirmed {
+  color: var(--sage-dark) !important;
+  background: var(--sage-soft) !important;
+  border-color: #b8d8c2 !important;
+}
+.inbox-status-updated {
+  color: var(--muted) !important;
+  background: #f1f1f3 !important;
+  border-color: var(--line) !important;
+}
+.inbox-status-ready {
+  color: var(--blue-dark) !important;
+  background: var(--blue-soft) !important;
+  border-color: #c7d8ff !important;
+}
+.inbox-item.is-priority { border-left-color: var(--danger) !important; }
+.notification-icon.copper,
+.signal-icon-copper {
+  background: var(--blue-soft) !important;
+  color: var(--blue-dark) !important;
+}
+.notification-icon.sage,
+.signal-icon-sage {
+  background: var(--sage-soft) !important;
+  color: var(--sage-dark) !important;
+}
+.notification-popover button.is-unread {
+  border-left-color: var(--blue) !important;
+  background: var(--blue-soft) !important;
+}
+.workspace-option.active {
+  border-color: #c7d8ff !important;
+  background: var(--blue-soft) !important;
+}
+.workspace-option.active .workspace-option-mark {
+  background: var(--blue) !important;
+  color: #fff !important;
+}
+.workspace-option-check,
+.workspace-menu-footer button:focus-visible,
+.context-menu button:focus-visible {
+  color: var(--blue-dark) !important;
+}
+.workspace-menu-footer button:focus-visible,
+.context-menu button:focus-visible {
+  background: var(--blue-soft) !important;
+}
+.settings-url-field:focus-within {
+  border-color: var(--blue) !important;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, .12) !important;
+}
+.settings-saved.is-dirty i { background: var(--amber) !important; }
+.metric-strip-note {
+  background: var(--amber-soft) !important;
+  color: #8a5b0a !important;
+}
+.metric-strip-note > span {
+  background: var(--amber) !important;
+  color: #fff !important;
+}
+.metric-note-label { color: #8a5b0a !important; }
+.note-card,
+.note-card:hover { border-color: var(--line) !important; }
+.note-card:hover { border-color: var(--blue) !important; }
+.note-card-featured { border-top-color: var(--blue) !important; }
+.note-card-featured .text-button,
+.insight-data-panel h2 em,
+.insight-data-panel .insight-footnote .text-button {
+  color: var(--blue-dark) !important;
+}
+.insight-hero .health-badge,
+.insight-data-panel .health-badge {
+  background: var(--sage-soft) !important;
+  border-color: #b8d8c2 !important;
+  color: var(--sage-dark) !important;
+}
+.insight-hero .health-badge i,
+.insight-data-panel .health-badge i { background: var(--sage) !important; }
+
+
+/* Color system v21 — selection is neutral/blue; evaluated states use Green/Amber/Red. */
+:root {
+  --ink: #17181c !important;
+  --ink-soft: #4a4d55 !important;
+  --muted: #8a8d96 !important;
+  --line: #e7e7ea !important;
+  --canvas: #fafaf9 !important;
+  --paper: #ffffff !important;
+  --blue: #2563eb !important;
+  --blue-dark: #1d4ed8 !important;
+  --blue-soft: #eff4ff !important;
+  --sage: #1e8e4f !important;
+  --sage-dark: #176b3c !important;
+  --sage-soft: #eaf7ef !important;
+  --amber: #c7811a !important;
+  --amber-soft: #fdf1df !important;
+  --danger: #c5391f !important;
+  --danger-soft: #fcebe7 !important;
+  --focus-ring: #2563eb !important;
+}
+
+/* Navigation and selection: Ink for the sidebar, Blue for selected filters/tabs. */
+.studio-sidebar .side-nav-item.active {
+  background: var(--ink) !important;
+  border-color: rgba(255,255,255,.18) !important;
+  color: #fff !important;
+  box-shadow: none !important;
+}
+.studio-sidebar .side-nav-item.active svg,
+.studio-sidebar .side-nav-item.active em { color: #fff !important; }
+.filter-chip.active,
+.project-controls .filter-chip.active,
+.project-taxonomy .taxonomy-chip.active,
+.calendar-view-switch .view-switch.active,
+.notes-nav-item.active {
+  background: var(--blue) !important;
+  border-color: var(--blue) !important;
+  color: #fff !important;
+}
+.filter-chip.active em,
+.project-controls .filter-chip.active em,
+.project-taxonomy .taxonomy-chip.active em,
+.notes-nav-item.active em { color: #fff !important; }
+.primary-button,
+.add-task-button,
+.page-shell-page .primary-button { background: var(--ink) !important; border-color: var(--ink) !important; color: #fff !important; }
+
+/* Project and task states: Green positive, Amber review/watch, Red risk. */
+.status-pill.status-review { color: var(--amber) !important; background: var(--amber-soft) !important; border-color: #e8cf9d !important; }
+.status-pill.status-review .status-dot { background: var(--amber) !important; }
+.status-pill.status-progress { color: var(--sage-dark) !important; background: var(--sage-soft) !important; border-color: #b8d8c2 !important; }
+.status-pill.status-progress .status-dot { background: var(--sage) !important; }
+.status-pill.status-quiet { color: var(--muted) !important; background: #f1f1f3 !important; border-color: var(--line) !important; }
+.status-pill.status-quiet .status-dot { background: var(--muted) !important; }
+.task-priority.priority-high { color: var(--danger) !important; }
+.task-priority.priority-high i { background: var(--danger) !important; }
+.task-priority.priority-medium { color: var(--amber) !important; }
+.task-priority.priority-medium i { background: var(--amber) !important; }
+.task-priority.priority-low { color: var(--muted) !important; }
+.task-priority.priority-low i { background: var(--muted) !important; }
+.agenda-title-row .agenda-dot.copper { background: var(--amber) !important; }
+.agenda-title-row .agenda-dot.sage { background: var(--sage) !important; }
+.agenda-title-row .agenda-dot.ink { background: var(--ink) !important; }
+
+/* Pure percentage progress remains neutral; the accompanying status badge carries meaning. */
+.project-card .progress-track span,
+.member-card .progress-track i,
+.metric-progress i,
+.insight-data-panel .metric-progress i,
+.health-bar i { background: var(--ink) !important; }
+.inbox-focus .mini-progress i { background: #f1f1f3 !important; }
+.capacity-track.capacity-healthy i { background: var(--sage) !important; }
+.capacity-track.capacity-watch i { background: var(--amber) !important; }
+.capacity-track.capacity-high i { background: var(--danger) !important; }
+.capacity-badge-healthy { color: var(--sage-dark) !important; background: var(--sage-soft) !important; border-color: #b8d8c2 !important; }
+.capacity-badge-watch { color: #8a5b0a !important; background: var(--amber-soft) !important; border-color: #e7cc92 !important; }
+.capacity-badge-high { color: var(--danger) !important; background: var(--danger-soft) !important; border-color: #e1aaa5 !important; }
+
+/* Links and focus states use Blue without recoloring editorial decorative accents. */
+.text-button,
+.note-card-featured .text-button,
+.insight-data-panel h2 em,
+.insight-data-panel .insight-footnote .text-button { color: var(--blue-dark) !important; }
+:focus-visible { outline-color: var(--focus-ring) !important; }
