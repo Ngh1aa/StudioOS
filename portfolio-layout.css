@@ -1730,3 +1730,97 @@ textarea:focus-visible,
 @media (max-width: 900px) {
   .sidebar-toggle { display: none !important; }
 }
+
+
+/* Audit follow-up refinements: neutral navigation, calmer focus card, semantic status colors, and stable card actions. */
+@media (min-width: 901px) {
+  .side-nav-item.active {
+    background: var(--ink) !important;
+    border-color: rgba(255,255,255,.12);
+    box-shadow: none;
+  }
+
+  .side-nav-item.active:hover,
+  .side-nav-item.active:focus-visible {
+    background: #242a27 !important;
+    box-shadow: 0 0 0 3px rgba(255,255,255,.12);
+  }
+}
+
+/* A dark graphite focus surface keeps emphasis without reading as an alert or modal overlay. */
+.inbox-focus {
+  background: #343a37;
+  border-color: #59625d;
+}
+.inbox-focus .mini-progress {
+  background: #5a625e;
+}
+.inbox-focus .mini-progress i {
+  display: block;
+  height: 100%;
+  background: #a8cdb2;
+}
+.inbox-focus .task-check,
+.inbox-focus .task-check.checked {
+  border-radius: 50%;
+}
+
+/* Keep each inbox state distinct while preserving the established semantic roles. */
+.inbox-status-review {
+  color: #8f4527;
+  background: #fff2ea;
+  border: 1px solid #e0ae93;
+}
+.inbox-status-confirmed {
+  color: #2d6944;
+  background: #edf7ef;
+  border: 1px solid #a9cdb5;
+}
+.inbox-status-updated {
+  color: #5d625f;
+  background: #eef0ed;
+  border: 1px solid #d2d8d2;
+}
+.inbox-status-ready {
+  color: #375866;
+  background: #e7f0f4;
+  border: 1px solid #b8ccd5;
+}
+.inbox-item.is-priority .inbox-status-review { border-color: #e0ae93; }
+
+/* The account avatar is an identity trigger, not an alert indicator. */
+.account-menu-button .profile-avatar {
+  background: #f0f2ef;
+  color: #36413b;
+  border-color: #fff;
+  box-shadow: 0 0 0 1px #c7cec8;
+}
+
+/* Reserve a stable action column so Review stays aligned across member counts. */
+.portfolio-project-grid .project-card-footer {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+}
+.portfolio-project-grid .card-actions {
+  width: 176px;
+  min-width: 176px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+}
+.portfolio-project-grid .card-actions .js-review {
+  justify-self: end;
+  white-space: nowrap;
+}
+
+@media (max-width: 680px) {
+  .portfolio-project-grid .card-actions {
+    width: auto;
+    min-width: 0;
+    grid-template-columns: auto auto;
+    gap: 8px;
+  }
+}
