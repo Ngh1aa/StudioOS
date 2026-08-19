@@ -1,0 +1,7 @@
+{
+  "enabled": true,
+  "source": "Ngh1aa/ui-feedback-tool",
+  "targetPaths": ["ui-feedback.js"],
+  "storageKey": "studioos-ui-feedback",
+  "githubRepo": "Ngh1aa/StudioOS"
+}
