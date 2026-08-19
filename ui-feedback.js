@@ -388,9 +388,14 @@ export function createUIFeedback(options = {}) {
     showToast(state.active ? 'UI Feedback đã bật' : 'UI Feedback đã tắt');
   }
 
+  function normalizeShortcutKey(event) {
+    const fromCode = typeof event.code === 'string' && event.code.startsWith('Key') ? event.code.slice(3) : '';
+    return (fromCode || event.key || '').toLowerCase();
+  }
+
   function keydown(event) {
     if (isEditable(event.target)) return;
-    const key = event.key.toLowerCase();
+    const key = normalizeShortcutKey(event);
     if (!config.shortcut.includes(key)) return;
     pressed.add(key);
     if (!event.repeat) {
@@ -405,13 +410,13 @@ export function createUIFeedback(options = {}) {
         toggle();
       } else {
         clearTimeout(shortcutTimer);
-        shortcutTimer = setTimeout(() => { recentShortcutKeys.length = 0; }, 700);
+        shortcutTimer = setTimeout(() => { recentShortcutKeys.length = 0; }, 1500);
       }
     }
   }
 
   function keyup(event) {
-    pressed.delete(event.key.toLowerCase());
+    pressed.delete(normalizeShortcutKey(event));
   }
 
   function pointerMove(event) {
