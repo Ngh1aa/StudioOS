@@ -187,17 +187,31 @@ export function createUIFeedback(options = {}) {
     if (state.modalOpen) renderModal();
   }
 
-  function bindToolbar() {
-    root.querySelectorAll('[data-action]').forEach((button) => {
-      button.addEventListener('click', () => {
-        const action = button.dataset.action;
-        if (action === 'activate') toggle();
-        if (action === 'list') togglePanel();
-        if (action === 'comment') beginPicking('comment');
-        if (action === 'edit') beginPicking('edit');
-      });
-    });
+  let lastToolbarAction = '';
+  let lastToolbarActionAt = 0;
+
+  function dispatchToolbarAction(action) {
+    if (action === 'activate') toggle();
+    if (action === 'list') togglePanel();
+    if (action === 'comment') beginPicking('comment');
+    if (action === 'edit') beginPicking('edit');
   }
+
+  function handleToolbarEvent(event) {
+    const button = event.composedPath().find((node) => node instanceof HTMLButtonElement && node.dataset?.action);
+    if (!button) return;
+    const action = button.dataset.action;
+    const now = performance.now();
+    if (event.type === 'click' && action === lastToolbarAction && now - lastToolbarActionAt < 500) return;
+    lastToolbarAction = action;
+    lastToolbarActionAt = now;
+    event.preventDefault();
+    event.stopPropagation();
+    dispatchToolbarAction(action);
+  }
+
+  function bindToolbar() {}
+
 
   function togglePanel(force) {
     state.panelOpen = typeof force === 'boolean' ? force : !state.panelOpen;
@@ -448,6 +462,8 @@ export function createUIFeedback(options = {}) {
     document.removeEventListener('pointermove', pointerMove, true);
     document.removeEventListener('pointerdown', pointerClick, true);
     document.removeEventListener('click', pointerClick, true);
+    root.removeEventListener('pointerdown', handleToolbarEvent, true);
+    root.removeEventListener('click', handleToolbarEvent, true);
     host.remove();
     delete window.__uiFeedbackInstance;
   }
@@ -458,6 +474,8 @@ export function createUIFeedback(options = {}) {
   document.addEventListener('pointermove', pointerMove, true);
   document.addEventListener('pointerdown', pointerClick, true);
   document.addEventListener('click', pointerClick, true);
+  root.addEventListener('pointerdown', handleToolbarEvent, true);
+  root.addEventListener('click', handleToolbarEvent, true);
   window.__uiFeedbackInstance = { toggle, exportMarkdown, getComments: () => [...state.comments], dispose };
   renderToolbar();
   return window.__uiFeedbackInstance;
