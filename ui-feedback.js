@@ -63,7 +63,8 @@ button { cursor: pointer; }
 .ui-feedback-button--primary { border-color: var(--ui-feedback-accent); background: var(--ui-feedback-accent); }
 .ui-feedback-button--primary:hover { filter: brightness(.95); }
 .ui-feedback-toast { position: fixed; right: 22px; bottom: 20px; z-index: 2147483020; padding: 11px 15px; border-radius: 8px; color: #fff; background: #151515; box-shadow: 0 10px 25px rgba(0,0,0,.2); font-size: 12px; }
-.ui-feedback-picking, .ui-feedback-picking * { cursor: crosshair !important; }
+  .ui-feedback-picking, .ui-feedback-picking * { cursor: crosshair !important; }
+  .ui-feedback-picker-layer { position: fixed; inset: 0; z-index: 2147482990; background: transparent; cursor: crosshair; }
 @media (max-width: 640px) {
   .ui-feedback-toolbar { right: 12px; gap: 9px; }
   .ui-feedback-tool { width: 48px; height: 48px; }
@@ -174,7 +175,7 @@ export function createUIFeedback(options = {}) {
       bindToolbar();
       return;
     }
-    root.innerHTML = `<div class="ui-feedback-toolbar" role="toolbar" aria-label="UI Feedback tools">
+    root.innerHTML = `${state.picking ? '<div class="ui-feedback-picker-layer" data-picker-layer aria-hidden="true"></div>' : ''}<div class="ui-feedback-toolbar" role="toolbar" aria-label="UI Feedback tools">
       <button class="ui-feedback-tool ${state.panelOpen ? 'is-active' : ''}" data-action="list" aria-label="Mở danh sách feedback" title="Danh sách feedback">${ICONS.clipboard}<span class="ui-feedback-badge" ${state.comments.length ? '' : 'hidden'}>${state.comments.length}</span></button>
       <button class="ui-feedback-tool ${state.picking && state.mode === 'comment' ? 'is-active' : ''}" data-action="comment" aria-label="Thêm comment" title="Thêm comment">${ICONS.comment}</button>
       <button class="ui-feedback-tool ${state.picking && state.mode === 'edit' ? 'is-active' : ''}" data-action="edit" aria-label="Sửa nội dung UI" title="Sửa nội dung UI">${ICONS.pencil}</button>
@@ -439,10 +440,40 @@ export function createUIFeedback(options = {}) {
     pressed.delete(normalizeShortcutKey(event));
   }
 
+  function elementAtPoint(clientX, clientY) {
+    const picker = root.querySelector('[data-picker-layer]');
+    if (picker) picker.style.display = 'none';
+    const element = document.elementFromPoint(clientX, clientY);
+    if (picker) picker.style.display = '';
+    if (!(element instanceof Element) || element === document.documentElement || element === document.body || element.closest('#ui-feedback-host')) return null;
+    return element;
+  }
+
   function pointerMove(event) {
-    if (!state.picking || event.composedPath().includes(host)) return;
-    const element = event.target instanceof Element ? event.target : null;
-    if (element && element !== document.documentElement && element !== document.body) highlight(element);
+    if (!state.picking) return;
+    const element = elementAtPoint(event.clientX, event.clientY);
+    if (element) highlight(element);
+  }
+
+  let pickerHandledAt = 0;
+  function handlePickerPointerDown(event) {
+    if (!state.picking || event.target !== root.querySelector('[data-picker-layer]')) return;
+    const element = elementAtPoint(event.clientX, event.clientY);
+    if (!element) return;
+    event.preventDefault();
+    event.stopPropagation();
+    pickerHandledAt = performance.now();
+    openModal(element, state.mode);
+  }
+
+  function handlePickerClick(event) {
+    if (!state.picking || event.target !== root.querySelector('[data-picker-layer]')) return;
+    if (performance.now() - pickerHandledAt < 600) return;
+    const element = elementAtPoint(event.clientX, event.clientY);
+    if (!element) return;
+    event.preventDefault();
+    event.stopPropagation();
+    openModal(element, state.mode);
   }
 
   function pointerClick(event) {
@@ -464,6 +495,9 @@ export function createUIFeedback(options = {}) {
     document.removeEventListener('click', pointerClick, true);
     root.removeEventListener('pointerdown', handleToolbarEvent, true);
     root.removeEventListener('click', handleToolbarEvent, true);
+    root.removeEventListener('pointermove', pointerMove, true);
+    root.removeEventListener('pointerdown', handlePickerPointerDown, true);
+    root.removeEventListener('click', handlePickerClick, true);
     host.remove();
     delete window.__uiFeedbackInstance;
   }
@@ -476,6 +510,9 @@ export function createUIFeedback(options = {}) {
   document.addEventListener('click', pointerClick, true);
   root.addEventListener('pointerdown', handleToolbarEvent, true);
   root.addEventListener('click', handleToolbarEvent, true);
+  root.addEventListener('pointermove', pointerMove, true);
+  root.addEventListener('pointerdown', handlePickerPointerDown, true);
+  root.addEventListener('click', handlePickerClick, true);
   window.__uiFeedbackInstance = { toggle, exportMarkdown, getComments: () => [...state.comments], dispose };
   renderToolbar();
   return window.__uiFeedbackInstance;
