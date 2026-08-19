@@ -394,7 +394,8 @@ export function createUIFeedback(options = {}) {
   }
 
   function keydown(event) {
-    if (isEditable(event.target)) return;
+    // Shortcut is intentionally global so reviewers can activate the tool even
+    // when the page focus is inside a search or form field.
     const key = normalizeShortcutKey(event);
     if (!config.shortcut.includes(key)) return;
     pressed.add(key);
@@ -436,8 +437,8 @@ export function createUIFeedback(options = {}) {
 
   function dispose() {
     stopPicking();
-    window.removeEventListener('keydown', keydown, true);
-    window.removeEventListener('keyup', keyup, true);
+    document.removeEventListener('keydown', keydown, true);
+    document.removeEventListener('keyup', keyup, true);
     window.removeEventListener('blur', () => pressed.clear());
     document.removeEventListener('pointermove', pointerMove, true);
     document.removeEventListener('click', pointerClick, true);
@@ -445,8 +446,8 @@ export function createUIFeedback(options = {}) {
     delete window.__uiFeedbackInstance;
   }
 
-  window.addEventListener('keydown', keydown, true);
-  window.addEventListener('keyup', keyup, true);
+  document.addEventListener('keydown', keydown, true);
+  document.addEventListener('keyup', keyup, true);
   window.addEventListener('blur', () => pressed.clear());
   document.addEventListener('pointermove', pointerMove, true);
   document.addEventListener('click', pointerClick, true);
