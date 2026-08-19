@@ -171,8 +171,8 @@ export function createUIFeedback(options = {}) {
 
   function renderToolbar() {
     if (!state.active) {
-      root.innerHTML = `<div class="ui-feedback-toolbar" role="toolbar" aria-label="UI Feedback tools"><button class="ui-feedback-tool ui-feedback-launcher" data-action="activate" aria-label="Bật UI Feedback" title="Bật UI Feedback · QWE">${ICONS.comment}<span class="ui-feedback-launcher-label">UI</span></button></div>`;
-      bindToolbar();
+      // Hidden by default: QWE is the only activation entry point.
+      root.innerHTML = '';
       return;
     }
     root.innerHTML = `${state.picking ? '<div class="ui-feedback-picker-layer" data-picker-layer aria-hidden="true"></div>' : ''}<div class="ui-feedback-toolbar" role="toolbar" aria-label="UI Feedback tools">
