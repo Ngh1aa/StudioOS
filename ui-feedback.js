@@ -15,7 +15,10 @@ button { cursor: pointer; }
 .ui-feedback-toolbar { position: fixed; right: 20px; top: 50%; transform: translateY(-50%); z-index: 2147483000; display: flex; flex-direction: column; gap: 12px; align-items: center; }
 .ui-feedback-tool { width: 54px; height: 54px; border: 1px solid rgba(255,255,255,.18); border-radius: 50%; display: grid; place-items: center; color: #fff; background: #121212; box-shadow: 0 10px 26px rgba(0,0,0,.18); transition: transform .18s ease, background .18s ease, box-shadow .18s ease; position: relative; }
 .ui-feedback-tool:hover, .ui-feedback-tool:focus-visible { transform: translateY(-2px); background: #282828; box-shadow: 0 14px 28px rgba(0,0,0,.24); outline: 3px solid color-mix(in srgb, var(--ui-feedback-accent), transparent 65%); outline-offset: 2px; }
-.ui-feedback-tool.is-active { background: var(--ui-feedback-accent); color: #141414; }
+  .ui-feedback-tool.is-active { background: var(--ui-feedback-accent); color: #141414; }
+  .ui-feedback-launcher { width: 54px; height: 54px; }
+  .ui-feedback-launcher-label { position: absolute; right: 7px; bottom: 6px; font-size: 8px; line-height: 1; font-weight: 800; letter-spacing: .08em; }
+
 .ui-feedback-tool svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .ui-feedback-badge { position: absolute; top: -5px; right: -5px; min-width: 21px; height: 21px; padding: 0 5px; display: grid; place-items: center; border-radius: 99px; color: #fff; background: #d11b51; font-size: 11px; font-weight: 800; border: 2px solid #fff; }
 .ui-feedback-panel { position: fixed; right: 88px; top: 50%; transform: translateY(-50%); width: min(390px, calc(100vw - 112px)); max-height: min(640px, calc(100vh - 32px)); overflow: hidden; z-index: 2147482999; border: 1px solid #dedede; border-radius: 14px; background: #fff; box-shadow: 0 22px 60px rgba(0,0,0,.22); }
@@ -167,7 +170,8 @@ export function createUIFeedback(options = {}) {
 
   function renderToolbar() {
     if (!state.active) {
-      root.innerHTML = '';
+      root.innerHTML = `<div class="ui-feedback-toolbar" role="toolbar" aria-label="UI Feedback tools"><button class="ui-feedback-tool ui-feedback-launcher" data-action="activate" aria-label="Bật UI Feedback" title="Bật UI Feedback · QWE">${ICONS.comment}<span class="ui-feedback-launcher-label">UI</span></button></div>`;
+      bindToolbar();
       return;
     }
     root.innerHTML = `<div class="ui-feedback-toolbar" role="toolbar" aria-label="UI Feedback tools">
@@ -187,6 +191,7 @@ export function createUIFeedback(options = {}) {
     root.querySelectorAll('[data-action]').forEach((button) => {
       button.addEventListener('click', () => {
         const action = button.dataset.action;
+        if (action === 'activate') toggle();
         if (action === 'list') togglePanel();
         if (action === 'comment') beginPicking('comment');
         if (action === 'edit') beginPicking('edit');
@@ -452,6 +457,7 @@ export function createUIFeedback(options = {}) {
   document.addEventListener('pointermove', pointerMove, true);
   document.addEventListener('click', pointerClick, true);
   window.__uiFeedbackInstance = { toggle, exportMarkdown, getComments: () => [...state.comments], dispose };
+  renderToolbar();
   return window.__uiFeedbackInstance;
 }
 
