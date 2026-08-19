@@ -446,7 +446,7 @@ export function createUIFeedback(options = {}) {
     document.removeEventListener('keyup', keyup, true);
     window.removeEventListener('blur', () => pressed.clear());
     document.removeEventListener('pointermove', pointerMove, true);
-    document.removeEventListener('click', pointerClick, true);
+    document.removeEventListener('pointerdown', pointerClick, true);
     host.remove();
     delete window.__uiFeedbackInstance;
   }
@@ -455,7 +455,7 @@ export function createUIFeedback(options = {}) {
   document.addEventListener('keyup', keyup, true);
   window.addEventListener('blur', () => pressed.clear());
   document.addEventListener('pointermove', pointerMove, true);
-  document.addEventListener('click', pointerClick, true);
+  document.addEventListener('pointerdown', pointerClick, true);
   window.__uiFeedbackInstance = { toggle, exportMarkdown, getComments: () => [...state.comments], dispose };
   renderToolbar();
   return window.__uiFeedbackInstance;
