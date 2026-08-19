@@ -31,3 +31,31 @@ The overview supports project search, responsive navigation, task completion, ad
 ## Next slice
 
 The next product slice should add a project detail route with milestones, task filters, deliverable versions, comments and client-safe approval states. The data model should remain local until the information architecture is validated with real users.
+
+## Use in other projects
+
+The UI feedback tool is distributed as a single ESM file. Pull it from
+jsDelivr (pinned to a tag) so updates propagate by bumping the version
+in one place:
+
+```html
+<script type="module">
+  import { createUIFeedback } from 'https://cdn.jsdelivr.net/gh/Ngh1aa/StudioOS@v0.4.0/ui-feedback.js';
+  createUIFeedback({
+    storageKey: 'my-app-feedback', // namespace per project
+    accent: '#f5a623',
+    githubRepo: 'your-org/your-repo', // optional, enables 1-click issue creation
+  });
+</script>
+```
+
+### Releasing a new version
+
+```bash
+git tag -a v0.4.0 -m "UI feedback v0.4: edit/css markers, undo button, export fix"
+git push origin v0.4.0
+```
+
+jsDelivr picks up the tag within a minute. Bump the `@v0.4.0` segment
+in each consuming project to roll out the new version. Pinning to a tag
+keeps production stable; use `@main` only for local previews.

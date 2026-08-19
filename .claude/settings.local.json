@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node --check ui-feedback.js)",
+      "Bash(node -e \"console.log\\('UI feedback file is valid JS'\\)\")"
+    ]
+  }
+}

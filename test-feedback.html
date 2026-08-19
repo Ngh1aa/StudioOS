@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head><title>UI Feedback v0.4 Test</title></head>
+<body>
+<h1 id="test-heading">Test Heading</h1>
+<p class="test-paragraph" style="color: blue;">Test paragraph content</p>
+<div class="test-container">
+  <span>Nested element</span>
+</div>
+<button id="test-button">Test button</button>
+<script type="module">
+import { createUIFeedback } from './ui-feedback.js';
+
+try {
+  const instance = createUIFeedback({
+    storageKey: 'test-ui-feedback-v04',
+    accent: '#f5a623',
+  });
+  console.log('[TEST] createUIFeedback succeeded:', !!instance);
+
+  // Force toggle to test activation
+  instance.toggle();
+  console.log('[TEST] toggle() succeeded');
+
+  // Smoke test: confirm v0.4 API surface is present
+  const api = ['toggle', 'exportMarkdown', 'getComments', 'dispose'];
+  api.forEach((fn) => {
+    if (typeof instance[fn] !== 'function') {
+      console.error(`[TEST] missing API: ${fn}`);
+    } else {
+      console.log(`[TEST] API ${fn} OK`);
+    }
+  });
+
+  // Inspect the exported comments & undo stack
+  console.log('[TEST] current comments:', instance.getComments().length);
+
+  // Smoke test: add an edit item directly via the API to validate
+  // the export pipeline (instead of needing a real click flow).
+  const heading = document.getElementById('test-heading');
+  // We can't reach into the closure easily, so we just log what's available.
+  console.log('[TEST] heading element:', heading?.tagName);
+} catch (error) {
+  console.error('[TEST] FAILED:', error.message);
+  console.error(error.stack);
+}
+</script>
+</body>
+</html>
