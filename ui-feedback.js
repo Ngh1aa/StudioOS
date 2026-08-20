@@ -4,6 +4,12 @@
  * Công cụ ghi nhận feedback UI/UX trực tiếp trên trang web.
  * Bật / tắt bằng cách nhấn đồng thời Q + W + E.
  *
+ * Changelog v0.5:
+ *   - New: panel/modal có title bar kéo thả bằng Pointer Events và pointer capture
+ *   - New: grip + drag hint + nút đặt lại vị trí cho các cửa sổ công cụ
+ *   - New: white accent tokens cho focus, primary action và dark/light theme
+ *   - Fix: cleanup pointer drag state khi pointerup hoặc pointercancel
+ *
  * Changelog v0.4:
  *   - New: marker trên trang cho edit / css (xanh lá / tím) — biết ngay
  *         chỗ nào đã cập nhật
@@ -268,8 +274,8 @@ button { cursor: pointer; }
   --_shadow-heavy: rgba(0,0,0,.55);
   --_scrim: rgba(0,0,0,.45);
   --_accent-ink: #111;
-  --_focus-ring: rgba(255,255,255,.24);
-  }
+  --_focus-ring: rgba(255,255,255,.28);
+}
 
 .ui-feedback-root [hidden] { display: none !important; }
 
@@ -442,14 +448,14 @@ button { cursor: pointer; }
   max-height: min(680px, calc(100vh - 32px));
   overflow: hidden;
   z-index: 2147482999;
-  border: 1px solid color-mix(in srgb, var(--ui-feedback-accent), var(--_border-panel) 78%);
-  border-radius: 16px;
+  border: 1px solid var(--_border-panel);
+  border-radius: 14px;
   background: var(--_bg-panel);
   box-shadow: 0 22px 60px var(--_shadow-heavy);
   animation: uiFeedbackSlideIn .28s cubic-bezier(.4,0,.2,1) both;
 }
 .ui-feedback-panel__header {
-  padding: 13px 14px 11px;
+  padding: 15px 16px 12px;
   color: var(--_text);
   background: var(--_bg-panel);
   border-bottom: 1px solid var(--_border);
@@ -486,10 +492,8 @@ button { cursor: pointer; }
 }
 .ui-feedback-icon-button:hover,
 .ui-feedback-icon-button:focus-visible {
-  color: var(--_text);
-  background: var(--_bg-hover);
-  outline: 2px solid var(--_focus-ring);
-  outline-offset: 1px;
+  background: rgba(0,0,0,.11);
+  outline: none;
 }
 .ui-feedback-icon-button svg {
   width: 17px;
@@ -553,7 +557,6 @@ button { cursor: pointer; }
 .ui-feedback-filter-select:focus { border-color: var(--ui-feedback-accent); }
 .ui-feedback-filter-select--category { max-width: 112px; }
 
-.ui-feedback-panel.is-dragging, .ui-feedback-modal.is-dragging { user-select: none; }
 .ui-feedback-panel__body {
   max-height: calc(min(680px, 100vh - 32px) - 145px);
   overflow: auto;
@@ -755,15 +758,15 @@ button { cursor: pointer; }
   transform: translate(calc(-50% + var(--ui-feedback-modal-x)), calc(-50% + var(--ui-feedback-modal-y)));
   width: min(430px, calc(100vw - 32px));
   z-index: 2147483010;
-  border: 1px solid color-mix(in srgb, var(--ui-feedback-accent), var(--_border-modal) 78%);
-  border-radius: 16px;
+  border: 1px solid var(--_border-modal);
+  border-radius: 14px;
   background: var(--_bg-panel);
   box-shadow: 0 30px 80px var(--_shadow-heavy);
   overflow: hidden;
   animation: uiFeedbackFadeIn .24s cubic-bezier(.4,0,.2,1) both;
 }
 .ui-feedback-modal__top {
-  padding: 14px 18px 13px;
+  padding: 18px 20px 12px;
   border-bottom: 1px solid var(--_border);
   cursor: grab;
   user-select: none;
@@ -1350,7 +1353,7 @@ export function createUIFeedback(options = {}) {
     const editCount = state.comments.filter((c) => ['edit', 'css', 'image'].includes(c.type)).length;
     const content = renderGroupedComments(filtered);
     mount.innerHTML = `<aside class="ui-feedback-panel" aria-label="Danh sách feedback">
-      <header class="ui-feedback-panel__header" data-panel-drag-handle title="Kéo vùng tiêu đề để di chuyển cửa sổ"><div class="ui-feedback-window-heading"><span class="ui-feedback-window-grip" aria-hidden="true">${ICONS.grip}</span><div><strong>Feedback</strong><small>${openCount} đang mở · ${resolvedCount} đã xong · ${editCount} chỉnh sửa <span class="ui-feedback-drag-hint">Kéo để di chuyển</span></small></div></div><span class="ui-feedback-panel__actions">${config.githubRepo ? `<button class="ui-feedback-icon-button" data-panel-action="github" aria-label="Tạo GitHub Issue" title="Tạo GitHub Issue">${ICONS.github}</button>` : ''}<button class="ui-feedback-icon-button" data-panel-action="export" aria-label="Xuất Markdown" title="Xuất Markdown">${ICONS.download}</button><button class="ui-feedback-icon-button" data-panel-action="reset-position" aria-label="Đưa cửa sổ về vị trí mặc định" title="Đặt lại vị trí">${ICONS.undo}</button><button class="ui-feedback-icon-button" data-panel-action="close" aria-label="Đóng cửa sổ">${ICONS.close}</button></span></header>
+      <header class="ui-feedback-panel__header" data-panel-drag-handle title="Kéo vùng tiêu đề để di chuyển cửa sổ"><div class="ui-feedback-window-heading"><span class="ui-feedback-window-grip" aria-hidden="true">${ICONS.grip}</span><div><strong>Feedback</strong><small>${openCount} đang mở · ${resolvedCount} đã xong · ${editCount} chỉnh sửa <span class="ui-feedback-drag-hint">Kéo để di chuyển</span></div></div><span class="ui-feedback-panel__actions">${config.githubRepo ? `<button class="ui-feedback-icon-button" data-panel-action="github" aria-label="Tạo GitHub Issue" title="Tạo GitHub Issue">${ICONS.github}</button>` : ''}<button class="ui-feedback-icon-button" data-panel-action="export" aria-label="Xuất Markdown" title="Xuất Markdown">${ICONS.download}</button><button class="ui-feedback-icon-button" data-panel-action="reset-position" aria-label="Đưa cửa sổ về vị trí mặc định" title="Đặt lại vị trí">${ICONS.undo}</button><button class="ui-feedback-icon-button" data-panel-action="close" aria-label="Đóng cửa sổ">${ICONS.close}</button></span></header>
       <div class="ui-feedback-panel__tabs" role="tablist"><button class="ui-feedback-panel__tab ${state.drawerTab === 'all' ? 'is-active' : ''}" data-panel-tab="all" role="tab">Tất cả <span>${state.comments.length}</span></button><button class="ui-feedback-panel__tab ${state.drawerTab === 'comment' ? 'is-active' : ''}" data-panel-tab="comment" role="tab">Ghi chú <span>${state.comments.filter((c) => c.type === 'comment').length}</span></button><button class="ui-feedback-panel__tab ${state.drawerTab === 'edit' ? 'is-active' : ''}" data-panel-tab="edit" role="tab">Chỉnh sửa <span>${editCount}</span></button><button class="ui-feedback-panel__tab ${state.drawerTab === 'resolved' ? 'is-active' : ''}" data-panel-tab="resolved" role="tab">Đã xong <span>${resolvedCount}</span></button></div>
       <div class="ui-feedback-panel__filter">
         <div class="ui-feedback-search-wrap">${ICONS.search}<input class="ui-feedback-search-input" data-panel-search type="text" placeholder="Tìm feedback…" value="${escapeAttribute(state.searchQuery)}" /></div>
