@@ -2152,3 +2152,316 @@ textarea:hover { border-color: rgba(10, 132, 255, .24); }
   }
   .project-cover img { transform: none !important; }
 }
+
+/*
+  Legacy cascade shield
+  The historical portfolio stylesheet intentionally used !important for its
+  monochrome audit states. These scoped declarations are the canonical v1
+  presentation and keep those rules from leaking into Bright Pill OS.
+*/
+:root:root {
+  --ink: #172033 !important;
+  --ink-soft: #35415a !important;
+  --muted: #71809a !important;
+  --line: rgba(75, 103, 145, .13) !important;
+  --canvas: #eef6ff !important;
+  --paper: rgba(255, 255, 255, .78) !important;
+  --blue: #0a84ff !important;
+  --blue-dark: #0066d6 !important;
+  --blue-soft: #e0f0ff !important;
+  --sage: #34c759 !important;
+  --sage-dark: #168a38 !important;
+  --sage-soft: #e2f8e8 !important;
+  --amber: #ff9f0a !important;
+  --amber-soft: #fff1d8 !important;
+  --danger: #ff375f !important;
+  --danger-soft: #ffe5ec !important;
+  --focus-ring: #0a84ff !important;
+}
+
+body .studio-sidebar .side-nav-item.active {
+  border-color: rgba(255, 255, 255, .48) !important;
+  border-radius: 999px !important;
+  background: linear-gradient(135deg, #4cc9f0 0%, #0a84ff 52%, #625cff 100%) !important;
+  color: #fff !important;
+  box-shadow: 0 12px 24px rgba(10, 132, 255, .24), inset 0 1px 0 rgba(255, 255, 255, .36) !important;
+}
+
+body .primary-button,
+body .add-task-button,
+body .page-shell-page .primary-button {
+  border-color: rgba(255, 255, 255, .35) !important;
+  border-radius: 999px !important;
+  background: linear-gradient(135deg, #47c7ff 0%, #0a84ff 48%, #635bff 100%) !important;
+  color: #fff !important;
+  box-shadow: 0 12px 24px rgba(10, 132, 255, .24), inset 0 1px 0 rgba(255, 255, 255, .35) !important;
+}
+
+body .primary-button:hover,
+body .add-task-button:hover,
+body .page-shell-page .primary-button:hover {
+  background: linear-gradient(135deg, #62d2ff 0%, #158dff 48%, #746bff 100%) !important;
+  box-shadow: 0 16px 32px rgba(10, 132, 255, .3), inset 0 1px 0 rgba(255, 255, 255, .4) !important;
+}
+
+body .project-card,
+body .portfolio-project-grid .project-card,
+body .projects-page-grid .project-card {
+  overflow: hidden !important;
+  border: 1px solid rgba(255, 255, 255, .78) !important;
+  border-radius: 28px !important;
+  background: rgba(255, 255, 255, .84) !important;
+  box-shadow: var(--shadow-sm), inset 0 1px 0 rgba(255, 255, 255, .9) !important;
+}
+
+body .project-card:hover,
+body .portfolio-project-grid .project-card:hover,
+body .projects-page-grid .project-card:hover {
+  border-color: rgba(10, 132, 255, .18) !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+body .project-card .progress-track span,
+body .portfolio-project-grid .progress-track span,
+body .projects-page-grid .progress-track span,
+body .projects-page-grid .progress-track-high span,
+body .projects-page-grid .progress-track-mid span,
+body .projects-page-grid .progress-track-low span {
+  background: linear-gradient(90deg, #4cc9f0, #0a84ff 60%, #625cff) !important;
+  box-shadow: 0 0 14px rgba(10, 132, 255, .28) !important;
+}
+
+body .portfolio-view-toggle {
+  width: auto !important;
+  min-width: 46px !important;
+  height: 46px !important;
+  min-height: 46px !important;
+  padding: 0 15px !important;
+  border: 1px solid rgba(255, 255, 255, .38) !important;
+  border-radius: 999px !important;
+  background: linear-gradient(135deg, #47c7ff, #0a84ff 55%, #625cff) !important;
+  color: #fff !important;
+  box-shadow: 0 10px 22px rgba(10, 132, 255, .24), inset 0 1px 0 rgba(255, 255, 255, .36) !important;
+}
+
+body .portfolio-view-toggle:hover { background: linear-gradient(135deg, #62d2ff, #158dff 55%, #746bff) !important; color: #fff !important; transform: translateY(-2px) !important; }
+body .portfolio-view-toggle .studio-icon { width: 17px !important; height: 17px !important; }
+
+body .project-inbox .inbox-focus {
+  margin: 0 10px 10px !important;
+  padding: 20px !important;
+  border: 1px solid rgba(255, 255, 255, .24) !important;
+  border-radius: 24px !important;
+  background: radial-gradient(circle at 92% 8%, rgba(255, 255, 255, .24), transparent 34%), linear-gradient(145deg, #5b62f4 0%, #0a84ff 52%, #1fb6d4 100%) !important;
+  color: #fff !important;
+  box-shadow: 0 18px 36px rgba(31, 100, 206, .23), inset 0 1px 0 rgba(255, 255, 255, .25) !important;
+}
+
+body .project-inbox .inbox-focus .section-kicker {
+  border-color: rgba(255, 255, 255, .17) !important;
+  background: rgba(255, 255, 255, .13) !important;
+  color: rgba(255, 255, 255, .84) !important;
+}
+
+body .project-inbox .inbox-focus h3,
+body .project-inbox .inbox-focus-heading strong { color: #fff !important; }
+body .project-inbox .inbox-focus-heading small,
+body .project-inbox .inbox-focus .task-copy small,
+body .project-inbox .inbox-focus .task-due { color: rgba(255, 255, 255, .66) !important; }
+body .project-inbox .inbox-focus .mini-progress { background: rgba(255, 255, 255, .2) !important; }
+body .project-inbox .inbox-focus .mini-progress i { background: #fff !important; }
+body .project-inbox .inbox-focus .task-row { padding: 10px 0 !important; color: #fff !important; border-bottom: 1px solid rgba(255, 255, 255, .12) !important; }
+body .project-inbox .inbox-focus .task-copy strong { color: #fff !important; }
+body .project-inbox .inbox-focus .task-check { border-color: rgba(255, 255, 255, .58) !important; background: rgba(255, 255, 255, .08) !important; }
+body .project-inbox .inbox-focus .task-check.checked { border-color: #fff !important; background: #fff !important; color: var(--ios-blue) !important; }
+body .project-inbox .inbox-focus .add-task-button { border: 1px solid rgba(255, 255, 255, .24) !important; border-radius: 999px !important; background: rgba(255, 255, 255, .14) !important; color: #fff !important; box-shadow: none !important; }
+body .project-inbox .inbox-focus .add-task-button:hover { border-color: #fff !important; background: #fff !important; color: var(--ios-blue) !important; }
+body .portfolio-stats { gap: clamp(12px, 2vw, 26px) !important; }
+body .portfolio-stats > i { display: block !important; }
+
+/* Projects specificity shield */
+body .projects-page .project-filter-rail {
+  display: grid !important;
+  grid-template-columns: minmax(190px, .8fr) minmax(320px, 1.4fr) minmax(300px, 1.3fr) auto !important;
+  grid-template-areas: none !important;
+  align-items: end !important;
+  gap: 14px !important;
+  margin: 0 0 18px !important;
+  padding: 16px !important;
+  overflow: visible !important;
+  border: 1px solid rgba(255, 255, 255, .75) !important;
+  border-radius: 26px !important;
+  background: rgba(255, 255, 255, .65) !important;
+  box-shadow: var(--shadow-sm), inset 0 1px 0 rgba(255, 255, 255, .9) !important;
+}
+
+body .projects-page .project-search-field {
+  grid-area: auto !important;
+  min-height: 44px !important;
+  padding: 0 14px !important;
+  border: 1px solid rgba(75, 102, 143, .12) !important;
+  border-radius: 999px !important;
+  background: rgba(255, 255, 255, .76) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .9) !important;
+}
+
+body .projects-page .project-status-cluster,
+body .projects-page .project-type-cluster { grid-area: auto !important; }
+body .projects-page .project-sort-control { grid-area: auto !important; align-self: end !important; min-height: 42px !important; padding: 0 14px !important; border: 1px solid rgba(75, 103, 145, .12) !important; border-radius: 999px !important; background: rgba(255, 255, 255, .72) !important; }
+
+body .projects-page .filter-tag {
+  min-height: 38px !important;
+  margin: 0 !important;
+  padding: 0 14px !important;
+  border: 1px solid rgba(73, 101, 143, .1) !important;
+  border-radius: 999px !important;
+  background: rgba(255, 255, 255, .66) !important;
+  color: #718098 !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .9) !important;
+}
+
+body .projects-page .filter-tag:hover { border-color: rgba(10, 132, 255, .2) !important; background: #fff !important; color: var(--ios-blue) !important; }
+body .projects-page .filter-tag.active { border-color: transparent !important; background: linear-gradient(135deg, #29b6f6, #0a84ff) !important; color: #fff !important; box-shadow: 0 8px 18px rgba(10, 132, 255, .2) !important; }
+body .projects-page .taxonomy-scroller { display: flex !important; flex-wrap: nowrap !important; gap: 6px !important; padding: 0 0 2px !important; overflow-x: auto !important; }
+
+body .projects-page .project-metrics { display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 12px !important; margin: 0 0 24px !important; }
+body .projects-page .project-metric,
+body .projects-page .project-metric-attention {
+  grid-column: auto !important;
+  min-height: 116px !important;
+  padding: 20px !important;
+  border: 1px solid rgba(255, 255, 255, .72) !important;
+  border-radius: 26px !important;
+  background: rgba(255, 255, 255, .72) !important;
+  box-shadow: var(--shadow-sm), inset 0 1px 0 rgba(255, 255, 255, .88) !important;
+}
+body .projects-page .project-metric strong { color: var(--ios-blue) !important; font-weight: 680 !important; }
+body .projects-page .project-metric:nth-child(2) strong { color: var(--ios-purple) !important; }
+body .projects-page .project-metric:nth-child(3) strong { color: var(--ios-orange) !important; }
+body .projects-page-grid .project-cover { height: 220px !important; background: linear-gradient(145deg, #dff4ff, #ede7ff) !important; }
+body .projects-page-grid .project-cover img { filter: saturate(1.18) contrast(1.02) brightness(1.05) !important; transform: scale(1.015) !important; transition: transform 700ms var(--ease-out), filter 500ms ease !important; }
+body .projects-page-grid .project-card:hover .project-cover img { filter: saturate(1.28) contrast(1.03) brightness(1.06) !important; transform: scale(1.06) !important; }
+body .projects-page-grid .project-card-body { padding: 18px !important; }
+body .projects-page-grid .progress-track { height: 7px !important; background: #e7edf5 !important; }
+
+/* Calendar specificity shield */
+body .calendar-page .calendar-layout { gap: 16px !important; }
+body .calendar-page .calendar-main,
+body .calendar-page .calendar-agenda {
+  padding: 22px !important;
+  border: 1px solid rgba(255, 255, 255, .72) !important;
+  border-radius: 26px !important;
+  background: rgba(255, 255, 255, .72) !important;
+  box-shadow: var(--shadow-sm), inset 0 1px 0 rgba(255, 255, 255, .88) !important;
+}
+body .calendar-page .calendar-agenda { background: linear-gradient(160deg, rgba(255, 255, 255, .82), rgba(237, 248, 255, .72)) !important; }
+body .calendar-page .calendar-toolbar { padding: 0 0 18px !important; border-bottom: 1px solid var(--line) !important; }
+body .calendar-page .calendar-view-switch { gap: 4px !important; padding: 4px !important; border: 1px solid var(--line) !important; border-radius: 999px !important; background: #edf3fa !important; }
+body .calendar-page .view-switch { min-height: 34px !important; padding: 0 13px !important; border: 1px solid transparent !important; border-radius: 999px !important; background: transparent !important; color: #718098 !important; box-shadow: none !important; }
+body .calendar-page .view-switch.active { border-color: transparent !important; background: linear-gradient(135deg, #29b6f6, #0a84ff) !important; color: #fff !important; box-shadow: 0 8px 18px rgba(10, 132, 255, .2) !important; }
+body .calendar-page .agenda-item { border: 1px solid transparent !important; border-radius: 18px !important; background: rgba(255, 255, 255, .56) !important; }
+body .calendar-page .agenda-item:hover { border-color: rgba(10, 132, 255, .14) !important; background: #fff !important; box-shadow: var(--shadow-sm) !important; }
+body .calendar-page .activity-link { color: var(--ios-blue) !important; }
+
+/* Tasks specificity shield */
+body .tasks-page .tasks-layout { gap: 16px !important; }
+body .tasks-page .task-metric,
+body .tasks-page .task-metric-today {
+  grid-column: auto !important;
+  min-height: 116px !important;
+  padding: 20px !important;
+  border: 1px solid rgba(255, 255, 255, .72) !important;
+  border-radius: 26px !important;
+  background: rgba(255, 255, 255, .72) !important;
+  box-shadow: var(--shadow-sm), inset 0 1px 0 rgba(255, 255, 255, .88) !important;
+}
+body .tasks-page .task-metric strong { color: var(--ios-blue) !important; font-weight: 680 !important; }
+body .tasks-page .task-metric:nth-child(2) strong { color: var(--ios-purple) !important; }
+body .tasks-page .task-metric:nth-child(3) strong { color: var(--ios-orange) !important; }
+body .tasks-page .tasks-panel,
+body .tasks-page .task-principles {
+  padding: 22px !important;
+  border: 1px solid rgba(255, 255, 255, .72) !important;
+  border-radius: 26px !important;
+  background: rgba(255, 255, 255, .72) !important;
+  box-shadow: var(--shadow-sm), inset 0 1px 0 rgba(255, 255, 255, .88) !important;
+}
+body .tasks-page .tasks-heading { margin: 0 0 18px !important; padding: 0 !important; border: 0 !important; }
+body .tasks-page .tasks-toolbar { gap: 10px !important; margin: 0 !important; padding: 8px !important; border: 1px solid var(--line) !important; border-radius: 23px !important; background: rgba(245, 249, 255, .72) !important; }
+body .tasks-page .tasks-toolbar .toolbar-search { min-height: 44px !important; padding: 0 14px !important; border: 0 !important; border-radius: 999px !important; background: transparent !important; box-shadow: none !important; }
+body .tasks-page .tasks-toolbar .filter-chips { gap: 4px !important; padding: 4px !important; border-radius: 999px !important; background: #edf3fa !important; }
+body .tasks-page .task-filter-tag { min-height: 34px !important; padding: 0 12px !important; border: 1px solid transparent !important; border-radius: 999px !important; background: transparent !important; color: #718098 !important; box-shadow: none !important; }
+body .tasks-page .task-filter-tag.active { background: linear-gradient(135deg, #29b6f6, #0a84ff) !important; color: #fff !important; box-shadow: 0 8px 18px rgba(10, 132, 255, .2) !important; }
+body .tasks-page .task-page-row { border: 1px solid transparent !important; border-radius: 20px !important; background: rgba(255, 255, 255, .62) !important; box-shadow: none !important; }
+body .tasks-page .task-page-row:hover { border-color: rgba(10, 132, 255, .13) !important; background: #fff !important; box-shadow: var(--shadow-sm) !important; }
+body .tasks-page .task-focus-card {
+  padding: 22px !important;
+  border: 1px solid rgba(255, 255, 255, .3) !important;
+  border-radius: 26px !important;
+  background: radial-gradient(circle at 90% 10%, rgba(255, 255, 255, .24), transparent 34%), linear-gradient(145deg, #b35af0 0%, #7657ff 48%, #4776ff 100%) !important;
+  color: #fff !important;
+  box-shadow: 0 20px 40px rgba(112, 74, 222, .24), inset 0 1px 0 rgba(255, 255, 255, .28) !important;
+}
+body .tasks-page .task-focus-card .section-kicker { border-color: rgba(255, 255, 255, .16) !important; background: rgba(255, 255, 255, .14) !important; color: rgba(255, 255, 255, .84) !important; }
+body .tasks-page .task-focus-card h2,
+body .tasks-page .task-focus-card p,
+body .tasks-page .focus-mark,
+body .tasks-page .focus-callout strong { color: #fff !important; }
+body .tasks-page .task-focus-card p,
+body .tasks-page .focus-callout small { color: rgba(255, 255, 255, .7) !important; }
+body .tasks-page .focus-mark { border-color: rgba(255, 255, 255, .18) !important; border-radius: 18px !important; background: rgba(255, 255, 255, .13) !important; box-shadow: none !important; }
+body .tasks-page .focus-callout { border-radius: 18px !important; background: rgba(255, 255, 255, .14) !important; box-shadow: none !important; }
+body .tasks-page .task-focus-card .link-button { border: 1px solid rgba(255, 255, 255, .22) !important; border-radius: 999px !important; background: rgba(255, 255, 255, .15) !important; color: #fff !important; }
+body .tasks-page .task-principles { background: linear-gradient(145deg, rgba(255, 255, 255, .82), rgba(234, 251, 255, .76)) !important; }
+body .tasks-page .task-principles h2 { color: var(--ink) !important; }
+body .tasks-page .task-principles p,
+body .tasks-page .principle-line { color: var(--muted) !important; }
+body .tasks-page .principle-line i { background: var(--ios-cyan) !important; }
+body .tasks-page .task-priority { border-radius: 999px !important; }
+
+/* Remaining data and colour states */
+body .member-card .progress-track i,
+body .member-card .capacity-track i { background: linear-gradient(90deg, #4cc9f0, #0a84ff) !important; }
+body .member-card .capacity-watch i { background: linear-gradient(90deg, #ffd60a, #ff9f0a) !important; }
+body .member-card .capacity-high i { background: linear-gradient(90deg, #ff7a6b, #ff375f) !important; }
+body .note-card-featured { border-color: rgba(255, 255, 255, .26) !important; background: radial-gradient(circle at 88% 12%, rgba(255, 255, 255, .2), transparent 33%), linear-gradient(135deg, #5c61ef 0%, #8a54e5 48%, #d452b4 100%) !important; }
+body .note-card-featured h3,
+body .note-card-featured .text-button { color: #fff !important; }
+body .settings-nav-item.active { border-color: transparent !important; background: linear-gradient(135deg, #4cc9f0, #0a84ff) !important; color: #fff !important; box-shadow: 0 8px 18px rgba(10, 132, 255, .2) !important; }
+
+@media (max-width: 1180px) {
+  body .projects-page .project-filter-rail { grid-template-columns: minmax(190px, .8fr) minmax(0, 1.5fr) auto !important; }
+  body .projects-page .project-type-cluster { grid-column: 1 / -1 !important; grid-row: 2 !important; }
+  body .projects-page .project-sort-control { grid-column: 3 !important; grid-row: 1 !important; }
+}
+
+@media (max-width: 900px) {
+  body .calendar-page .calendar-main,
+  body .calendar-page .calendar-agenda { padding: 18px !important; }
+}
+
+@media (max-width: 680px) {
+  body .portfolio-view-toggle { width: 44px !important; min-width: 44px !important; height: 44px !important; min-height: 44px !important; padding: 0 !important; }
+  body .projects-page .project-filter-rail { grid-template-columns: minmax(0, 1fr) auto !important; padding: 12px !important; }
+  body .projects-page .project-search-field,
+  body .projects-page .project-status-cluster,
+  body .projects-page .project-type-cluster { grid-column: 1 / -1 !important; grid-row: auto !important; }
+  body .projects-page .project-sort-control { grid-column: 2 !important; grid-row: 1 !important; }
+  body .projects-page .project-metrics,
+  body .tasks-page .tasks-metrics { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 8px !important; }
+  body .projects-page .project-metric,
+  body .projects-page .project-metric-attention,
+  body .tasks-page .task-metric,
+  body .tasks-page .task-metric-today { min-height: 100px !important; padding: 14px 11px !important; border-radius: 21px !important; }
+  body .tasks-page .tasks-panel,
+  body .tasks-page .task-focus-card,
+  body .tasks-page .task-principles { padding: 18px !important; }
+  body .tasks-page .tasks-toolbar { align-items: stretch !important; flex-direction: column !important; }
+  body .calendar-page .calendar-main,
+  body .calendar-page .calendar-agenda { padding: 15px !important; }
+}
+
+@media (max-width: 420px) {
+  body .projects-page .project-metrics,
+  body .tasks-page .tasks-metrics { grid-template-columns: minmax(0, 1fr) !important; }
+}
