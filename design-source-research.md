@@ -106,3 +106,36 @@ Apple describes motion as a way to convey status, provide feedback and instructi
 URL: https://www.w3.org/WAI/WCAG22/Understanding/animation-from-interactions.html
 
 W3C explains that non-essential interaction animation should be disableable and recommends respecting user motion preferences through `prefers-reduced-motion`. The StudioOS implication is to preserve useful state feedback while removing page transitions, scroll-linked effects and decorative movement for users who request reduced motion.
+
+## Product-flow upgrade — 25 August 2026
+
+### Apple Human Interface Guidelines — Layout
+
+URL: https://developer.apple.com/design/human-interface-guidelines/layout
+
+The upgraded workspace keeps the object being acted on visible while exposing its next actions in a persistent context panel. Projects use list/detail, Tasks pair the queue with a daily plan, Calendar pairs the grid with an agenda, Team pairs the directory with workload, and Notes use a three-pane browse/read/edit model.
+
+### Material Design 3 — Adaptive layouts and breakpoints
+
+URLs:
+
+- https://m3.material.io/foundations/layout/layout-overview/adaptive-design
+- https://m3.material.io/foundations/layout/breakpoints
+
+The main canvas now expands across the available viewport instead of stopping at a fixed content maximum. Wide views use complementary right-side panels; medium layouts reduce card columns; compact layouts stack context after the primary work without removing actions.
+
+### Atlassian Design System — Page layout, components and empty state
+
+URLs:
+
+- https://atlassian.design/components/page-layout
+- https://atlassian.design/components
+- https://atlassian.design/components/empty-state/
+
+The implementation uses predictable page anatomy, keeps filters adjacent to results, replaces placeholder actions with focused dialogs, and gives empty searches a direct recovery instruction. Low-value footer copy, a non-functional sign-out entry and a redundant inbox menu were removed.
+
+### Material Design 3 — Accessible flow
+
+URL: https://m3.material.io/foundations/designing/flow
+
+Dialogs preserve keyboard focus, the background workspace becomes inert while a modal is active, Escape closes the current modal, and a skip link gives keyboard users a direct route to the changing workspace content.
