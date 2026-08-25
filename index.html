@@ -27,11 +27,12 @@
     <link rel="stylesheet" href="./styles.css?v=20260818-layout-refinement-v23" />
     <link rel="stylesheet" href="./monochrome-overrides.css?v=20260817-remove-sidebar-diagonal-v1" />
     <link rel="stylesheet" href="./portfolio-layout.css?v=20260818-calm-ui-v24" />
-    <link rel="stylesheet" href="./ios-pill.css?v=20260825-bright-pill-v6" />
+    <link rel="stylesheet" href="./ios-pill.css?v=20260825-bright-pill-v7" />
     <link rel="preload" as="image" href="./assets/studioos-project-lumen-editorial.webp" fetchpriority="high" />
     <title>StudioOS — Creative project workspace for small teams</title>
   </head>
   <body>
+    <a class="skip-link" href="#pageView">Skip to workspace content</a>
     <div class="studio-shell">
       <aside class="studio-sidebar" id="sidebar">
         <div class="sidebar-brand">
@@ -78,10 +79,6 @@
                 <button type="button" role="menuitem" data-account-action="profile"><span data-icon="users" aria-hidden="true"></span><span><strong>Profile settings</strong><small>Personal details and preferences</small></span></button>
                 <button type="button" role="menuitem" data-account-action="preferences"><span data-icon="settings" aria-hidden="true"></span><span><strong>Workspace preferences</strong><small>Notifications and display</small></span></button>
               </div>
-              <div class="account-menu-footer">
-                <button type="button" role="menuitem" data-account-action="sign-out"><span data-icon="lock" aria-hidden="true"></span><span>Sign out</span></button>
-                <span class="account-version">StudioOS · v1.0</span>
-              </div>
             </div>
             <div class="notification-popover" id="notificationPopover" hidden>
               <div class="popover-heading"><strong>Notifications</strong><span>02 unread</span></div>
@@ -91,7 +88,7 @@
             <div class="help-popover" id="helpPopover" hidden>
               <div class="popover-heading"><strong>Help &amp; shortcuts</strong><span>Quick guide</span></div>
               <div class="shortcut-list"><div><span>Search workspace</span><kbd>⌘ K</kbd></div><div><span>Close panel</span><kbd>Esc</kbd></div><div><span>Open navigation</span><kbd>⌘ /</kbd></div></div>
-              <button class="help-link" id="helpDocsButton" type="button">Open help center <span aria-hidden="true">→</span></button>
+              <button class="help-link" id="helpDocsButton" type="button">Open quick guide <span aria-hidden="true">→</span></button>
             </div>
           </div>
         </header>
@@ -117,7 +114,7 @@
             </section>
 
             <aside class="project-inbox" aria-labelledby="inboxTitle">
-              <header class="inbox-heading"><h2 id="inboxTitle">Project inbox</h2><button class="icon-button subtle-icon" type="button" data-action="activity-options" aria-label="Inbox options"><span data-icon="more"></span></button></header>
+              <header class="inbox-heading"><h2 id="inboxTitle">Project inbox</h2><span class="inbox-count">04 updates</span></header>
               <p class="inbox-intro">Updates that need a decision, a handoff, or a next step.</p><div class="inbox-legend" role="group" aria-label="Inbox status legend"><span><i aria-hidden="true"></i> Needs review</span><small>Highlighted items need your next decision.</small></div>
               <div class="inbox-list" role="group" aria-label="Project updates">
                 <button class="inbox-item is-priority" type="button" data-action="review-notification"><span class="inbox-avatar">LH</span><span><strong>Lumen House</strong><small>Review request · 2 assets awaiting approval</small><span class="inbox-status inbox-status-review">Needs review</span><time>Due today</time></span><span data-icon="arrow-up-right"></span></button>
@@ -134,7 +131,6 @@
               </section>
             </aside>
           </div>
-          <footer class="workspace-footer portfolio-footer"><span><span class="footer-mark" data-icon="sparkles"></span> StudioOS / Project coordination for creative teams.</span><span>Last synced just now <i class="sync-dot"></i></span></footer>
         </div>
       </main>
     </div>
@@ -176,9 +172,19 @@
       </div>
     </div>
 
+    <div class="dialog-layer workspace-dialog-layer" id="workspaceDialog" hidden>
+      <div class="dialog-card workspace-dialog" role="dialog" aria-modal="true" aria-labelledby="workspaceDialogTitle" aria-describedby="workspaceDialogDescription">
+        <button class="dialog-close" type="button" data-close-dialog="workspaceDialog" aria-label="Close dialog"><span data-icon="x"></span></button>
+        <div class="dialog-eyebrow" id="workspaceDialogEyebrow"><span data-icon="sparkles"></span> Workspace</div>
+        <h2 id="workspaceDialogTitle">Workspace action</h2>
+        <p class="dialog-description" id="workspaceDialogDescription"></p>
+        <div class="workspace-dialog-body" id="workspaceDialogBody"></div>
+      </div>
+    </div>
+
     <div class="toast-region" id="toastRegion" aria-live="polite"></div>
     <noscript><div class="noscript-message">StudioOS needs JavaScript enabled to show the workspace interactions.</div></noscript>
-    <script src="./script.js?v=20260825-bright-pill-v1" defer></script>
+    <script src="./script.js?v=20260825-product-flow-v2" defer></script>
     <script type="module">
       import { createUIFeedback } from './ui-feedback.js?v=ui-feedback-v0.11.0-picker-inspector';
       createUIFeedback({ storageKey: 'studioos-ui-feedback', githubRepo: 'Ngh1aa/StudioOS' });
