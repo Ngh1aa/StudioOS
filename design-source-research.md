@@ -139,3 +139,37 @@ The implementation uses predictable page anatomy, keeps filters adjacent to resu
 URL: https://m3.material.io/foundations/designing/flow
 
 Dialogs preserve keyboard focus, the background workspace becomes inert while a modal is active, Escape closes the current modal, and a skip link gives keyboard users a direct route to the changing workspace content.
+
+## Pure Minimal theme — 25 August 2026
+
+### Design decision
+
+- **Palette:** warm off-white `#F5F5F2`, white `#FFFFFF`, ink `#171715`, two neutral text levels and blue `#2563EB` only for focus/action emphasis.
+- **Surfaces:** default surfaces are flat and opaque. Borders and whitespace separate content; shadows are reserved for dialogs, menus and toasts that genuinely overlay the page.
+- **Geometry:** 7–12px radius replaces the previous pill-heavy 14–32px system. Navigation, filters and buttons now read as compact product controls instead of decorative capsules.
+- **Typography:** Inter remains the sole type family. Weight, size and spacing establish hierarchy without gradients, oversized decorative punctuation or multiple accent colours.
+- **Motion:** decorative reveal animations are disabled. Immediate hover, focus, state and modal feedback remain.
+
+### Atlassian Design System — Elevation
+
+URL: https://atlassian.design/foundations/elevation
+
+Atlassian recommends a flat default surface paired with a border, while raised elevation and shadows are reserved for movable or specially emphasised layers. StudioOS now follows this model: workspace cards use a one-pixel border and no shadow; only overlays retain depth.
+
+### Atlassian Design System — Spacing and grid
+
+URLs:
+
+- https://atlassian.design/foundations/spacing
+- https://atlassian.design/foundations/grid
+
+The minimal theme keeps the 8px spacing rhythm and aligns top-level containers to a responsive grid. Large screens retain useful contextual columns while mobile stacks the same hierarchy without horizontal overflow.
+
+### Material Design 3 — Colour roles and icon-button emphasis
+
+URLs:
+
+- https://m3.material.io/styles/color/roles
+- https://m3.material.io/components/icon-buttons/guidelines
+
+Neutral roles cover most UI surfaces. Filled treatment is reserved for the highest-emphasis action, while secondary and utility actions use outlined or standard treatments.
