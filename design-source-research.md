@@ -1,5 +1,37 @@
 # StudioOS UI inspiration research
 
+## Bright Pill OS refresh — August 2026
+
+### Apple Human Interface Guidelines — Buttons
+
+URL: https://developer.apple.com/design/human-interface-guidelines/buttons
+
+Apple recommends using the app accent colour for primary actions and reserving system red for destructive actions. StudioOS maps that guidance to a consistent blue gradient for primary pills, neutral glass for secondary controls, green for success and pink-red only for destructive or error feedback.
+
+### Apple Human Interface Guidelines — Color
+
+URL: https://developer.apple.com/design/human-interface-guidelines/color
+
+Apple's system colours are designed to remain legible across backgrounds and vibrancy. StudioOS uses the familiar blue, green, orange, pink, purple and cyan roles while keeping saturated colour on compact controls and status surfaces rather than flooding whole content areas.
+
+### Apple Human Interface Guidelines — Materials
+
+URL: https://developer.apple.com/design/human-interface-guidelines/materials
+
+Apple describes materials as a way to separate foreground content from the background while retaining context. The StudioOS shell, navigation, top bar, menus and dialogs therefore use translucent white surfaces, blur and subtle borders, with solid or nearly solid backgrounds where dense text needs maximum clarity.
+
+### Apple Human Interface Guidelines — Tab bars
+
+URL: https://developer.apple.com/design/human-interface-guidelines/tab-bars
+
+Apple reserves tab bars for navigation rather than actions. StudioOS keeps the left capsule rail exclusively for page changes and places create, filter, review and save actions inside page-specific toolbars and cards.
+
+### Apple Human Interface Guidelines — Layout
+
+URL: https://developer.apple.com/design/human-interface-guidelines/layout
+
+Apple recommends familiar relationships between controls and the content they affect. StudioOS groups search and filter pills with their result collections, keeps status and progress inside each project card, and moves responsive navigation into a focused mobile sheet without changing page hierarchy.
+
 ## Initial source notes
 
 ### SaaSFrame

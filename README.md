@@ -4,11 +4,11 @@ StudioOS is a considered project workspace for small creative teams. The first v
 
 ## Design direction
 
-The interface follows **Quiet Precision**: a warm ivory canvas, graphite typography, muted copper action points, sage progress states and an editorial utility layout. The goal is to preserve the visual confidence of Atelier and LuxRoom while demonstrating a denser, more practical product workflow.
+The interface follows **Bright Pill OS**: an iOS-inspired system of bright system colours, translucent materials, capsule navigation, pill controls, large rounded surfaces and restrained spring-like motion. Blue identifies primary actions, green confirms healthy states, orange carries attention, and purple adds creative emphasis while the content remains readable on a light canvas.
 
 ## Stack
 
-The frontend is intentionally framework-free: semantic HTML, one stylesheet and one JavaScript file. The interface keeps its data in local JavaScript state so the interaction model can be reviewed before adding persistence. Generated project imagery and the brand mark live in `assets/`.
+The frontend is intentionally framework-free: semantic HTML, layered CSS and one JavaScript application file. `ios-pill.css` is the current presentation layer; the older stylesheets remain underneath it so product behaviour and legacy component coverage stay intact. The interface keeps its data in local JavaScript state so the interaction model can be reviewed before adding persistence. Project imagery and the brand mark live in `assets/`.
 
 ## Run locally
 
