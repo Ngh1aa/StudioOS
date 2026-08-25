@@ -50,7 +50,7 @@ let tasks = [
 ];
 
 const calendarItems = [
-  { id: "review-lumen", time: "09:30", title: "Review Lumen House feedback", project: "Brand system", owner: "Maya Chen", kind: "review", position: "event-one" },
+  { id: "review-lumen", time: "09:30", title: "Review Lumen House feedback", project: "Lumen House", owner: "Maya Chen", kind: "review", position: "event-one" },
   { id: "type-specimens", time: "13:00", title: "Share final type specimens", project: "Common Ground", owner: "Noah Williams", kind: "handoff", position: "event-two" },
   { id: "launch-sync", time: "15:30", title: "Launch sync", project: "Northstar / Q3", owner: "Jules Tran", kind: "meeting", position: "event-three" },
   { id: "feedback-window", time: "11:00", title: "Client feedback window", project: "Lumen House", owner: "Maya Chen", kind: "review", position: "event-four" },
@@ -100,7 +100,20 @@ let activeDialogId = null;
 let dialogReturnFocus = null;
 let searchResultItems = [];
 let readNotifications = new Set();
-let workspaceSettings = { workspaceName: "StudioOS", workspaceSlug: "studioos", workspaceDescription: "A small creative studio making clear, considered work.", showHealth: true, mondayStart: true, dailyFocus: false };
+let workspaceSettings = {
+  workspaceName: "StudioOS",
+  workspaceSlug: "studioos",
+  workspaceDescription: "A small creative studio making clear, considered work.",
+  showHealth: true,
+  mondayStart: true,
+  dailyFocus: false,
+  reviewAlerts: true,
+  deadlineAlerts: true,
+  weeklyDigest: true,
+  compactDensity: false,
+  reduceMotion: false,
+  colorfulPanels: true,
+};
 const WORKSPACE_SELECTION_KEY = "studioos-active-workspace";
 const workspaceOptions = [
   { id: "portfolio", name: "Portfolio workspace", mark: "P", detail: "4 projects · 3 active" },
@@ -115,12 +128,56 @@ const searchNotes = [
   { id: "note-studio-rhythm", title: "Studio / weekly rhythm", excerpt: "Protect Tuesday mornings for deep work and thoughtful review.", tag: "Internal" },
 ];
 
+let workspaceNotes = [
+  { id: "note-lumen-feedback", title: "Lumen House / feedback", body: "The type rhythm feels right. One last pass on the mobile lockup before approval. Keep the handoff focused on spacing, contrast and the final responsive states.", tag: "Review", scope: "project", dateLabel: "18 Aug", datetime: "2026-08-18", pinned: true },
+  { id: "note-northstar-launch", title: "Northstar / launch notes", body: "Keep the launch story focused on the first moment of recognition. The opening message should lead directly into the campaign system and delivery checklist.", tag: "Campaign", scope: "project", dateLabel: "17 Aug", datetime: "2026-08-17", pinned: false },
+  { id: "note-common-ground-research", title: "Common Ground / research", body: "People understand the purpose quickly when the first action is visible. Reduce competing calls to action and keep the primary path close to the project context.", tag: "Research", scope: "project", dateLabel: "12 Aug", datetime: "2026-08-12", pinned: false },
+  { id: "note-studio-rhythm", title: "Studio / weekly rhythm", body: "Protect Tuesday mornings for deep work and thoughtful review. Keep Friday afternoon available for handoff checks and planning the next week.", tag: "Internal", scope: "team", dateLabel: "08 Aug", datetime: "2026-08-08", pinned: false },
+];
+
+let studioMembers = [
+  { id: "alex-tran", initials: "AT", name: "Alex Tran", role: "Product designer", color: "copper", load: 72, focus: "Lumen House", projects: 3, availability: "Available today", email: "alex.tran@studioos.co" },
+  { id: "maya-chen", initials: "MC", name: "Maya Chen", role: "Creative director", color: "sage", load: 54, focus: "Lumen House", projects: 2, availability: "Reviewing until 15:00", email: "maya.chen@studioos.co" },
+  { id: "noah-williams", initials: "NW", name: "Noah Williams", role: "Design engineer", color: "blue", load: 81, focus: "Common Ground", projects: 4, availability: "Near capacity", email: "noah.williams@studioos.co" },
+  { id: "jules-tran", initials: "JT", name: "Jules Tran", role: "Brand designer", color: "ink", load: 36, focus: "Northstar / Q3", projects: 2, availability: "Open for new work", email: "jules.tran@studioos.co" },
+];
+
+let selectedProjectId = projects[0]?.id || null;
+let activeNoteId = workspaceNotes[0]?.id || null;
+let calendarViewMode = "Week";
+let calendarOffset = 0;
+let currentSettingsTab = "Workspace";
+let focusSessionEndsAt = null;
+
+function escapeHtml(value = "") {
+  return String(value).replace(/[&<>'"]/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" })[character]);
+}
+
+function slugify(value = "") {
+  return String(value).trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || `item-${Date.now()}`;
+}
+
+function updateWorkspaceCounts() {
+  const values = { Projects: projects.length, Tasks: tasks.filter((task) => !task.done).length, Notes: workspaceNotes.length };
+  Object.entries(values).forEach(([page, value]) => {
+    const badge = document.querySelector(`[data-nav='${page}'] em`);
+    if (badge) badge.textContent = String(value).padStart(2, "0");
+  });
+  const stats = document.querySelectorAll(".portfolio-stats > div strong");
+  if (stats[0]) stats[0].textContent = String(projects.length).padStart(2, "0");
+  if (stats[1]) stats[1].textContent = String(projects.filter((project) => project.status === "In review").length).padStart(2, "0");
+  if (stats[2]) stats[2].textContent = String(projects.filter((project) => project.progress < 100).length).padStart(2, "0");
+}
+
 function loadWorkspaceState() {
   try {
     const saved = JSON.parse(localStorage.getItem(WORKSPACE_STATE_KEY) || "null");
     if (!saved || typeof saved !== "object") return;
     if (Array.isArray(saved.projects) && saved.projects.length) projects.splice(0, projects.length, ...saved.projects);
     if (Array.isArray(saved.tasks) && saved.tasks.length) tasks = saved.tasks;
+    if (Array.isArray(saved.notes) && saved.notes.length) workspaceNotes = saved.notes;
+    if (Array.isArray(saved.calendarItems) && saved.calendarItems.length) calendarItems.splice(0, calendarItems.length, ...saved.calendarItems);
+    if (Array.isArray(saved.members) && saved.members.length) studioMembers = saved.members;
     if (saved.settings && typeof saved.settings === "object") workspaceSettings = { ...workspaceSettings, ...saved.settings };
     if (Array.isArray(saved.readNotifications)) readNotifications = new Set(saved.readNotifications);
     if (workspaceOptions.some((item) => item.id === saved.activeWorkspaceId)) activeWorkspaceId = saved.activeWorkspaceId;
@@ -131,7 +188,7 @@ function loadWorkspaceState() {
 
 function persistWorkspaceState() {
   try {
-    localStorage.setItem(WORKSPACE_STATE_KEY, JSON.stringify({ projects, tasks, settings: workspaceSettings, readNotifications: [...readNotifications], activeWorkspaceId }));
+    localStorage.setItem(WORKSPACE_STATE_KEY, JSON.stringify({ projects, tasks, notes: workspaceNotes, calendarItems, members: studioMembers, settings: workspaceSettings, readNotifications: [...readNotifications], activeWorkspaceId }));
   } catch {
     // The current session remains usable when storage is unavailable.
   }
@@ -362,7 +419,7 @@ function bindTasksPage() {
     const task = tasks.find((item) => String(item.id) === row.dataset.taskId);
     if (!task) return;
     if (completeButton) toggleTask(task);
-    if (moreButton) toast(`More actions for ${task.label} are coming soon.`);
+    if (moreButton) openTaskActions(task);
   });
   list?.addEventListener("dragstart", (event) => {
     const handle = event.target.closest("[data-task-drag-handle]");
@@ -555,6 +612,12 @@ function toggleTask(task) {
 
 function addTaskToWorkspace(taskData = null) {
   if (!taskData) {
+    const projectSelect = document.querySelector("#taskProjectInput");
+    if (projectSelect) {
+      const current = projectSelect.value;
+      projectSelect.innerHTML = [`<option value="Workspace">Workspace</option>`, ...projects.map((project) => `<option value="${escapeHtml(project.name)}">${escapeHtml(project.name)}</option>`)].join("");
+      if ([...projectSelect.options].some((option) => option.value === current)) projectSelect.value = current;
+    }
     openDialog("taskDialog");
     return;
   }
@@ -775,46 +838,588 @@ function bindGlobalSearch() {
   panel.addEventListener("click", (event) => { const result = event.target.closest("[data-search-index]"); if (result) openSearchResult(searchResultItems[Number(result.dataset.searchIndex)]); });
 }
 
+/*
+  StudioOS product-flow upgrade
+  The later declarations below intentionally replace the earlier prototype
+  renderers with complete, stateful workspace flows.
+*/
+const PAGE_SLUGS = { Overview: "overview", Projects: "projects", Calendar: "calendar", Tasks: "tasks", Team: "team", Notes: "notes", Insights: "insights", Settings: "settings" };
+const SLUG_PAGES = Object.fromEntries(Object.entries(PAGE_SLUGS).map(([page, slug]) => [slug, page]));
+
+function pageFromUrl() {
+  const slug = new URL(window.location.href).searchParams.get("view") || "overview";
+  return SLUG_PAGES[slug.toLowerCase()] || "Overview";
+}
+
+function writePageUrl(page, replace = false) {
+  const url = new URL(window.location.href);
+  if (page === "Overview") url.searchParams.delete("view");
+  else url.searchParams.set("view", PAGE_SLUGS[page]);
+  const method = replace ? "replaceState" : "pushState";
+  window.history[method]({ page }, "", `${url.pathname}${url.search}${url.hash}`);
+}
+
+function applyUserPreferences() {
+  document.body.classList.toggle("studio-compact", Boolean(workspaceSettings.compactDensity));
+  document.body.classList.toggle("studio-reduce-motion", Boolean(workspaceSettings.reduceMotion));
+  document.body.classList.toggle("studio-muted-panels", workspaceSettings.colorfulPanels === false);
+  document.body.classList.toggle("studio-hide-health", workspaceSettings.showHealth === false);
+}
+
+function toast(message, type = "", actionConfig = null) {
+  const region = document.querySelector("#toastRegion");
+  if (!region) return;
+  const node = document.createElement("div");
+  node.className = `toast ${type}`;
+  const copy = document.createElement("span");
+  copy.className = "toast-copy";
+  copy.textContent = String(message);
+  node.append(copy);
+  if (actionConfig) {
+    const action = document.createElement("button");
+    action.className = "toast-action";
+    action.type = "button";
+    action.textContent = actionConfig.label;
+    action.addEventListener("click", () => { actionConfig.action(); dismissToast(node); });
+    node.append(action);
+  }
+  region.append(node);
+  window.setTimeout(() => dismissToast(node), actionConfig ? 5200 : 3200);
+}
+
+function openDialog(id) {
+  const layer = document.querySelector(`#${id}`);
+  if (!layer) return;
+  dialogReturnFocus = document.activeElement;
+  activeDialogId = id;
+  layer.hidden = false;
+  document.body.style.overflow = "hidden";
+  document.querySelector(".studio-shell")?.setAttribute("inert", "");
+  const dialog = layer.querySelector("[role='dialog']");
+  const preferred = dialog?.querySelector("[data-autofocus], input:not([type='hidden']), textarea, select");
+  const heading = dialog?.querySelector("h2");
+  if (heading && !heading.hasAttribute("tabindex")) heading.setAttribute("tabindex", "-1");
+  window.setTimeout(() => (preferred || heading || getFocusable(dialog || layer)[0] || dialog)?.focus(), 20);
+}
+
+function closeDialog(id) {
+  const layer = document.querySelector(`#${id}`);
+  if (!layer) return;
+  const returnFocus = dialogReturnFocus;
+  layer.hidden = true;
+  if (activeDialogId === id) activeDialogId = null;
+  const anotherDialog = document.querySelector(".dialog-layer:not([hidden])");
+  document.body.style.overflow = anotherDialog ? "hidden" : "";
+  if (!anotherDialog) document.querySelector(".studio-shell")?.removeAttribute("inert");
+  dialogReturnFocus = null;
+  if (returnFocus && typeof returnFocus.focus === "function" && returnFocus.isConnected) window.setTimeout(() => returnFocus.focus(), 20);
+}
+
+function openWorkspaceDialog({ eyebrow = "Workspace", title, description = "", body = "" }) {
+  const layer = document.querySelector("#workspaceDialog");
+  if (!layer) return;
+  document.querySelector("#workspaceDialogEyebrow").innerHTML = `${icon("sparkles")} ${escapeHtml(eyebrow)}`;
+  document.querySelector("#workspaceDialogTitle").textContent = title;
+  const descriptionNode = document.querySelector("#workspaceDialogDescription");
+  descriptionNode.textContent = description;
+  descriptionNode.hidden = !description;
+  const bodyNode = document.querySelector("#workspaceDialogBody");
+  bodyNode.innerHTML = body;
+  bodyNode.querySelectorAll("[data-close-dialog]").forEach((button) => button.addEventListener("click", () => closeDialog(button.dataset.closeDialog)));
+  renderIcons();
+  openDialog("workspaceDialog");
+}
+
+function showContextMenu(button, items = []) {
+  const label = button?.getAttribute("aria-label") || "Quick actions";
+  openWorkspaceDialog({
+    eyebrow: "Workspace / Actions",
+    title: label.replace(/^More (options|actions) for\s*/i, ""),
+    description: "Choose the next action.",
+    body: `<div class="context-action-list">${items.map((item) => `<button type="button" data-context-option="${escapeHtml(item)}">${escapeHtml(item)}${icon("chevron-right")}</button>`).join("")}</div>`,
+  });
+  document.querySelectorAll("[data-context-option]").forEach((option) => option.addEventListener("click", () => {
+    const action = option.dataset.contextOption;
+    closeDialog("workspaceDialog");
+    toast(`${action} applied.`);
+  }));
+}
+
+function projectCard(project) {
+  const imagePriority = project.id === "lumen-house" ? 'fetchpriority="high" loading="eager"' : 'loading="lazy"';
+  const progressTone = projectProgressTone(project.progress);
+  const name = escapeHtml(project.name);
+  return `<article class="project-card project-card-${escapeHtml(project.id)} project-progress-${progressTone} ${selectedProjectId === project.id ? "is-selected" : ""}" data-project-id="${escapeHtml(project.id)}"><div class="project-cover"><img src="${escapeHtml(project.cover)}" width="1600" height="1067" ${imagePriority} decoding="async" alt="${name} cover artwork; ${escapeHtml(project.type)}, ${project.progress}% complete" /><button class="project-cover-cta js-project-open" type="button" aria-label="Open ${name}"><span>Open project</span>${icon("arrow-up-right")}</button></div><div class="project-card-body"><div class="project-title-row"><div><span class="project-eyebrow">${projectIndex(project.id)} / ${escapeHtml(project.type)}</span><h3>${name}</h3><p>${escapeHtml(project.owner)}</p></div><span class="status-pill status-${escapeHtml(project.tone)}"><i class="status-dot"></i>${escapeHtml(project.status)}</span></div><div class="progress-meta"><span>Project progress</span><strong>${project.progress}%</strong></div><div class="progress-track progress-track-${progressTone}" aria-label="${project.progress}% complete"><span style="width:${project.progress}%"></span></div><div class="project-card-footer"><span class="due-date due-${escapeHtml(project.dueTone)}">${icon("clock")} ${escapeHtml(project.due)}</span><span class="card-actions">${avatarStack(project.members)}<button class="text-button js-review" type="button">Review ${icon("chevron-right")}</button></span></div></div></article>`;
+}
+
+function renderProjects(query = "") {
+  const grid = document.querySelector("#projectGrid");
+  if (!grid) return;
+  const normalized = query.trim().toLowerCase();
+  const results = normalized ? projects.filter((project) => `${project.name} ${project.type} ${project.owner}`.toLowerCase().includes(normalized)) : projects;
+  const visible = showAllProjects ? results : results.slice(0, 3);
+  grid.innerHTML = visible.length ? visible.map(projectCard).join("") : `<div class="empty-search">${icon("search")}<strong>No projects found</strong><span>Try another name, type or owner.</span></div>`;
+  const button = document.querySelector("#showAllButton");
+  if (button) {
+    button.innerHTML = `${icon(showAllProjects ? "chevron-left" : "dashboard")}<span class="show-all-label">${showAllProjects ? "Show less" : "View all projects"}</span>`;
+    button.setAttribute("aria-label", showAllProjects ? "Show fewer projects" : "Show all projects");
+  }
+  const activeCount = document.querySelector("#activeProjectCount");
+  if (activeCount) activeCount.textContent = String(projects.length).padStart(2, "0");
+  updateWorkspaceCounts();
+  renderIcons();
+}
+
+function projectDetailMarkup(project) {
+  if (!project) return `<div class="detail-empty">${icon("folder")}<strong>Select a project</strong><span>Choose a project to see its brief, tasks and next decision.</span></div>`;
+  const relatedTasks = tasks.filter((task) => task.project === project.name).slice(0, 4);
+  return `<div class="project-detail-hero"><img src="${escapeHtml(project.cover)}" alt="" /><div class="project-detail-hero-copy"><span class="section-kicker">${escapeHtml(project.type)} / Detail</span><h2>${escapeHtml(project.name)}</h2><p>Owned by ${escapeHtml(project.owner)}</p></div></div><div class="project-detail-status"><div><small>Status</small><strong>${escapeHtml(project.status)}</strong></div><div><small>Progress</small><strong>${project.progress}%</strong></div><div><small>Due</small><strong>${escapeHtml(project.due)}</strong></div></div><div class="project-detail-section"><div class="detail-heading"><div><span class="section-kicker">Brief / Current</span><h3>Next clear decision</h3></div></div><p>${project.status === "In review" ? "Approve the current review or leave one focused comment so the team can move forward." : "Confirm the next milestone and assign the first task that will move this project forward."}</p></div><div class="project-detail-section"><div class="detail-heading"><div><span class="section-kicker">Tasks</span><h3>Work attached</h3></div><button class="text-button" type="button" data-detail-action="add-task" data-project-id="${escapeHtml(project.id)}">Add task ${icon("plus")}</button></div><div class="detail-task-list">${relatedTasks.length ? relatedTasks.map((task) => `<button type="button" data-detail-action="open-task" data-task-id="${task.id}"><span class="detail-task-check ${task.done ? "is-done" : ""}">${task.done ? icon("check") : ""}</span><span><strong>${escapeHtml(task.label)}</strong><small>${escapeHtml(task.due)} · ${escapeHtml(task.priority)}</small></span></button>`).join("") : `<div class="compact-empty"><strong>No attached tasks</strong><span>Add the first next step for this project.</span></div>`}</div></div><div class="project-detail-actions"><button class="primary-button" type="button" data-detail-action="review" data-project-id="${escapeHtml(project.id)}">${icon("file-check")} Open review</button><button class="ghost-button" type="button" data-detail-action="calendar" data-project-id="${escapeHtml(project.id)}">${icon("calendar")} Plan milestone</button></div>`;
+}
+
+function projectsPage() {
+  const inReview = projects.filter((project) => project.status === "In review").length;
+  const moving = projects.filter((project) => project.status === "On track").length;
+  return `<div class="page-shell-page projects-page">${pageHeader("02 / Portfolio", "Projects", "Find the work, understand its status and take the next action without leaving the page.", `<button class="primary-button" id="pageNewProjectButton" type="button"><span data-icon="plus"></span> New project</button>`)}<section class="project-filter-rail project-controls" aria-label="Project controls"><label class="project-search-field toolbar-search"><span data-icon="search"></span><span class="sr-only">Search projects</span><input id="projectFilterInput" type="search" placeholder="Search projects" /></label><div class="project-filter-cluster filter-group" role="group" aria-label="Project status"><div class="filter-chips"><button class="filter-chip filter-tag active" type="button" aria-pressed="true" data-project-filter="All">All <em>${String(projects.length).padStart(2, "0")}</em></button><button class="filter-chip filter-tag" type="button" aria-pressed="false" data-project-filter="In review">In review <em>${String(inReview).padStart(2, "0")}</em></button><button class="filter-chip filter-tag" type="button" aria-pressed="false" data-project-filter="On track">On track <em>${String(moving).padStart(2, "0")}</em></button><button class="filter-chip filter-tag" type="button" aria-pressed="false" data-project-filter="Not started">Not started</button></div></div><div class="taxonomy-scroller" role="group" aria-label="Filter projects by type"><button class="taxonomy-chip filter-tag active" type="button" aria-pressed="true" data-project-view="All">All work</button><button class="taxonomy-chip filter-tag" type="button" aria-pressed="false" data-project-view="Brand">Brand</button><button class="taxonomy-chip filter-tag" type="button" aria-pressed="false" data-project-view="Digital">Digital</button><button class="taxonomy-chip filter-tag" type="button" aria-pressed="false" data-project-view="Campaign">Campaign</button><button class="taxonomy-chip filter-tag" type="button" aria-pressed="false" data-project-view="Research">Research</button></div><button class="ghost-button project-sort-control" type="button" data-action="sort-projects" aria-label="Sort projects"><span class="sort-label">Priority</span> <span data-icon="sliders"></span></button></section><section class="projects-workspace"><div class="projects-index-panel"><div class="project-index-heading"><div><span class="section-kicker">All work / Current</span><h2>Project index</h2></div><span class="page-count" id="projectsPageCount" aria-live="polite">${projects.length} results</span></div><div class="project-grid projects-page-grid" id="projectsPageGrid"></div></div><aside class="project-detail-panel panel-surface" id="projectDetailPanel" aria-live="polite">${projectDetailMarkup(projects.find((project) => project.id === selectedProjectId) || projects[0])}</aside></section></div>`;
+}
+
+function renderProjectDetail(project) {
+  if (project) selectedProjectId = project.id;
+  const panel = document.querySelector("#projectDetailPanel");
+  if (!panel) return;
+  panel.innerHTML = projectDetailMarkup(project || projects.find((item) => item.id === selectedProjectId));
+  document.querySelectorAll("#projectsPageGrid .project-card").forEach((card) => card.classList.toggle("is-selected", card.dataset.projectId === selectedProjectId));
+  renderIcons();
+}
+
+function renderProjectsPage(query = "", filter = currentProjectFilter, view = currentProjectView) {
+  const grid = document.querySelector("#projectsPageGrid");
+  if (!grid) return;
+  const normalized = query.trim().toLowerCase();
+  const filtered = projects.filter((project) => {
+    const matchesQuery = !normalized || `${project.name} ${project.type} ${project.owner}`.toLowerCase().includes(normalized);
+    const matchesFilter = filter === "All" || project.status === filter;
+    const matchesView = view === "All" || project.view === view;
+    return matchesQuery && matchesFilter && matchesView;
+  }).sort((a, b) => currentProjectSort === "progress" ? b.progress - a.progress : currentProjectSort === "name" ? a.name.localeCompare(b.name) : projects.indexOf(a) - projects.indexOf(b));
+  grid.innerHTML = filtered.length ? filtered.map(projectCard).join("") : `<div class="empty-search page-empty">${icon("search")}<strong>No projects in this view</strong><span>Clear a filter or try another keyword.</span></div>`;
+  const count = document.querySelector("#projectsPageCount");
+  if (count) count.textContent = `${filtered.length} result${filtered.length === 1 ? "" : "s"}`;
+  if (!filtered.some((project) => project.id === selectedProjectId)) selectedProjectId = filtered[0]?.id || null;
+  renderProjectDetail(filtered.find((project) => project.id === selectedProjectId) || filtered[0] || null);
+  renderIcons();
+}
+
+function prefillTaskProject(projectName) {
+  const projectSelect = document.querySelector("#taskProjectInput");
+  if (projectSelect && [...projectSelect.options].some((option) => option.value === projectName)) projectSelect.value = projectName;
+}
+
+function bindProjectsPage() {
+  const input = document.querySelector("#projectFilterInput");
+  const rerender = () => renderProjectsPage(input?.value || "", currentProjectFilter, currentProjectView);
+  input?.addEventListener("input", rerender);
+  document.querySelectorAll("[data-project-filter]").forEach((button) => button.addEventListener("click", () => { currentProjectFilter = button.dataset.projectFilter; document.querySelectorAll("[data-project-filter]").forEach((item) => { const active = item === button; item.classList.toggle("active", active); item.setAttribute("aria-pressed", String(active)); }); rerender(); }));
+  document.querySelectorAll("[data-project-view]").forEach((button) => button.addEventListener("click", () => { currentProjectView = button.dataset.projectView; document.querySelectorAll("[data-project-view]").forEach((item) => { const active = item === button; item.classList.toggle("active", active); item.setAttribute("aria-pressed", String(active)); }); rerender(); }));
+  document.querySelector("[data-action='sort-projects']")?.addEventListener("click", (event) => { const modes = [{ key: "priority", label: "Priority" }, { key: "progress", label: "Progress" }, { key: "name", label: "A–Z" }]; const next = modes[(modes.findIndex((mode) => mode.key === currentProjectSort) + 1) % modes.length]; currentProjectSort = next.key; event.currentTarget.querySelector(".sort-label").textContent = next.label; rerender(); });
+  document.querySelector("#pageNewProjectButton")?.addEventListener("click", () => openDialog("createDialog"));
+  document.querySelector("#projectsPageGrid")?.addEventListener("click", (event) => { const card = event.target.closest(".project-card"); const project = projects.find((item) => item.id === card?.dataset.projectId); if (!project) return; if (event.target.closest(".js-review")) openReview(project); else if (event.target.closest(".js-project-open")) renderProjectDetail(project); });
+  document.querySelector("#projectDetailPanel")?.addEventListener("click", (event) => { const button = event.target.closest("[data-detail-action]"); if (!button) return; const project = projects.find((item) => item.id === (button.dataset.projectId || selectedProjectId)); if (button.dataset.detailAction === "review" && project) openReview(project); if (button.dataset.detailAction === "add-task" && project) { addTaskToWorkspace(); window.setTimeout(() => prefillTaskProject(project.name), 30); } if (button.dataset.detailAction === "calendar" && project) openMilestoneComposer(project.name); if (button.dataset.detailAction === "open-task") { const task = tasks.find((item) => String(item.id) === button.dataset.taskId); if (task) { document.querySelector("[data-nav='Tasks']")?.click(); window.setTimeout(() => { const field = document.querySelector("#tasksSearchInput"); if (field) { field.value = task.label; field.dispatchEvent(new Event("input", { bubbles: true })); field.focus(); } }, 220); } } });
+}
+
+function taskPageRow(task, index) {
+  const priority = (task.priority || "Medium").toLowerCase();
+  const dueLabel = task.due.toLowerCase();
+  const dueTone = dueLabel.includes("overdue") || dueLabel.includes("late") ? "overdue" : dueLabel.includes("today") ? "today" : "upcoming";
+  const actionLabel = task.done ? `Move ${task.label} back to open tasks` : `Complete ${task.label}`;
+  return `<article class="task-page-row ${task.done ? "task-done" : ""}" data-task-id="${task.id}" draggable="true" aria-grabbed="false"><button class="task-drag-handle" type="button" data-task-drag-handle aria-label="Reorder ${escapeHtml(task.label)}. Use Arrow Up or Arrow Down." aria-keyshortcuts="ArrowUp ArrowDown">${icon("grip")}</button><button class="task-check ${task.done ? "checked" : ""}" type="button" data-task-complete aria-label="${escapeHtml(actionLabel)}">${task.done ? icon("check") : ""}</button><span class="task-row-index" aria-hidden="true">${String(index + 1).padStart(2, "0")}</span><span class="task-page-copy"><strong>${escapeHtml(task.label)}</strong><small><i class="task-project-marker" aria-hidden="true"></i>${escapeHtml(task.project)}</small></span><span class="task-priority priority-${priority}"><i aria-hidden="true"></i>${escapeHtml(task.priority || "Medium")}</span><span class="task-page-due task-due-${dueTone}">${escapeHtml(task.due)}</span><button class="icon-button task-more" type="button" data-action="task-options" aria-label="More options for ${escapeHtml(task.label)}">${icon("more")}</button></article>`;
+}
+
+function renderTasksPage(query = "", filter = currentTaskFilter) {
+  const list = document.querySelector("#tasksPageList");
+  if (!list) return;
+  const normalized = query.trim().toLowerCase();
+  const completed = tasks.filter((task) => task.done).length;
+  const open = tasks.length - completed;
+  const dueToday = tasks.filter((task) => !task.done && task.due.toLowerCase().includes("today")).length;
+  const visible = tasks.filter((task) => (!normalized || `${task.label} ${task.project}`.toLowerCase().includes(normalized)) && (filter === "All" || (filter === "Open" ? !task.done : task.done)));
+  list.innerHTML = visible.length ? visible.map(taskPageRow).join("") : `<div class="empty-search page-empty">${icon("check-circle")}<strong>${filter === "Complete" ? "Nothing completed yet" : "No tasks in this view"}</strong><span>${filter === "Complete" ? "Complete a task and it will appear here." : "Clear a filter or try another keyword."}</span></div>`;
+  const updates = { tasksOpenMetric: open, tasksCompletedMetric: completed, tasksTodayMetric: dueToday, tasksAllCount: tasks.length, tasksOpenCount: open, tasksCompleteCount: completed };
+  Object.entries(updates).forEach(([id, value]) => { const node = document.querySelector(`#${id}`); if (node) node.textContent = String(value).padStart(2, "0"); });
+  const resultCount = document.querySelector("#tasksResultCount");
+  if (resultCount) resultCount.textContent = `${visible.length} task${visible.length === 1 ? "" : "s"}`;
+  updateWorkspaceCounts();
+  renderIcons();
+}
+
+function openTaskActions(task) {
+  openWorkspaceDialog({
+    eyebrow: "Tasks / Actions",
+    title: task.label,
+    description: `${task.project} · ${task.due}`,
+    body: `<div class="context-action-list"><button type="button" data-task-menu="priority">Set high priority ${icon("chevron-right")}</button><button type="button" data-task-menu="tomorrow">Move to tomorrow ${icon("chevron-right")}</button><button type="button" data-task-menu="duplicate">Duplicate task ${icon("chevron-right")}</button></div>`,
+  });
+  document.querySelectorAll("[data-task-menu]").forEach((button) => button.addEventListener("click", () => {
+    const action = button.dataset.taskMenu;
+    if (action === "priority") task.priority = "High";
+    if (action === "tomorrow") task.due = "Due tomorrow";
+    if (action === "duplicate") tasks.unshift({ ...task, id: Date.now(), label: `${task.label} copy`, done: false });
+    persistWorkspaceState();
+    closeDialog("workspaceDialog");
+    refreshTaskViews();
+    toast(action === "duplicate" ? "Task duplicated." : "Task updated.");
+  }));
+}
+
+function tasksPage() {
+  const completed = tasks.filter((task) => task.done).length;
+  const open = tasks.length - completed;
+  const dueToday = tasks.filter((task) => !task.done && task.due.toLowerCase().includes("today")).length;
+  return `<div class="page-shell-page tasks-page">${pageHeader("04 / Tasks", "Tasks", "Capture, prioritise and complete work from one focused queue.", `<button class="primary-button" id="tasksAddButton" type="button"><span data-icon="plus"></span> Add task</button>`)}<section class="tasks-metrics" aria-label="Task summary"><article class="task-metric"><small>Open tasks</small><strong id="tasksOpenMetric">${String(open).padStart(2, "0")}</strong><span>ready for attention</span></article><article class="task-metric"><small>Completed</small><strong id="tasksCompletedMetric">${String(completed).padStart(2, "0")}</strong><span>in this workspace</span></article><article class="task-metric task-metric-today"><small>Due today</small><strong id="tasksTodayMetric">${String(dueToday).padStart(2, "0")}</strong><span>needs a decision</span></article></section><section class="tasks-layout"><article class="panel-surface tasks-panel"><div class="page-section-heading tasks-heading"><div><span class="section-kicker">Queue / Current</span><h2>Work in focus</h2></div><span class="page-count" id="tasksResultCount" aria-live="polite"></span></div><div class="tasks-toolbar"><label class="toolbar-search"><span data-icon="search"></span><span class="sr-only">Search tasks</span><input id="tasksSearchInput" type="search" placeholder="Search tasks" /></label><div class="filter-chips" role="group" aria-label="Task filters"><button class="filter-chip task-filter-tag ${currentTaskFilter === "All" ? "active" : ""}" type="button" data-task-filter="All">All <em id="tasksAllCount">${String(tasks.length).padStart(2, "0")}</em></button><button class="filter-chip task-filter-tag ${currentTaskFilter === "Open" ? "active" : ""}" type="button" data-task-filter="Open">Open <em id="tasksOpenCount">${String(open).padStart(2, "0")}</em></button><button class="filter-chip task-filter-tag ${currentTaskFilter === "Complete" ? "active" : ""}" type="button" data-task-filter="Complete">Complete <em id="tasksCompleteCount">${String(completed).padStart(2, "0")}</em></button></div></div><div class="task-list-heading" aria-hidden="true"><span></span><span># / Task</span><span>Priority</span><span>Due</span><span></span></div><div class="tasks-page-list" id="tasksPageList"></div></article><aside class="tasks-side-column"><article class="panel-surface task-focus-card"><div class="section-heading-row compact-heading"><div><span class="section-kicker">Suggested / Today</span><h2>Protect the next hour</h2></div><span class="focus-mark"><small>Focus</small><strong>01</strong></span></div><p>Start with the review that unblocks the most people.</p><div class="focus-callout"><span class="signal-icon signal-icon-copper" data-icon="message"></span><span><strong>Review Lumen House feedback</strong><small>High priority · Due today</small></span></div><button class="primary-button focus-session-button" type="button" data-action="focus-timer">Start 25-minute focus</button></article><article class="panel-surface today-plan"><span class="section-kicker">Today / Rhythm</span><h2>Three clear moves</h2><ol><li><strong>Review</strong><span>Unblock Lumen House</span></li><li><strong>Handoff</strong><span>Share final specimens</span></li><li><strong>Plan</strong><span>Move Northstar forward</span></li></ol></article></aside></section></div>`;
+}
+
+function refreshTaskViews() {
+  const activePage = document.querySelector("#activeBreadcrumb")?.textContent;
+  if (activePage === "Tasks") renderTasksPage(document.querySelector("#tasksSearchInput")?.value || "", currentTaskFilter);
+  else if (activePage === "Overview") renderTasks("");
+  if (activePage === "Projects") renderProjectDetail(projects.find((project) => project.id === selectedProjectId));
+}
+
+function calendarPeriod() {
+  const base = new Date(2026, 7, 18);
+  if (calendarViewMode === "Month") base.setMonth(base.getMonth() + calendarOffset);
+  else base.setDate(base.getDate() + calendarOffset * 7);
+  return base;
+}
+
+function calendarGridMarkup() {
+  const anchor = calendarPeriod();
+  if (calendarViewMode === "Month") {
+    const year = anchor.getFullYear();
+    const month = anchor.getMonth();
+    const first = new Date(year, month, 1);
+    const weekOffset = workspaceSettings.mondayStart ? (first.getDay() + 6) % 7 : first.getDay();
+    const cells = [];
+    for (let index = 0; index < 42; index += 1) {
+      const date = new Date(year, month, index - weekOffset + 1);
+      const inMonth = date.getMonth() === month;
+      const event = calendarItems[(date.getDate() + index) % calendarItems.length];
+      const hasEvent = inMonth && [5, 11, 14, 18, 24, 28].includes(date.getDate());
+      cells.push(`<button class="month-day ${inMonth ? "" : "is-outside"} ${date.getDate() === 18 && month === 7 ? "is-today" : ""}" type="button" data-action="calendar-day" data-calendar-day="${date.toISOString().slice(0, 10)}"><span>${date.getDate()}</span>${hasEvent ? `<i class="agenda-dot ${calendarTone(event.kind)}"></i><small>${escapeHtml(event.title)}</small>` : ""}</button>`);
+    }
+    const weekdays = workspaceSettings.mondayStart ? ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"] : ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    return `<div class="month-grid"><div class="month-weekdays">${weekdays.map((day) => `<span>${day}</span>`).join("")}</div><div class="month-days">${cells.join("")}</div></div>`;
+  }
+  const weekStart = new Date(anchor);
+  const startOffset = workspaceSettings.mondayStart ? (anchor.getDay() + 6) % 7 : anchor.getDay();
+  weekStart.setDate(anchor.getDate() - startOffset);
+  const days = Array.from({ length: 7 }, (_, index) => { const date = new Date(weekStart); date.setDate(weekStart.getDate() + index); return date; });
+  return `<div class="week-grid"><div class="week-label"></div>${days.map((date) => `<div><small>${date.toLocaleDateString("en-US", { weekday: "short" }).toUpperCase()}</small><strong class="${date.getDate() === 18 && date.getMonth() === 7 ? "today-date" : ""}">${date.getDate()}</strong></div>`).join("")}<span class="week-line line-1"></span><span class="week-line line-2"></span><span class="week-line line-3"></span><span class="week-line line-4"></span>${calendarItems.map((event) => `<button class="calendar-event event-${calendarTone(event.kind)} ${event.position}" type="button" data-action="calendar-event" data-calendar-event="${escapeHtml(event.id)}"><b>${escapeHtml(event.time)}</b> ${escapeHtml(event.title)}</button>`).join("")}</div>`;
+}
+
+function calendarPage() {
+  const anchor = calendarPeriod();
+  const periodLabel = anchor.toLocaleDateString("en-US", { month: "long", year: "numeric" });
+  return `<div class="page-shell-page calendar-page">${pageHeader("03 / Calendar", "Calendar", "See the week, inspect an event and add the next milestone without leaving context.", `<div class="calendar-actions"><button class="ghost-button" type="button" data-action="calendar-prev" aria-label="Previous ${calendarViewMode.toLowerCase()}">${icon("chevron-left")}</button><button class="ghost-button" type="button" data-action="calendar-next" aria-label="Next ${calendarViewMode.toLowerCase()}">${icon("chevron-right")}</button><button class="primary-button" type="button" data-action="calendar-add">${icon("plus")} Add milestone</button></div>`)}<section class="calendar-layout"><div class="calendar-main panel-surface"><div class="calendar-toolbar"><div><strong>${periodLabel}</strong><span>${calendarViewMode === "Week" ? "Focused weekly schedule" : "Monthly planning overview"}</span></div><div class="calendar-view-switch" role="group" aria-label="Calendar view"><button class="view-switch ${calendarViewMode === "Week" ? "active" : ""}" type="button" data-action="calendar-view" data-calendar-view="Week" aria-pressed="${calendarViewMode === "Week"}">Week</button><button class="view-switch ${calendarViewMode === "Month" ? "active" : ""}" type="button" data-action="calendar-view" data-calendar-view="Month" aria-pressed="${calendarViewMode === "Month"}">Month</button></div></div>${calendarGridMarkup()}</div><aside class="calendar-agenda panel-surface"><div class="section-heading-row compact-heading"><div><span class="section-kicker">Next up</span><h2>Schedule</h2></div><span class="agenda-date">${shortToday()}</span></div><div class="agenda-list">${calendarItems.map((event) => `<button class="agenda-item" type="button" data-action="calendar-event" data-calendar-event="${escapeHtml(event.id)}"><span class="agenda-time">${escapeHtml(event.time)}</span><span class="agenda-copy"><span class="agenda-title-row"><i class="agenda-dot ${calendarTone(event.kind)}"></i><strong>${escapeHtml(event.title)}</strong></span><small>${escapeHtml(event.project)} · ${escapeHtml(event.owner)}</small></span></button>`).join("")}</div><div class="agenda-summary"><span class="section-kicker">Capacity signal</span><strong>${calendarItems.length} planned moments</strong><p>Reviews lead the week. Keep one open block for feedback and handoff changes.</p></div></aside></section></div>`;
+}
+
+function openMilestoneComposer(projectName = "Lumen House") {
+  openWorkspaceDialog({ eyebrow: "Calendar / New milestone", title: "Plan the next moment.", description: "Add one clear event with an owner and project context.", body: `<form class="dialog-form" id="milestoneForm"><label>Milestone title<input name="title" placeholder="e.g. Client review" required data-autofocus /></label><div class="dialog-form-row"><label>Date<input name="date" type="date" value="2026-08-26" required /></label><label>Time<input name="time" type="time" value="10:00" required /></label></div><div class="dialog-form-row"><label>Project<select name="project">${projects.map((project) => `<option ${project.name === projectName ? "selected" : ""}>${escapeHtml(project.name)}</option>`).join("")}</select></label><label>Type<select name="kind"><option value="review">Review</option><option value="handoff">Handoff</option><option value="meeting">Meeting</option></select></label></div><div class="dialog-actions"><button class="cancel-button" type="button" data-close-dialog="workspaceDialog">Cancel</button><button class="primary-button" type="submit">Add milestone ${icon("check")}</button></div></form>` });
+  document.querySelector("#milestoneForm")?.addEventListener("submit", (event) => { event.preventDefault(); const data = new FormData(event.currentTarget); calendarItems.push({ id: slugify(`${data.get("title")}-${Date.now()}`), title: String(data.get("title")), date: String(data.get("date")), time: String(data.get("time")), project: String(data.get("project")), owner: "You", kind: String(data.get("kind")), position: `event-${["one", "two", "three", "four"][calendarItems.length % 4]}` }); persistWorkspaceState(); closeDialog("workspaceDialog"); if (document.querySelector("#activeBreadcrumb")?.textContent === "Calendar") renderPage("Calendar", { instant: true }); toast("Milestone added to the calendar."); });
+}
+
+function openCalendarEvent(eventId) {
+  const item = calendarItems.find((event) => event.id === eventId);
+  if (!item) return;
+  openWorkspaceDialog({ eyebrow: `Calendar / ${item.kind}`, title: item.title, description: `${item.time} · ${item.project}`, body: `<div class="detail-dialog-grid"><div><small>Owner</small><strong>${escapeHtml(item.owner)}</strong></div><div><small>Type</small><strong>${escapeHtml(item.kind)}</strong></div><div><small>Project</small><strong>${escapeHtml(item.project)}</strong></div><div><small>Time</small><strong>${escapeHtml(item.time)}</strong></div></div><div class="dialog-actions"><button class="ghost-button" type="button" data-event-action="task">Add related task</button><button class="primary-button" type="button" data-event-action="project">Open project</button></div>` });
+  document.querySelector("[data-event-action='task']")?.addEventListener("click", () => { closeDialog("workspaceDialog"); addTaskToWorkspace(); window.setTimeout(() => prefillTaskProject(item.project), 30); });
+  document.querySelector("[data-event-action='project']")?.addEventListener("click", () => { closeDialog("workspaceDialog"); const project = projects.find((entry) => entry.name === item.project); if (project) selectedProjectId = project.id; document.querySelector("[data-nav='Projects']")?.click(); });
+}
+
+function teamPage() {
+  const average = Math.round(studioMembers.reduce((sum, member) => sum + member.load, 0) / Math.max(studioMembers.length, 1));
+  return `<div class="page-shell-page team-page">${pageHeader("05 / People", "Team", "Find the right collaborator and understand capacity at a glance.", `<button class="primary-button" type="button" data-action="invite">${icon("users")} Invite collaborator</button>`)}<section class="metric-strip team-metric-strip"><div><small>Studio members</small><strong>${String(studioMembers.length).padStart(2, "0")}</strong><span>across ${String(projects.length).padStart(2, "0")} projects</span></div><div><small>Average capacity</small><strong>${average}%</strong><span>balanced this week</span></div><div><small>Available now</small><strong>${String(studioMembers.filter((member) => member.load < 65).length).padStart(2, "0")}</strong><span>ready for new work</span></div></section><section class="team-directory-layout"><div class="team-directory"><div class="page-section-heading"><div><span class="section-kicker">People / Directory</span><h2>Studio team</h2></div><label class="toolbar-search team-search"><span data-icon="search"></span><span class="sr-only">Search team</span><input id="teamSearchInput" type="search" placeholder="Search people" /></label></div><div class="team-grid" id="teamGrid">${studioMembers.map((member) => `<article class="member-card" data-member-id="${escapeHtml(member.id)}"><div class="member-card-top"><span class="member-avatar avatar-${escapeHtml(member.color)}">${escapeHtml(member.initials)}</span><span class="capacity-badge capacity-badge-${capacityTone(member.load)}">${capacityLabel(member.load)}</span></div><h3>${escapeHtml(member.name)}</h3><p>${escapeHtml(member.role)}</p><div class="member-focus"><small>Primary focus</small><strong>${escapeHtml(member.focus)}</strong></div><div class="member-load"><div><span>Capacity</span><b>${member.load}%</b></div><div class="capacity-track capacity-${capacityTone(member.load)}" role="progressbar" aria-label="${escapeHtml(member.name)} capacity" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${member.load}"><i style="width:${member.load}%"></i></div></div><footer><span>${escapeHtml(member.availability)}</span><button class="text-button" type="button" data-action="member-profile" data-member-id="${escapeHtml(member.id)}">View profile ${icon("chevron-right")}</button></footer></article>`).join("")}</div><div class="empty-search page-empty" id="teamEmpty" hidden>${icon("search")}<strong>No people found</strong><span>Try another name, role or project.</span></div></div><aside class="panel-surface capacity-panel"><span class="section-kicker">Capacity / This week</span><h2>Workload balance</h2><p>Keep high-focus work visible before assigning the next task.</p><div class="capacity-list">${studioMembers.map((member) => `<button type="button" data-action="member-profile" data-member-id="${escapeHtml(member.id)}"><span class="member-avatar avatar-${escapeHtml(member.color)}">${escapeHtml(member.initials)}</span><span><strong>${escapeHtml(member.name)}</strong><small>${escapeHtml(member.focus)}</small></span><b>${member.load}%</b></button>`).join("")}</div></aside></section></div>`;
+}
+
+function openMemberProfile(memberId) {
+  const member = studioMembers.find((item) => item.id === memberId);
+  if (!member) return;
+  openWorkspaceDialog({ eyebrow: "Team / Profile", title: member.name, description: `${member.role} · ${member.availability}`, body: `<div class="member-profile-summary"><span class="member-avatar avatar-${escapeHtml(member.color)}">${escapeHtml(member.initials)}</span><div><small>Primary focus</small><strong>${escapeHtml(member.focus)}</strong><span>${member.projects} active projects</span></div></div><div class="detail-dialog-grid"><div><small>Capacity</small><strong>${member.load}%</strong></div><div><small>Status</small><strong>${escapeHtml(capacityLabel(member.load))}</strong></div><div class="full-span"><small>Email</small><strong>${escapeHtml(member.email)}</strong></div></div><div class="dialog-actions"><button class="ghost-button" type="button" data-member-action="tasks">View related tasks</button><button class="primary-button" type="button" data-member-action="assign">Assign task</button></div>` });
+  document.querySelector("[data-member-action='tasks']")?.addEventListener("click", () => { closeDialog("workspaceDialog"); document.querySelector("[data-nav='Tasks']")?.click(); window.setTimeout(() => { const field = document.querySelector("#tasksSearchInput"); if (field) { field.value = member.focus; field.dispatchEvent(new Event("input", { bubbles: true })); } }, 220); });
+  document.querySelector("[data-member-action='assign']")?.addEventListener("click", () => { closeDialog("workspaceDialog"); addTaskToWorkspace(); window.setTimeout(() => prefillTaskProject(member.focus), 30); });
+}
+
+function openInviteComposer() {
+  openWorkspaceDialog({ eyebrow: "Team / Invite", title: "Invite a collaborator.", description: "Add one person and choose the role they need in this workspace.", body: `<form class="dialog-form" id="inviteForm"><label>Email address<input name="email" type="email" placeholder="name@studio.com" required data-autofocus /></label><label>Role<select name="role"><option>Designer</option><option>Creative director</option><option>Design engineer</option><option>Client reviewer</option></select></label><div class="dialog-actions"><button class="cancel-button" type="button" data-close-dialog="workspaceDialog">Cancel</button><button class="primary-button" type="submit">Send invite ${icon("arrow-up-right")}</button></div></form>` });
+  document.querySelector("#inviteForm")?.addEventListener("submit", (event) => { event.preventDefault(); const data = new FormData(event.currentTarget); const email = String(data.get("email")); const baseName = email.split("@")[0].replace(/[._-]+/g, " ").replace(/\b\w/g, (character) => character.toUpperCase()); studioMembers.push({ id: slugify(`${baseName}-${Date.now()}`), initials: baseName.split(" ").map((part) => part[0]).join("").slice(0, 2).toUpperCase(), name: baseName, role: String(data.get("role")), color: "blue", load: 0, focus: "Available", projects: 0, availability: "Invitation pending", email }); persistWorkspaceState(); closeDialog("workspaceDialog"); if (document.querySelector("#activeBreadcrumb")?.textContent === "Team") renderPage("Team", { instant: true }); toast(`Invite prepared for ${email}.`); });
+}
+
+function bindTeamPage() {
+  const input = document.querySelector("#teamSearchInput");
+  input?.addEventListener("input", () => { const query = input.value.trim().toLowerCase(); let visible = 0; document.querySelectorAll("#teamGrid .member-card").forEach((card) => { const show = !query || card.textContent.toLowerCase().includes(query); card.hidden = !show; if (show) visible += 1; }); const empty = document.querySelector("#teamEmpty"); if (empty) empty.hidden = visible > 0; });
+}
+
+function noteListMarkup() {
+  return workspaceNotes.map((note) => `<button class="note-list-item ${activeNoteId === note.id ? "active" : ""}" type="button" data-note-id="${escapeHtml(note.id)}" data-note-scope="${escapeHtml(note.scope)}" data-note-tag="${escapeHtml(NOTE_TAG_META[note.tag]?.className || "internal")}"><span><span class="note-tag tag-${escapeHtml(NOTE_TAG_META[note.tag]?.className || "internal")}">${escapeHtml(note.tag)}</span>${note.pinned ? `<em>Pinned</em>` : ""}</span><strong>${escapeHtml(note.title)}</strong><small>${escapeHtml(note.body.slice(0, 92))}</small><time datetime="${escapeHtml(note.datetime)}">${escapeHtml(note.dateLabel)}</time></button>`).join("");
+}
+
+function noteReaderMarkup(note) {
+  if (!note) return `<div class="detail-empty">${icon("inbox")}<strong>Select a note</strong><span>Choose a note to read or edit it here.</span></div>`;
+  return `<form class="note-editor" id="noteEditorForm" data-note-id="${escapeHtml(note.id)}"><div class="note-editor-head"><div><span class="section-kicker">${escapeHtml(note.scope)} note / ${escapeHtml(note.tag)}</span><input class="note-title-input" name="title" value="${escapeHtml(note.title)}" aria-label="Note title" required /></div><span class="note-saved-state">Saved ${escapeHtml(note.dateLabel)}</span></div><textarea name="body" aria-label="Note content" rows="14" required>${escapeHtml(note.body)}</textarea><div class="note-editor-footer"><label>Tag<select name="tag">${Object.keys(NOTE_TAG_META).map((tag) => `<option ${note.tag === tag ? "selected" : ""}>${tag}</option>`).join("")}</select></label><label class="note-pin-toggle"><input type="checkbox" name="pinned" ${note.pinned ? "checked" : ""} /> Pin note</label><button class="primary-button" type="submit">Save note ${icon("check")}</button></div></form>`;
+}
+
+function notesPage() {
+  const active = workspaceNotes.find((note) => note.id === activeNoteId) || workspaceNotes[0];
+  activeNoteId = active?.id || null;
+  const scopeCounts = { all: workspaceNotes.length, project: workspaceNotes.filter((note) => note.scope === "project").length, team: workspaceNotes.filter((note) => note.scope === "team").length };
+  return `<div class="page-shell-page notes-page">${pageHeader("06 / Capture", "Notes", "Search, read and edit notes in one three-pane workspace.", `<button class="primary-button" type="button" data-action="new-note">${icon("plus")} New note</button>`)}<section class="notes-workspace"><aside class="notes-sidebar panel-surface"><label class="toolbar-search notes-search"><span data-icon="search"></span><span class="sr-only">Search notes</span><input id="notesSearchInput" type="search" placeholder="Search notes" /></label><div class="notes-nav" role="group" aria-label="Note scope"><button class="notes-nav-item active" type="button" data-note-scope-filter="all">All notes <em>${String(scopeCounts.all).padStart(2, "0")}</em></button><button class="notes-nav-item" type="button" data-note-scope-filter="project">Project <em>${String(scopeCounts.project).padStart(2, "0")}</em></button><button class="notes-nav-item" type="button" data-note-scope-filter="team">Team <em>${String(scopeCounts.team).padStart(2, "0")}</em></button></div><div class="notes-tags" role="group" aria-label="Note tags"><small>Tags</small>${Object.entries(NOTE_TAG_META).map(([tag, meta]) => `<button type="button" data-note-tag-filter="${meta.className}"><i class="tag-dot ${meta.dot}"></i><span>${tag}</span></button>`).join("")}</div></aside><div class="note-list-panel panel-surface"><div class="note-list-heading"><div><span class="section-kicker">Recent</span><h2>Notes</h2></div><span id="notesPageCount" aria-live="polite">${workspaceNotes.length}</span></div><div class="note-list" id="noteList">${noteListMarkup()}</div><div class="empty-search page-empty" id="notesSearchEmpty" hidden>${icon("search")}<strong>No notes found</strong><span>Clear a filter or try another keyword.</span></div></div><article class="note-reader panel-surface" id="noteReader">${noteReaderMarkup(active)}</article></section></div>`;
+}
+
+function renderNoteReader(note) {
+  if (note) activeNoteId = note.id;
+  const reader = document.querySelector("#noteReader");
+  if (reader) reader.innerHTML = noteReaderMarkup(note || workspaceNotes.find((item) => item.id === activeNoteId));
+  document.querySelectorAll("#noteList [data-note-id]").forEach((item) => item.classList.toggle("active", item.dataset.noteId === activeNoteId));
+  renderIcons();
+  bindNoteEditor();
+}
+
+function bindNoteEditor() {
+  document.querySelector("#noteEditorForm")?.addEventListener("submit", (event) => { event.preventDefault(); const note = workspaceNotes.find((item) => item.id === event.currentTarget.dataset.noteId); if (!note) return; const data = new FormData(event.currentTarget); note.title = String(data.get("title")).trim(); note.body = String(data.get("body")).trim(); note.tag = String(data.get("tag")); note.pinned = data.get("pinned") === "on"; note.dateLabel = shortToday(); note.datetime = new Date().toISOString().slice(0, 10); persistWorkspaceState(); document.querySelector("#noteList").innerHTML = noteListMarkup(); bindNoteListSelection(); toast("Note saved."); const state = document.querySelector(".note-saved-state"); if (state) state.textContent = "Saved just now"; });
+}
+
+function bindNoteListSelection() {
+  document.querySelectorAll("#noteList [data-note-id]").forEach((button) => button.addEventListener("click", () => renderNoteReader(workspaceNotes.find((note) => note.id === button.dataset.noteId))));
+}
+
+function openNoteComposer() {
+  openWorkspaceDialog({ eyebrow: "Notes / New", title: "Capture the thought.", description: "Keep it close to the project and make the next decision easy to find.", body: `<form class="dialog-form" id="newNoteForm"><label>Title<input name="title" placeholder="e.g. Lumen House / handoff" required data-autofocus /></label><label>Note<textarea name="body" rows="7" placeholder="Write the useful context…" required></textarea></label><div class="dialog-form-row"><label>Scope<select name="scope"><option value="project">Project note</option><option value="team">Team note</option></select></label><label>Tag<select name="tag">${Object.keys(NOTE_TAG_META).map((tag) => `<option>${tag}</option>`).join("")}</select></label></div><div class="dialog-actions"><button class="cancel-button" type="button" data-close-dialog="workspaceDialog">Cancel</button><button class="primary-button" type="submit">Create note ${icon("check")}</button></div></form>` });
+  document.querySelector("#newNoteForm")?.addEventListener("submit", (event) => { event.preventDefault(); const data = new FormData(event.currentTarget); const note = { id: slugify(`${data.get("title")}-${Date.now()}`), title: String(data.get("title")).trim(), body: String(data.get("body")).trim(), scope: String(data.get("scope")), tag: String(data.get("tag")), dateLabel: shortToday(), datetime: new Date().toISOString().slice(0, 10), pinned: false }; workspaceNotes.unshift(note); activeNoteId = note.id; persistWorkspaceState(); closeDialog("workspaceDialog"); renderPage("Notes", { instant: true }); toast("Note created."); });
+}
+
+function bindNotesPage() {
+  const input = document.querySelector("#notesSearchInput");
+  let scope = "all";
+  let tag = "all";
+  const apply = () => { const query = input?.value.trim().toLowerCase() || ""; let visible = 0; document.querySelectorAll("#noteList [data-note-id]").forEach((item) => { const show = (!query || item.textContent.toLowerCase().includes(query)) && (scope === "all" || item.dataset.noteScope === scope) && (tag === "all" || item.dataset.noteTag === tag); item.hidden = !show; if (show) visible += 1; }); const count = document.querySelector("#notesPageCount"); if (count) count.textContent = String(visible).padStart(2, "0"); const empty = document.querySelector("#notesSearchEmpty"); if (empty) empty.hidden = visible > 0; };
+  input?.addEventListener("input", apply);
+  document.querySelectorAll("[data-note-scope-filter]").forEach((button) => button.addEventListener("click", () => { scope = button.dataset.noteScopeFilter; tag = "all"; document.querySelectorAll("[data-note-scope-filter]").forEach((item) => item.classList.toggle("active", item === button)); document.querySelectorAll("[data-note-tag-filter]").forEach((item) => item.classList.remove("active")); apply(); }));
+  document.querySelectorAll("[data-note-tag-filter]").forEach((button) => button.addEventListener("click", () => { tag = tag === button.dataset.noteTagFilter ? "all" : button.dataset.noteTagFilter; scope = "all"; document.querySelectorAll("[data-note-tag-filter]").forEach((item) => item.classList.toggle("active", item.dataset.noteTagFilter === tag)); document.querySelectorAll("[data-note-scope-filter]").forEach((item) => item.classList.toggle("active", item.dataset.noteScopeFilter === "all")); apply(); }));
+  bindNoteListSelection();
+  bindNoteEditor();
+  apply();
+}
+
+function settingsWorkspaceMarkup() {
+  return `<article class="settings-card panel-surface"><div class="settings-card-heading"><div><span class="section-kicker">Workspace / Identity</span><h2>Workspace profile</h2><p>Keep the workspace easy to recognise and share.</p></div><span class="settings-mark settings-avatar">${escapeHtml(workspaceSettings.workspaceName.slice(0, 1).toUpperCase())}</span></div><div class="settings-form-grid"><label>Workspace name<input id="workspaceNameInput" value="${escapeHtml(workspaceSettings.workspaceName)}" /></label><label>Workspace URL<div class="settings-url-field"><span>studioos.app/</span><input id="workspaceSlugInput" value="${escapeHtml(workspaceSettings.workspaceSlug)}" aria-label="Workspace URL path" /></div></label><label class="full-span">Workspace description<textarea id="workspaceDescriptionInput" rows="3">${escapeHtml(workspaceSettings.workspaceDescription)}</textarea></label></div><button class="primary-button settings-save" type="button" data-action="save-settings">Save changes</button></article><article class="settings-card panel-surface"><span class="section-kicker">Workspace / Preferences</span><h2>Working rhythm</h2><div class="settings-toggle-list">${settingsToggle("showHealth", "Show project health", "Keep progress and review signals visible on Overview.")}${settingsToggle("mondayStart", "Week starts on Monday", "Use a Monday-first calendar for the workspace.")}${settingsToggle("dailyFocus", "Daily focus note", "Prepare a short summary of work that needs attention.")}</div></article>`;
+}
+
+function settingsToggle(key, title, description) {
+  const checked = Boolean(workspaceSettings[key]);
+  return `<label class="settings-toggle"><span><strong>${escapeHtml(title)}</strong><small>${escapeHtml(description)}</small></span><input type="checkbox" ${checked ? "checked" : ""} data-setting-key="${escapeHtml(key)}" aria-label="${escapeHtml(title)}" /><i></i><b data-toggle-state class="toggle-state ${checked ? "is-on" : "is-off"}">${checked ? "On" : "Off"}</b></label>`;
+}
+
+function settingsPanelMarkup(tab) {
+  if (tab === "Notifications") return `<article class="settings-card panel-surface settings-card-wide"><span class="section-kicker">Notifications / Signals</span><h2>Only the updates that move work.</h2><p class="settings-lead">Choose the moments that deserve your attention.</p><div class="settings-toggle-list">${settingsToggle("reviewAlerts", "Review requests", "Notify when a project needs your approval or comment.")}${settingsToggle("deadlineAlerts", "Deadline changes", "Notify when a due date moves or becomes urgent.")}${settingsToggle("weeklyDigest", "Weekly studio digest", "Summarise progress, capacity and unresolved decisions.")}</div></article><article class="settings-card panel-surface notification-preview"><span class="section-kicker">Preview</span><h2>A calm signal.</h2><div class="notification-preview-card"><span class="notification-icon copper">${icon("message")}</span><span><strong>Lumen House needs a review</strong><small>One decision · Due today</small></span></div><p>Notifications stay concise and always point to a clear next action.</p></article>`;
+  if (tab === "Appearance") return `<article class="settings-card panel-surface settings-card-wide"><span class="section-kicker">Appearance / Workspace</span><h2>Make the interface fit the work.</h2><p class="settings-lead">These preferences apply immediately on this device.</p><div class="settings-toggle-list">${settingsToggle("compactDensity", "Compact density", "Fit more tasks and project data into each screen.")}${settingsToggle("reduceMotion", "Reduce motion", "Minimise page transitions and animated feedback.")}${settingsToggle("colorfulPanels", "Colourful signal panels", "Use colour only where it clarifies status and priority.")}</div></article><article class="settings-card panel-surface appearance-preview"><span class="section-kicker">Preview / Live</span><h2>Bright, clear, focused.</h2><div class="appearance-swatch-row"><i></i><i></i><i></i><i></i><i></i></div><p>Navigation remains glassy while dense content stays on solid, readable surfaces.</p></article>`;
+  if (tab === "Members") return `<article class="settings-card panel-surface settings-card-wide"><div class="settings-card-heading"><div><span class="section-kicker">Access / Members</span><h2>Workspace access</h2><p>See who can work in this studio and what they are responsible for.</p></div><button class="primary-button" type="button" data-action="invite">${icon("plus")} Invite</button></div><div class="access-list">${studioMembers.map((member) => `<button type="button" data-action="member-profile" data-member-id="${escapeHtml(member.id)}"><span class="member-avatar avatar-${escapeHtml(member.color)}">${escapeHtml(member.initials)}</span><span><strong>${escapeHtml(member.name)}</strong><small>${escapeHtml(member.email)}</small></span><em>${escapeHtml(member.role)}</em><b>${member.id === "alex-tran" ? "Owner" : "Member"}</b></button>`).join("")}</div></article><article class="settings-card panel-surface access-summary"><span class="section-kicker">Access / Summary</span><h2>${studioMembers.length} active members</h2><p>All current members can view projects, tasks, calendar events and shared notes.</p></article>`;
+  return settingsWorkspaceMarkup();
+}
+
+function settingsPage() {
+  return `<div class="page-shell-page settings-page">${pageHeader("08 / Settings", "Settings", "Adjust the workspace without losing the context of what you are changing.", `<span class="settings-saved"><i></i> All changes saved</span>`)}<section class="settings-layout"><aside class="settings-nav panel-surface">${["Workspace", "Notifications", "Appearance", "Members"].map((tab) => `<button class="settings-nav-item ${currentSettingsTab === tab ? "active" : ""}" type="button" data-settings-tab="${tab}">${icon(tab === "Workspace" ? "dashboard" : tab === "Notifications" ? "bell" : tab === "Appearance" ? "sparkles" : "users")} ${tab === "Members" ? "Members & access" : tab}</button>`).join("")}</aside><div class="settings-content" id="settingsContent">${settingsPanelMarkup(currentSettingsTab)}</div></section></div>`;
+}
+
+function renderSettingsPanel(tab) {
+  currentSettingsTab = tab;
+  const content = document.querySelector("#settingsContent");
+  if (!content) return;
+  content.innerHTML = settingsPanelMarkup(tab);
+  document.querySelectorAll("[data-settings-tab]").forEach((button) => button.classList.toggle("active", button.dataset.settingsTab === tab));
+  renderIcons();
+  restoreSettingsView();
+  bindSettingsControls();
+}
+
+function bindSettingsControls() {
+  document.querySelectorAll("#settingsContent [data-setting-key]").forEach((input) => input.addEventListener("change", () => { workspaceSettings[input.dataset.settingKey] = input.checked; const state = input.closest(".settings-toggle")?.querySelector("[data-toggle-state]"); if (state) { state.textContent = input.checked ? "On" : "Off"; state.classList.toggle("is-on", input.checked); state.classList.toggle("is-off", !input.checked); } persistWorkspaceState(); applyUserPreferences(); const saved = document.querySelector(".settings-saved"); if (saved) saved.innerHTML = `<i></i> Saved just now`; toast(`${input.getAttribute("aria-label")} ${input.checked ? "enabled" : "disabled"}.`); }));
+  document.querySelectorAll("#workspaceNameInput, #workspaceSlugInput, #workspaceDescriptionInput").forEach((field) => field.addEventListener("input", () => { const saved = document.querySelector(".settings-saved"); if (saved) saved.innerHTML = `<i></i> Unsaved changes`; }));
+  document.querySelector("#settingsContent [data-action='save-settings']")?.addEventListener("click", saveSettings);
+  document.querySelectorAll("#settingsContent [data-action='invite']").forEach((button) => button.addEventListener("click", openInviteComposer));
+  document.querySelectorAll("#settingsContent [data-action='member-profile']").forEach((button) => button.addEventListener("click", () => openMemberProfile(button.dataset.memberId)));
+}
+
+function exportInsightsSummary() {
+  const rows = [["Metric", "Value", "Signal"], ["Studio health", "82/100", "Healthy"], ["Average progress", "47%", "Up 12% vs July"], ["Review turnaround", "1.8 days", "0.4 days faster"], ["Focus time", "26h", "72% of goal"], ["Tasks completed", "18", "4 more this week"]];
+  const csv = rows.map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(",")).join("\n");
+  const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "studioos-insights-summary.csv";
+  document.body.append(link);
+  link.click();
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+  toast("Insights summary downloaded.");
+}
+
+function startFocusSession(button) {
+  if (focusSessionEndsAt && focusSessionEndsAt > Date.now()) return toast("A focus session is already running.");
+  focusSessionEndsAt = Date.now() + 25 * 60 * 1000;
+  button.textContent = "Focus active · 25:00";
+  button.classList.add("is-active");
+  toast("25-minute focus session started.");
+  const interval = window.setInterval(() => { const remaining = focusSessionEndsAt - Date.now(); if (remaining <= 0 || !button.isConnected) { window.clearInterval(interval); if (button.isConnected) { button.textContent = "Start 25-minute focus"; button.classList.remove("is-active"); } if (remaining <= 0) toast("Focus session complete. Take a short break."); return; } const minutes = Math.floor(remaining / 60000); const seconds = Math.floor((remaining % 60000) / 1000); button.textContent = `Focus active · ${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`; }, 1000);
+}
+
+function bindPageActions() {
+  document.querySelectorAll("#pageView [data-action]").forEach((button) => button.addEventListener("click", () => {
+    const action = button.dataset.action;
+    if (button.closest("#settingsContent") && ["invite", "member-profile", "save-settings"].includes(action)) return;
+    if (action === "calendar-prev" || action === "calendar-next") { calendarOffset += action === "calendar-next" ? 1 : -1; return renderPage("Calendar", { instant: true }); }
+    if (action === "calendar-view") { calendarViewMode = button.dataset.calendarView; calendarOffset = 0; return renderPage("Calendar", { instant: true }); }
+    if (action === "calendar-add") return openMilestoneComposer();
+    if (action === "calendar-event") return openCalendarEvent(button.dataset.calendarEvent);
+    if (action === "calendar-day") return openMilestoneComposer();
+    if (action === "invite") return openInviteComposer();
+    if (action === "member-profile") return openMemberProfile(button.dataset.memberId);
+    if (action === "new-note") return openNoteComposer();
+    if (action === "export-insights") return exportInsightsSummary();
+    if (action === "insights-method") return openWorkspaceDialog({ eyebrow: "Insights / Method", title: "How Studio Health works.", description: "A concise signal built from progress, deadlines, review rhythm and team capacity.", body: `<div class="insight-method-list"><div><strong>40%</strong><span>Project progress</span></div><div><strong>25%</strong><span>Deadline confidence</span></div><div><strong>20%</strong><span>Review turnaround</span></div><div><strong>15%</strong><span>Team capacity</span></div></div>` });
+    if (action === "workload-options") { const modes = ["This week", "Last week", "This month"]; const next = modes[(modes.indexOf(button.textContent.trim()) + 1) % modes.length]; button.innerHTML = `${next} ${icon("chevron-down")}`; renderIcons(); return; }
+    if (action === "insight-attention") { const text = button.textContent; if (text.includes("Lumen")) return openReview(projects[0]); if (text.includes("Friday")) { document.querySelector("[data-nav='Tasks']")?.click(); return; } if (text.includes("Noah")) return openMemberProfile("noah-williams"); }
+    if (action === "focus-timer") return startFocusSession(button);
+  }));
+  document.querySelectorAll("[data-settings-tab]").forEach((button) => button.addEventListener("click", () => renderSettingsPanel(button.dataset.settingsTab)));
+  bindSettingsControls();
+}
+
+function renderPage(name, options = {}) {
+  const render = () => {
+    const view = document.querySelector("#pageView");
+    const templates = { Projects: projectsPage, Calendar: calendarPage, Tasks: tasksPage, Team: teamPage, Notes: notesPage, Insights: insightsPage, Settings: settingsPage };
+    if (!view || !templates[name]) return;
+    view.innerHTML = templates[name]();
+    renderIcons();
+    if (name === "Projects") { renderProjectsPage("", currentProjectFilter, currentProjectView); bindProjectsPage(); }
+    if (name === "Tasks") { renderTasksPage("", currentTaskFilter); bindTasksPage(); }
+    if (name === "Team") bindTeamPage();
+    if (name === "Notes") bindNotesPage();
+    if (name === "Settings") restoreSettingsView();
+    bindPageActions();
+    applyUserPreferences();
+    updateWorkspaceCounts();
+    document.querySelector(".studio-main")?.scrollTo({ top: 0, behavior: "auto" });
+    view.classList.remove("is-leaving");
+    void view.offsetWidth;
+    view.classList.add("is-entering");
+    triggerStudioMotion(view);
+  };
+  const view = document.querySelector("#pageView");
+  const reduced = options.instant || workspaceSettings.reduceMotion || window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+  clearTimeout(pageTransitionTimer);
+  if (reduced || !view) { render(); return; }
+  view.classList.remove("is-entering");
+  view.classList.add("is-leaving");
+  pageTransitionTimer = window.setTimeout(render, 120);
+}
+
+function renderGlobalSearchResults(query = "") {
+  const panel = document.querySelector("#globalSearchPanel");
+  const input = document.querySelector("#searchInput");
+  if (!panel || !input) return;
+  const normalized = query.trim().toLowerCase();
+  if (!normalized) { hideGlobalSearch(); return; }
+  const projectResults = projects.filter((project) => `${project.name} ${project.type} ${project.owner}`.toLowerCase().includes(normalized)).map((project) => ({ type: "Project", id: project.id, title: project.name, meta: `${project.status} · ${project.progress}% complete`, icon: "folder" }));
+  const taskResults = tasks.filter((task) => `${task.label} ${task.project}`.toLowerCase().includes(normalized)).map((task) => ({ type: "Task", id: task.id, title: task.label, meta: `${task.project} · ${task.due}`, icon: "check-circle" }));
+  const noteResults = workspaceNotes.filter((note) => `${note.title} ${note.body} ${note.tag}`.toLowerCase().includes(normalized)).map((note) => ({ type: "Note", id: note.id, title: note.title, meta: `${note.tag} · ${note.scope}`, icon: "inbox" }));
+  searchResultItems = [...projectResults, ...taskResults, ...noteResults].slice(0, 8);
+  panel.innerHTML = searchResultItems.length ? searchResultItems.map((item, index) => `<button type="button" role="option" class="global-search-result" data-search-index="${index}"><span class="search-result-icon" data-icon="${item.icon}"></span><span><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.type)} · ${escapeHtml(item.meta)}</small></span><span class="search-result-arrow">↵</span></button>`).join("") : `<div class="global-search-empty"><strong>No workspace results</strong><span>Try a project, task or note name.</span></div>`;
+  panel.hidden = false;
+  input.setAttribute("aria-expanded", "true");
+  renderIcons();
+}
+
+function openSearchResult(item) {
+  if (!item) return;
+  hideGlobalSearch();
+  if (item.type === "Project") selectedProjectId = String(item.id);
+  if (item.type === "Note") activeNoteId = String(item.id);
+  const page = item.type === "Project" ? "Projects" : item.type === "Task" ? "Tasks" : "Notes";
+  document.querySelector(`[data-nav='${page}']`)?.click();
+  window.setTimeout(() => {
+    const selector = item.type === "Project" ? "#projectFilterInput" : item.type === "Task" ? "#tasksSearchInput" : "#notesSearchInput";
+    const field = document.querySelector(selector);
+    if (!field) return;
+    field.value = item.title;
+    field.dispatchEvent(new Event("input", { bubbles: true }));
+    field.focus();
+    if (item.type === "Project") renderProjectDetail(projects.find((project) => project.id === item.id));
+    if (item.type === "Note") renderNoteReader(workspaceNotes.find((note) => note.id === item.id));
+  }, 240);
+}
+
+function bindGlobalSearch() {
+  const input = document.querySelector("#searchInput");
+  const panel = document.querySelector("#globalSearchPanel");
+  if (!input || !panel || input.dataset.bound === "true") return;
+  input.dataset.bound = "true";
+  input.addEventListener("input", (event) => renderGlobalSearchResults(event.target.value));
+  input.addEventListener("keydown", (event) => { if (event.key === "Escape") { hideGlobalSearch(); input.blur(); } if (event.key === "ArrowDown" && searchResultItems.length) { event.preventDefault(); panel.querySelector("[data-search-index='0']")?.focus(); } });
+  panel.addEventListener("click", (event) => { const result = event.target.closest("[data-search-index]"); if (result) openSearchResult(searchResultItems[Number(result.dataset.searchIndex)]); });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const overviewMarkup = document.querySelector("#pageView").innerHTML;
-  const showOverview = () => { const view = document.querySelector("#pageView"); const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches; view.innerHTML = overviewMarkup; renderIcons(); renderProjects(); renderTasks(); bindOverviewActions(); triggerStudioMotion(view); document.querySelector(".studio-main")?.scrollTo({ top: 0, behavior: reduced ? "auto" : "smooth" }); };
+  const showOverview = () => { const view = document.querySelector("#pageView"); const reduced = workspaceSettings.reduceMotion || window.matchMedia?.("(prefers-reduced-motion: reduce)").matches; view.innerHTML = overviewMarkup; hideGlobalSearch(); renderIcons(); renderProjects(""); renderTasks(""); bindOverviewActions(); applyUserPreferences(); triggerStudioMotion(view); document.querySelector(".studio-main")?.scrollTo({ top: 0, behavior: reduced ? "auto" : "smooth" }); };
   const bindOverviewActions = () => {
-    document.querySelector("#searchInput").value = "";
-    document.querySelector("#searchInput").oninput = (event) => { renderProjects(event.target.value); renderTasks(event.target.value); };
-    document.querySelector("#showAllButton")?.addEventListener("click", () => { showAllProjects = !showAllProjects; renderProjects(document.querySelector("#searchInput").value); });
+    document.querySelector("#searchInput").oninput = null;
+    document.querySelector("#showAllButton")?.addEventListener("click", () => { showAllProjects = !showAllProjects; renderProjects(""); });
     document.querySelector("#newProjectButton")?.addEventListener("click", () => openDialog("createDialog"));
     document.querySelector("#addTaskButton")?.addEventListener("click", () => addTaskToWorkspace());
   const fk = document.querySelector("#focusKicker");
   if (fk) fk.textContent = "Today \u00b7 " + shortToday();
-    document.querySelector("#projectGrid")?.addEventListener("click", (event) => { const review = event.target.closest(".js-review"); const more = event.target.closest(".js-more"); const card = event.target.closest(".project-card"); if (!card) return; const project = projects.find((item) => card.querySelector("h3")?.textContent === item.name); if (review && project) openReview(project); if (more && project) toast(`More actions for ${project.name} are coming soon.`); });
+    document.querySelector("#projectGrid")?.addEventListener("click", (event) => { const review = event.target.closest(".js-review"); const open = event.target.closest(".js-project-open"); const card = event.target.closest(".project-card"); if (!card) return; const project = projects.find((item) => card.dataset.projectId === item.id); if (review && project) openReview(project); if (open && project) { selectedProjectId = project.id; document.querySelector("[data-nav='Projects']")?.click(); } });
     document.querySelector("#taskList")?.addEventListener("click", (event) => { const row = event.target.closest("[data-task-id]"); if (!row) return; const task = tasks.find((item) => String(item.id) === row.dataset.taskId); if (task) toggleTask(task); });
   };
   const updateHeaderContext = (page) => { document.querySelector("#activeBreadcrumb").textContent = page; const visibleContext = document.querySelector("#pageContext"); const mobileContext = document.querySelector(".mobile-context-page"); if (visibleContext) visibleContext.textContent = page; if (mobileContext) mobileContext.textContent = page; };
   const closeHelp = () => { const popover = document.querySelector("#helpPopover"); const button = document.querySelector("#helpButton"); if (popover) popover.hidden = true; button?.setAttribute("aria-expanded", "false"); };
   const closeAccountMenu = () => { const popover = document.querySelector("#accountPopover"); const button = document.querySelector("#accountMenuButton"); if (popover) popover.hidden = true; button?.setAttribute("aria-expanded", "false"); };
   const closeWorkspaceMenu = () => { const popover = document.querySelector("#workspacePopover"); const button = document.querySelector("#workspaceContextButton"); if (popover) popover.hidden = true; button?.setAttribute("aria-expanded", "false"); };
-  renderIcons(); renderProjects(); renderTasks(); bindOverviewActions(); bindTaskComposer(); bindGlobalSearch(); updateNotificationBadge(); triggerStudioMotion(document.querySelector("#pageView"));
-  document.querySelectorAll("[data-nav]").forEach((button) => button.addEventListener("click", () => { document.querySelectorAll("[data-nav]").forEach((item) => { const isActive = item === button; item.classList.toggle("active", isActive); if (isActive) item.setAttribute("aria-current", "page"); else item.removeAttribute("aria-current"); }); updateHeaderContext(button.dataset.nav); closeSidebar(); if (button.dataset.nav === "Overview") showOverview(); else renderPage(button.dataset.nav); }));
+  const activatePage = (page, { updateHistory = true, replaceHistory = false } = {}) => {
+    const button = document.querySelector(`[data-nav='${page}']`) || document.querySelector("[data-nav='Overview']");
+    const nextPage = button.dataset.nav;
+    document.querySelectorAll("[data-nav]").forEach((item) => { const isActive = item === button; item.classList.toggle("active", isActive); if (isActive) item.setAttribute("aria-current", "page"); else item.removeAttribute("aria-current"); });
+    updateHeaderContext(nextPage);
+    closeSidebar();
+    if (nextPage === "Overview") showOverview(); else renderPage(nextPage);
+    if (updateHistory) writePageUrl(nextPage, replaceHistory);
+  };
+  renderIcons(); renderProjects(); renderTasks(); bindOverviewActions(); bindTaskComposer(); bindGlobalSearch(); updateNotificationBadge(); applyUserPreferences(); triggerStudioMotion(document.querySelector("#pageView"));
+  document.querySelectorAll("[data-nav]").forEach((button) => button.addEventListener("click", () => activatePage(button.dataset.nav)));
+  window.addEventListener("popstate", () => activatePage(pageFromUrl(), { updateHistory: false }));
+  const initialPage = pageFromUrl();
+  if (initialPage !== "Overview") activatePage(initialPage, { updateHistory: false });
+  else writePageUrl("Overview", true);
   // Global search binding is centralized in bindGlobalSearch() so the palette and route filters stay in sync.
 
-  document.querySelector("#createProjectForm").addEventListener("submit", (event) => { event.preventDefault(); const name = document.querySelector("#projectNameInput").value.trim(); if (!name) return toast("Give the project a name before creating it.", "error");       const project = { id:name.toLowerCase().replace(/[^a-z0-9]+/g, "-"), name, type:document.querySelector("#projectTypeInput").value, status:"Not started", tone:"quiet", progress:0, due:"No date", dueTone:"quiet", owner:"You", members:["YO"], cover:"./assets/studioos-project-common-editorial.webp" }; projects.unshift(project); persistWorkspaceState(); document.querySelector("#createProjectForm").reset(); closeDialog("createDialog"); if (document.querySelector("#activeBreadcrumb").textContent === "Projects") { renderProjectsPage(); bindProjectsPage(); } else { renderProjects(document.querySelector("#searchInput").value); } toast(`${name} is ready for its first task.`, "", { label: "Undo", action: () => { const index = projects.findIndex((item) => item.id === project.id); if (index >= 0) projects.splice(index, 1); persistWorkspaceState(); if (document.querySelector("#activeBreadcrumb").textContent === "Projects") { renderProjectsPage(); bindProjectsPage(); } else { renderProjects(document.querySelector("#searchInput").value); } toast(`${name} removed from the workspace.`); } }); });
-  document.querySelector("#markReviewedButton").addEventListener("click", () => { const name = activeReviewProject?.name || "Project"; closeDialog("reviewDialog"); toast(`${name} marked as ready for the next review.`); });
+  document.querySelector("#createProjectForm").addEventListener("submit", (event) => { event.preventDefault(); const name = document.querySelector("#projectNameInput").value.trim(); if (!name) return toast("Give the project a name before creating it.", "error"); const type = document.querySelector("#projectTypeInput").value; const project = { id:slugify(`${name}-${Date.now()}`), name, type, view:{ "Brand system":"Brand", "Digital experience":"Digital", "Campaign launch":"Campaign", "Research sprint":"Research" }[type] || "Brand", status:"Not started", tone:"quiet", progress:0, due:"No date", dueTone:"quiet", owner:"You", members:["YO"], cover:"./assets/studioos-project-common-editorial.webp" }; projects.unshift(project); selectedProjectId = project.id; persistWorkspaceState(); document.querySelector("#createProjectForm").reset(); closeDialog("createDialog"); const refresh = () => document.querySelector("#activeBreadcrumb").textContent === "Projects" ? renderPage("Projects", { instant: true }) : renderProjects(""); refresh(); toast(`${name} is ready for its first task.`, "", { label: "Undo", action: () => { const index = projects.findIndex((item) => item.id === project.id); if (index >= 0) projects.splice(index, 1); selectedProjectId = projects[0]?.id || null; persistWorkspaceState(); refresh(); toast(`${name} removed from the workspace.`); } }); });
+  document.querySelector("#markReviewedButton").addEventListener("click", () => { const project = activeReviewProject; const name = project?.name || "Project"; if (project) { project.status = "On track"; project.tone = "progress"; project.progress = Math.min(100, project.progress + 5); persistWorkspaceState(); } closeDialog("reviewDialog"); if (document.querySelector("#activeBreadcrumb").textContent === "Projects") renderPage("Projects", { instant: true }); else if (document.querySelector("#activeBreadcrumb").textContent === "Overview") renderProjects(""); toast(`${name} review completed.`); });
   document.querySelector("#searchInput")?.addEventListener("keydown", (event) => { if (event.key === "Escape") event.currentTarget.blur(); });
   document.querySelector("#notificationButton").addEventListener("click", () => { closeHelp(); closeAccountMenu(); const popover = document.querySelector("#notificationPopover"); popover.hidden = !popover.hidden; document.querySelector("#notificationButton").setAttribute("aria-expanded", String(!popover.hidden)); });
   document.querySelector("#helpButton")?.addEventListener("click", () => { closeNotifications(); closeAccountMenu(); const popover = document.querySelector("#helpPopover"); const button = document.querySelector("#helpButton"); popover.hidden = !popover.hidden; button.setAttribute("aria-expanded", String(!popover.hidden)); });
-  document.querySelector("#helpDocsButton")?.addEventListener("click", () => { closeHelp(); toast("Help center is coming soon."); });
+  document.querySelector("#helpDocsButton")?.addEventListener("click", () => { closeHelp(); openWorkspaceDialog({ eyebrow:"StudioOS / Quick guide", title:"Move work forward in three steps.", description:"Search for the work, open its context, then take one clear action.", body:`<div class="quick-guide"><div><strong>01</strong><span>Press ⌘ K to find a project, task or note.</span></div><div><strong>02</strong><span>Use the right-side context panel instead of opening extra pages.</span></div><div><strong>03</strong><span>Create, review and save changes from the same workspace.</span></div></div>` }); });
   document.querySelector("#accountMenuButton")?.addEventListener("click", () => { closeNotifications(); closeHelp(); closeWorkspaceMenu(); const popover = document.querySelector("#accountPopover"); const button = document.querySelector("#accountMenuButton"); if (!popover) return; popover.hidden = !popover.hidden; button.setAttribute("aria-expanded", String(!popover.hidden)); if (!popover.hidden) window.setTimeout(() => popover.querySelector("[role='menuitem']")?.focus(), 20); });
   document.querySelector("#workspaceContextButton")?.addEventListener("click", () => { closeNotifications(); closeHelp(); closeAccountMenu(); const popover = document.querySelector("#workspacePopover"); const button = document.querySelector("#workspaceContextButton"); if (!popover || !button) return; popover.hidden = !popover.hidden; button.setAttribute("aria-expanded", String(!popover.hidden)); if (!popover.hidden) window.setTimeout(() => popover.querySelector("[role='menuitemradio'].active")?.focus(), 20); });
   document.querySelector("#workspacePopover")?.addEventListener("click", (event) => { const option = event.target.closest("[data-workspace-id]"); const action = event.target.closest("[data-workspace-action]"); if (option) { const workspace = workspaceOptions.find((item) => item.id === option.dataset.workspaceId); selectWorkspace(option.dataset.workspaceId); closeWorkspaceMenu(); if (workspace) toast(`${workspace.name} is now active.`); return; } if (action?.dataset.workspaceAction === "manage") { closeWorkspaceMenu(); document.querySelector("[data-nav='Settings']")?.click(); return; } if (action?.dataset.workspaceAction === "create") { closeWorkspaceMenu(); toast("Create a new workspace from Settings.", "", { label: "Open settings", action: () => document.querySelector("[data-nav='Settings']")?.click() }); } });
   document.querySelector("#workspacePopover")?.addEventListener("keydown", (event) => { const items = [...event.currentTarget.querySelectorAll("[role='menuitemradio'], [data-workspace-action]")]; const index = items.indexOf(document.activeElement); if (event.key === "ArrowDown" || event.key === "ArrowUp") { event.preventDefault(); items[(index + (event.key === "ArrowDown" ? 1 : items.length - 1)) % items.length]?.focus(); } if (event.key === "Home") { event.preventDefault(); items[0]?.focus(); } if (event.key === "End") { event.preventDefault(); items.at(-1)?.focus(); } if (event.key === "Escape") { event.preventDefault(); closeWorkspaceMenu(); document.querySelector("#workspaceContextButton")?.focus(); } });
-  document.querySelectorAll("[data-account-action]").forEach((button) => button.addEventListener("click", () => { const messages = { profile:"Profile settings are coming soon.", preferences:"Workspace preferences are coming soon.", "sign-out":"Sign out is available in the full workspace." }; closeAccountMenu(); toast(messages[button.dataset.accountAction] || "Account action is coming soon."); }));
+  document.querySelectorAll("[data-account-action]").forEach((button) => button.addEventListener("click", () => { const action = button.dataset.accountAction; closeAccountMenu(); if (["profile", "preferences"].includes(action)) { currentSettingsTab = action === "profile" ? "Members" : "Appearance"; activatePage("Settings"); } }));
   document.querySelector("#accountPopover")?.addEventListener("keydown", (event) => { const items = [...event.currentTarget.querySelectorAll("[role='menuitem']")]; const index = items.indexOf(document.activeElement); if (event.key === "ArrowDown" || event.key === "ArrowUp") { event.preventDefault(); items[(index + (event.key === "ArrowDown" ? 1 : items.length - 1)) % items.length]?.focus(); } if (event.key === "Home") { event.preventDefault(); items[0]?.focus(); } if (event.key === "End") { event.preventDefault(); items.at(-1)?.focus(); } });
   document.addEventListener("click", (event) => { if (!event.target.closest(".topbar-actions")) { closeNotifications(); closeHelp(); hideGlobalSearch(); } if (!event.target.closest("#accountMenuButton, #accountPopover")) closeAccountMenu(); if (!event.target.closest(".workspace-switcher")) closeWorkspaceMenu(); });
   document.querySelectorAll("[data-action='review-notification']").forEach((button) => button.addEventListener("click", () => { markNotificationRead(button.dataset.notificationId); closeNotifications(); openReview(projects[0]); }));
   document.querySelectorAll("[data-action='calendar-notification']").forEach((button) => button.addEventListener("click", () => { markNotificationRead(button.dataset.notificationId); closeNotifications(); document.querySelector("[data-nav='Calendar']").click(); }));
   document.querySelectorAll("[data-close-dialog]").forEach((button) => button.addEventListener("click", () => closeDialog(button.dataset.closeDialog)));
   document.querySelectorAll(".dialog-layer").forEach((layer) => layer.addEventListener("click", (event) => { if (event.target === layer) closeDialog(layer.id); }));
-  document.querySelectorAll("[data-action]").forEach((button) => button.addEventListener("click", () => { const action = button.dataset.action; if (["focus-options","activity-options","activity","comment"].includes(action)) toast(action === "comment" ? "Comment composer is coming soon." : "This workspace action is coming soon."); }));
+  document.querySelectorAll("[data-action]").forEach((button) => button.addEventListener("click", () => { const action = button.dataset.action; if (action === "focus-options") showContextMenu(button, ["Start 25-minute focus", "Move open tasks to tomorrow"]); if (action === "activity-options") showContextMenu(button, ["Mark all as read", "Open projects"]); if (action === "activity") { const project = projects.find((item) => button.textContent.includes(item.name)); if (project) selectedProjectId = project.id; activatePage("Projects"); } if (action === "comment") { const projectName = activeReviewProject?.name || "this review"; closeDialog("reviewDialog"); window.setTimeout(() => { openWorkspaceDialog({ eyebrow:"Review / Comment", title:`Comment on ${projectName}.`, description:"Keep the feedback specific and actionable.", body:`<form id="reviewCommentForm" class="dialog-form"><label>Comment<textarea name="comment" rows="5" required data-autofocus placeholder="Describe the decision or change…"></textarea></label><div class="dialog-actions"><button class="cancel-button" type="button" data-close-dialog="workspaceDialog">Cancel</button><button class="primary-button" type="submit">Add comment</button></div></form>` }); document.querySelector("#reviewCommentForm")?.addEventListener("submit", (event) => { event.preventDefault(); closeDialog("workspaceDialog"); toast("Comment added to the review."); }); }, 30); } }));
   document.querySelector("#openSidebar").addEventListener("click", () => { if (document.querySelector("#sidebar").classList.contains("sidebar-open")) { closeSidebar(); } else { openSidebar(); } });
   document.querySelector("#closeSidebar").addEventListener("click", () => closeSidebar());
   document.querySelector("#mobileScrim").addEventListener("click", () => closeSidebar());
