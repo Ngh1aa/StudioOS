@@ -2536,9 +2536,16 @@ body .insights-lower .attention-panel {
   background: rgba(255, 255, 255, .72) !important;
   box-shadow: var(--shadow-sm), inset 0 1px 0 rgba(255, 255, 255, .88) !important;
 }
-body .workload-chart .bar-deep { background: linear-gradient(180deg, #4cc9f0, #0a84ff) !important; }
-body .workload-chart .bar-review { background: linear-gradient(180deg, #c77df0, #9a54d5) !important; }
-body .workload-chart .bar-meeting { background: linear-gradient(180deg, #69df87, #34c759) !important; }
+body .workload-chart .chart-bars i.bar-deep { background: linear-gradient(180deg, #4cc9f0, #0a84ff) !important; }
+body .workload-chart .chart-bars i.bar-review { background: linear-gradient(180deg, #c77df0, #9a54d5) !important; }
+body .workload-chart .chart-bars i.bar-meeting { background: linear-gradient(180deg, #69df87, #34c759) !important; }
+body .workload-panel .chart-legend .legend-deepwork { background: var(--ios-blue) !important; }
+body .workload-panel .chart-legend .legend-review { background: var(--ios-purple) !important; }
+body .workload-panel .chart-legend .legend-meeting { background: var(--ios-green) !important; }
+body .insight-stat-grid .insight-stat .metric-chart i { background: linear-gradient(180deg, #4cc9f0, #0a84ff) !important; }
+body .insight-stat-grid .insight-stat .metric-chart--sage i { background: linear-gradient(180deg, #72e58b, #34c759) !important; }
+body .insight-stat-grid .insight-stat .metric-chart--ink i { background: linear-gradient(180deg, #c17af0, #8c55d8) !important; }
+body .insight-stat-grid .insight-stat .metric-progress i { background: linear-gradient(90deg, #ffd65a, #ff9f0a) !important; }
 
 body .settings-layout .settings-nav,
 body .settings-content .settings-card {
