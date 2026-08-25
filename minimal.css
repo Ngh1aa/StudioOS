@@ -933,6 +933,7 @@ html body .insight-stat-grid .insight-stat .metric-chart--sage i,
 html body .workload-chart .chart-bars i.bar-meeting { background: #777770 !important; }
 
 html body .insight-stat-grid .insight-stat .metric-chart--ink i,
+html body .workload-chart .chart-bars i.bar-deep,
 html body .workload-chart .chart-bars i.bar-review,
 html body .insight-stat-grid .insight-stat .metric-progress i { background: #2563eb !important; }
 
