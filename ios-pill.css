@@ -2548,6 +2548,22 @@ body .settings-content .settings-card {
   box-shadow: var(--shadow-sm), inset 0 1px 0 rgba(255, 255, 255, .88) !important;
 }
 
+body .dialog-layer .dialog-card {
+  border: 1px solid rgba(255, 255, 255, .78) !important;
+  border-radius: 30px !important;
+  background: rgba(255, 255, 255, .94) !important;
+  box-shadow: 0 34px 100px rgba(42, 65, 101, .3), inset 0 1px 0 #fff !important;
+}
+body .dialog-layer .review-preview {
+  border: 1px solid var(--line) !important;
+  border-radius: 22px !important;
+  background: #f3f7fc !important;
+}
+body .empty-search,
+body .page-empty {
+  border-radius: 26px !important;
+}
+
 @media (max-width: 1180px) {
   body .projects-page .project-filter-rail { grid-template-columns: minmax(190px, .8fr) minmax(0, 1.5fr) auto !important; }
   body .projects-page .project-type-cluster { grid-column: 1 / -1 !important; grid-row: 2 !important; }
