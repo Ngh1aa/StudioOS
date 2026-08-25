@@ -825,6 +825,119 @@ html body .insights-page .chart-bars { background: transparent !important; }
 html body .settings-page .settings-toggle { border-radius: 10px !important; }
 html body .settings-page .settings-toggle > i { box-shadow: none !important; }
 
+html body .skip-link {
+  border-radius: 8px !important;
+  box-shadow: none !important;
+}
+
+html body .portfolio-overview .project-inbox .inbox-focus {
+  border: 1px solid #171715 !important;
+  border-radius: 10px !important;
+  background: #171715 !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+html body .portfolio-overview .project-inbox .inbox-focus .add-task-button,
+html body .portfolio-overview .project-inbox .inbox-focus .add-task-button:hover,
+html body .portfolio-overview .project-inbox .inbox-focus .add-task-button:focus-visible {
+  border: 1px solid #ffffff !important;
+  border-radius: 8px !important;
+  background: #ffffff !important;
+  color: #171715 !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+html body .portfolio-project-grid .project-card .progress-track,
+html body .projects-page-grid .project-card .progress-track,
+html body .portfolio-project-grid .project-card .progress-track span,
+html body .projects-page-grid .project-card .progress-track span {
+  border-radius: 3px !important;
+  box-shadow: none !important;
+}
+
+html body .tasks-page .tasks-panel .tasks-toolbar,
+html body .tasks-page .tasks-panel .tasks-toolbar .toolbar-search,
+html body .tasks-page .tasks-panel .tasks-toolbar .filter-chips,
+html body .tasks-page .tasks-panel .task-filter-tag {
+  border-radius: 8px !important;
+  box-shadow: none !important;
+}
+
+html body .tasks-page .tasks-panel .tasks-toolbar .toolbar-search {
+  border: 1px solid #deded9 !important;
+  background: #ffffff !important;
+}
+
+html body .tasks-page .tasks-panel .tasks-toolbar .filter-chips { background: #f1f1ee !important; }
+
+html body .tasks-page .tasks-panel .task-filter-tag.active,
+html body .tasks-page .tasks-panel .task-filter-tag.active:hover,
+html body .tasks-page .tasks-panel .task-filter-tag.active:focus-visible {
+  border-color: #171715 !important;
+  border-radius: 8px !important;
+  background: #171715 !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+html body .team-page .team-grid .member-card .member-avatar {
+  border: 1px solid #d6d6d0 !important;
+  border-radius: 8px !important;
+  background: #efefeb !important;
+  color: #52524d !important;
+  box-shadow: none !important;
+}
+
+html body .team-page .team-grid .member-card .capacity-track i {
+  border-radius: 3px !important;
+  background: #208a4b !important;
+  box-shadow: none !important;
+}
+html body .team-page .team-grid .member-card .capacity-watch i { background: #9a6700 !important; }
+html body .team-page .team-grid .member-card .capacity-high i { background: #c83232 !important; }
+
+html body .insights-layout .insight-hero,
+html body .insights-layout .insight-data-panel,
+html body .insight-stat-grid .insight-stat,
+html body .insights-lower .workload-panel,
+html body .insights-lower .attention-panel {
+  border: 1px solid var(--line) !important;
+  border-radius: 12px !important;
+  background: #ffffff !important;
+  box-shadow: none !important;
+}
+
+html body .insight-stat-grid .insight-stat::after { display: none !important; }
+
+html body .insights-layout .insight-data-panel .health-bar i {
+  border-radius: 3px !important;
+  background: #208a4b !important;
+  box-shadow: none !important;
+}
+
+html body .insights-layout .insight-data-panel .health-badge i,
+html body .settings-page .settings-saved i { box-shadow: none !important; }
+
+html body .insight-stat-grid .insight-stat .metric-chart i,
+html body .insight-stat-grid .insight-stat .metric-progress i,
+html body .workload-chart .chart-bars i {
+  border-radius: 3px 3px 0 0 !important;
+  background: #343431 !important;
+  box-shadow: none !important;
+}
+
+html body .insight-stat-grid .insight-stat .metric-chart--sage i,
+html body .workload-chart .chart-bars i.bar-meeting { background: #777770 !important; }
+
+html body .insight-stat-grid .insight-stat .metric-chart--ink i,
+html body .workload-chart .chart-bars i.bar-review,
+html body .insight-stat-grid .insight-stat .metric-progress i { background: #2563eb !important; }
+
+html body .workload-chart .chart-bars { background: transparent !important; }
+
 body .studio-motion-cycle > *,
 body .studio-motion-cycle .project-card,
 body .studio-motion-cycle .task-page-row,
