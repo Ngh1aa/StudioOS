@@ -7,15 +7,15 @@
 
 :root {
   color-scheme: light;
-  --canvas: #eef6ff;
-  --canvas-deep: #e4edff;
-  --paper: rgba(255, 255, 255, .78);
-  --paper-raised: rgba(255, 255, 255, .94);
-  --ink: #172033;
-  --ink-soft: #35415a;
-  --muted: #71809a;
-  --muted-light: #98a5b8;
-  --line: rgba(75, 103, 145, .13);
+  --canvas: #f4f8ff;
+  --canvas-deep: #eaf0ff;
+  --paper: #ffffff;
+  --paper-raised: #ffffff;
+  --ink: #182033;
+  --ink-soft: #36425a;
+  --muted: #68778f;
+  --muted-light: #96a3b5;
+  --line: rgba(67, 91, 126, .12);
   --line-strong: rgba(10, 132, 255, .34);
   --rail: rgba(255, 255, 255, .72);
   --rail-soft: rgba(255, 255, 255, .9);
@@ -40,8 +40,8 @@
   --ios-orange: #ff9f0a;
   --ios-pink: #ff375f;
   --ios-purple: #af52de;
-  --ios-indigo: #5856d6;
-  --glass: rgba(255, 255, 255, .68);
+  --ios-indigo: #625cff;
+  --glass: rgba(255, 255, 255, .72);
   --glass-strong: rgba(255, 255, 255, .9);
   --shadow-sm: 0 8px 24px rgba(60, 89, 130, .08), 0 1px 2px rgba(42, 70, 110, .04);
   --shadow-md: 0 18px 48px rgba(60, 89, 130, .13), 0 2px 8px rgba(42, 70, 110, .05);
@@ -49,8 +49,17 @@
   --radius-sm: 14px;
   --radius-md: 22px;
   --radius-lg: 30px;
-  --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", sans-serif;
-  --font-ui: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+  --font-display: "InterVariable", "Inter var", "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
+  --font-ui: "InterVariable", "Inter var", "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+  --layout-max: 1480px;
+  --sidebar-width: 264px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
   --ease-out: cubic-bezier(.2, .82, .2, 1);
   --icon-stroke-width: 1.8;
 }
@@ -60,7 +69,7 @@
 html {
   height: 100%;
   overflow: hidden;
-  background: #edf5ff;
+  background: var(--canvas);
 }
 
 body {
@@ -72,11 +81,13 @@ body {
     radial-gradient(circle at 8% 8%, rgba(76, 201, 240, .28), transparent 25%),
     radial-gradient(circle at 92% 10%, rgba(175, 82, 222, .2), transparent 24%),
     radial-gradient(circle at 78% 92%, rgba(52, 199, 89, .17), transparent 25%),
-    linear-gradient(140deg, #eef8ff 0%, #f5f2ff 48%, #effff8 100%);
+    linear-gradient(140deg, #f3f9ff 0%, #f7f5ff 48%, #f2fff9 100%);
   color: var(--ink);
   font-family: var(--font-ui);
   font-size: 14px;
-  line-height: 1.45;
+  line-height: 1.5;
+  font-optical-sizing: auto;
+  font-feature-settings: "liga" 1, "calt" 1, "cv11" 1;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
@@ -116,7 +127,7 @@ textarea:focus-visible {
 .studio-shell {
   position: relative;
   display: grid;
-  grid-template-columns: 272px minmax(0, 1fr);
+  grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
   gap: 16px;
   width: 100%;
   max-width: 1920px;
@@ -135,7 +146,7 @@ textarea:focus-visible {
   top: 0;
   z-index: 30;
   align-self: start;
-  width: 272px;
+  width: var(--sidebar-width);
   height: calc(100vh - 36px);
   min-height: 0;
   padding: 16px;
@@ -2160,12 +2171,12 @@ textarea:hover { border-color: rgba(10, 132, 255, .24); }
   presentation and keep those rules from leaking into Bright Pill OS.
 */
 :root:root {
-  --ink: #172033 !important;
-  --ink-soft: #35415a !important;
-  --muted: #71809a !important;
-  --line: rgba(75, 103, 145, .13) !important;
-  --canvas: #eef6ff !important;
-  --paper: rgba(255, 255, 255, .78) !important;
+  --ink: #182033 !important;
+  --ink-soft: #36425a !important;
+  --muted: #68778f !important;
+  --line: rgba(67, 91, 126, .12) !important;
+  --canvas: #f4f8ff !important;
+  --paper: #ffffff !important;
   --blue: #0a84ff !important;
   --blue-dark: #0066d6 !important;
   --blue-soft: #e0f0ff !important;
@@ -2606,4 +2617,119 @@ body .page-empty {
 @media (max-width: 420px) {
   body .projects-page .project-metrics,
   body .tasks-page .tasks-metrics { grid-template-columns: minmax(0, 1fr) !important; }
+}
+
+/*
+  Design foundation v6
+  Inter Variable + a disciplined 8pt layout rhythm. Glass stays on the
+  navigation/control layer; dense content surfaces remain solid and legible.
+*/
+body .page-content {
+  max-width: var(--layout-max) !important;
+}
+
+body .view-heading h1,
+body .portfolio-board-heading h1,
+body .page-section-heading h2,
+body .section-heading-row h2,
+body .compact-heading h2,
+body .settings-card h2 {
+  font-family: var(--font-display) !important;
+  font-optical-sizing: auto;
+  text-wrap: balance;
+}
+
+body .view-heading h1,
+body .portfolio-board-heading h1 {
+  font-weight: 760 !important;
+  letter-spacing: -.058em !important;
+}
+
+body .view-description,
+body .dialog-description,
+body .settings-card-heading p,
+body .settings-lead,
+body .note-card p {
+  line-height: 1.58 !important;
+}
+
+body .portfolio-stats strong,
+body .project-metric strong,
+body .task-metric strong,
+body .team-metric-strip strong,
+body .insight-stat > strong,
+body .health-score strong {
+  font-variant-numeric: tabular-nums;
+}
+
+body .project-card,
+body .portfolio-project-grid .project-card,
+body .projects-page-grid .project-card,
+body .team-grid .member-card,
+body .notes-grid .note-card:not(.note-card-featured),
+body .insight-stat-grid .insight-stat,
+body .projects-page .project-metric,
+body .projects-page .project-metric-attention,
+body .tasks-page .task-metric,
+body .tasks-page .task-metric-today,
+body .team-metric-strip > div,
+body .settings-content .settings-card,
+body .tasks-page .tasks-panel,
+body .tasks-page .task-principles,
+body .calendar-page .calendar-main,
+body .calendar-page .calendar-agenda,
+body .insights-lower .workload-panel,
+body .insights-lower .attention-panel {
+  border-color: rgba(67, 91, 126, .1) !important;
+  background: rgba(255, 255, 255, .94) !important;
+  box-shadow: 0 12px 32px rgba(56, 82, 121, .075), 0 1px 2px rgba(31, 55, 89, .04) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+body .calendar-page .calendar-agenda,
+body .tasks-page .task-principles {
+  background: linear-gradient(145deg, #ffffff, #f3fbff) !important;
+}
+
+body .notes-layout .notes-sidebar,
+body .settings-layout .settings-nav {
+  border-color: rgba(255, 255, 255, .78) !important;
+  background: rgba(255, 255, 255, .72) !important;
+  backdrop-filter: blur(24px) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(150%) !important;
+}
+
+body .section-kicker,
+body .eyebrow {
+  color: #0875df !important;
+  letter-spacing: .075em !important;
+}
+
+body .ghost-button,
+body .cancel-button,
+body .review-secondary,
+body .filter-chip:not(.active),
+body .taxonomy-chip:not(.active),
+body .view-switch:not(.active) {
+  border-color: rgba(67, 91, 126, .12) !important;
+  background: rgba(255, 255, 255, .88) !important;
+}
+
+@media (min-width: 901px) {
+  body .portfolio-overview,
+  body .tasks-page .tasks-layout,
+  body .calendar-page .calendar-layout {
+    grid-template-columns: minmax(0, 8fr) minmax(320px, 4fr) !important;
+  }
+
+  body .insights-layout,
+  body .insights-lower {
+    grid-template-columns: minmax(0, 7fr) minmax(320px, 5fr) !important;
+  }
+
+  body .notes-layout,
+  body .settings-layout {
+    grid-template-columns: 240px minmax(0, 1fr) !important;
+  }
 }

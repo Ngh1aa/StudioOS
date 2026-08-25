@@ -2,6 +2,19 @@
 
 ## Bright Pill OS refresh — August 2026
 
+### Selected foundation
+
+- **Typeface:** Inter Variable for display and UI text, with the native Apple/SF system stack as fallback. Large titles use optical sizing, weight 760 and tighter tracking; body copy uses 14px/1.5 for dense workspace readability.
+- **Palette:** Ice `#F4F8FF`, White `#FFFFFF`, Ink `#182033`, Muted `#68778F`, iOS Blue `#0A84FF`, Cyan `#4CC9F0`, Indigo `#625CFF`, Green `#34C759`, Orange `#FF9F0A`, Pink `#FF375F`.
+- **Layout:** 8pt spacing rhythm, 1480px maximum content width, 264px floating sidebar, 8/4 splits for operational pages and 7/5 splits for analytics pages.
+- **Surface rule:** Glass is reserved for navigation, menus and compact controls. Reading and data cards use solid or nearly solid white to protect contrast and hierarchy.
+
+### Inter typeface
+
+URL: https://rsms.me/inter/
+
+Inter is an open-source variable typeface designed for user interfaces and computer screens. Its tall x-height and dedicated text/display optical sizes make it a practical cross-platform replacement where SF Pro isn't available.
+
 ### Apple Human Interface Guidelines — Buttons
 
 URL: https://developer.apple.com/design/human-interface-guidelines/buttons
