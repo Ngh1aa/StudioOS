@@ -23,7 +23,7 @@ jobs:
       - name: Prepare static site
         run: |
           mkdir -p dist-static/assets
-          cp index.html styles.css styles.min.css monochrome-overrides.css portfolio-layout.css script.js script.min.js ui-feedback.js robots.txt sitemap.xml dist-static/
+          cp index.html styles.css styles.min.css monochrome-overrides.css portfolio-layout.css ios-pill.css script.js script.min.js ui-feedback.js robots.txt sitemap.xml dist-static/
           cp -R assets/. dist-static/assets/
           touch dist-static/.nojekyll
       - name: Configure Pages
